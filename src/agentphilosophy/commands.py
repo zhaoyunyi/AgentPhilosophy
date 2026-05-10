@@ -562,9 +562,10 @@ def command_status(source_root: Path, project_root: Path | None = None) -> Repor
         state = load_state(project_root, source_root)
         current_source_hash = source_tree_hash(source_root)
         current_revision = source_revision(source_root)
-        if state.get("source_tree_hash") != current_source_hash:
+        source_hash_drifted = state.get("source_tree_hash") != current_source_hash
+        if source_hash_drifted:
             report.warn("source_tree_hash differs from current source")
-        if state.get("source_revision") != current_revision:
+        if source_hash_drifted and state.get("source_revision") != current_revision:
             report.warn("source_revision differs from current source")
 
         modules = load_modules(source_root)
