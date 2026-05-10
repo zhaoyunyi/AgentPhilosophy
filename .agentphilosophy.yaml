@@ -1,0 +1,30 @@
+project_name: AgentPhilosophy
+project_type: orchestrator
+preset: orchestrator
+description: 中央 Agent 协作规范同步工具
+paths:
+  docs_guide_dir: docs/guides
+  spec_dir: spec
+skill_targets:
+  repo_skills: skills
+modules:
+- openspec-skills
+- jj-conventions
+- model-constraints
+- doc-templates
+- multi-module-layout
+- spec-program
+- spec-ddd
+- spec-bdd
+- spec-test-general
+- spec-architecture
+- skill-jj-management
+- skill-target-jj
+- skill-coding-standards
+- skill-repo-management
+vars:
+  primary_tool: Codex CLI
+  test_command: uv run pytest -q
+  extra_model_rules:
+  - 使用中文交流和回复。
+  - 文档使用中文 Markdown 格式。
