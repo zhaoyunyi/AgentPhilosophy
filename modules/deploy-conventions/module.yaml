@@ -1,0 +1,15 @@
+name: deploy-conventions
+description: 本地、QA、远端部署入口和验收索引规则
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - docs:deploy
+outputs:
+  - id: deploy-rules
+    type: fragment
+    template: templates/deploy-rules.md.j2
+    target: AGENTS.md
+    section: deploy
+    order: 40

@@ -1,0 +1,15 @@
+name: spec-feature-domain
+description: 领域功能规范目录入口
+version: 1.0.0
+project_types: [mobile-sdk]
+requires: []
+conflicts: []
+provides:
+  - spec:feature-domain
+outputs:
+  - id: feature-domain-index
+    type: rendered_file
+    template: templates/features-README.md.j2
+    target: "{{ paths.spec_dir }}/features/README.md"
+    strategy: init_only
+    on_existing_unmanaged: warn

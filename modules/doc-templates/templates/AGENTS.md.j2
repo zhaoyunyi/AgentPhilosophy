@@ -1,0 +1,20 @@
+# {{ project_name }} Agent 协作规范
+
+> {{ description | default("", true) }}
+
+## 通用约定
+
+{{ section("model_constraints") }}
+{{ section("version_control") }}
+{{ section("module_boundary") }}
+{{ section("deploy") }}
+
+## 工程规范
+
+{{ section("ddd_conventions") }}
+{{ section("testing") }}
+{{ section("ui_rules") }}
+
+## 项目扩展
+
+项目特有内容应放在 `{{ paths.custom_dir }}`，避免中央同步覆盖手写规则。

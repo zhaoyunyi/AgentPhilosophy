@@ -1,0 +1,21 @@
+name: spec-test-general
+description: 通用测试分层和质量门禁规范
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - spec:test-general
+outputs:
+  - id: test-strategy
+    type: rendered_file
+    template: templates/TestStrategy.md.j2
+    target: "{{ paths.spec_dir }}/TestStrategy.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: test-general-fragment
+    type: fragment
+    template: templates/test-general-rules.md.j2
+    target: AGENTS.md
+    section: testing
+    order: 5
