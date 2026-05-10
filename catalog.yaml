@@ -1,0 +1,150 @@
+schema_version: 1
+modules:
+  - name: openspec-skills
+    category: base
+    description: OpenSpec propose/apply/explore/archive skill 基础包
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/openspec-skills/
+    risk: low
+  - name: jj-conventions
+    category: base
+    description: jj colocated git、bookmark、中文 change 描述和提交边界规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - AGENTS.md
+    risk: low
+  - name: model-constraints
+    category: base
+    description: 多 Agent 模型继承、reasoning 和代理调度约束
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - AGENTS.md
+    risk: low
+  - name: doc-templates
+    category: base
+    description: AGENTS.md 和 CLAUDE.md 主文档骨架
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - AGENTS.md
+      - CLAUDE.md
+    risk: medium
+  - name: multi-module-layout
+    category: base
+    description: 多子目录入口、跨仓只读搜索和目录边界规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - AGENTS.md
+    risk: low
+  - name: deploy-conventions
+    category: base
+    description: 本地、QA、远端部署入口和验收索引规则
+    project_types: [orchestrator, fullstack, frontend]
+    outputs:
+      - AGENTS.md
+    risk: low
+  - name: spec-program
+    category: spec
+    description: 项目开发总原则
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - spec/ProgramSpec.md
+    risk: medium
+  - name: spec-ddd
+    category: spec
+    description: DDD 领域驱动设计规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - spec/DDDSpec.md
+      - AGENTS.md
+    risk: medium
+  - name: spec-bdd
+    category: spec
+    description: BDD 用户行为验收规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - spec/BDDSpec.md
+      - AGENTS.md
+    risk: medium
+  - name: spec-test-browser
+    category: spec
+    description: 浏览器端 e2e 和 Browser Use 验收规范
+    project_types: [fullstack, frontend]
+    outputs:
+      - spec/BrowserTestSpec.md
+      - AGENTS.md
+    risk: low
+  - name: spec-test-mobile
+    category: spec
+    description: 移动端真机、模拟器和安全测试矩阵规范
+    project_types: [mobile-sdk]
+    outputs:
+      - spec/MobileTestSpec.md
+      - AGENTS.md
+    risk: low
+  - name: spec-test-general
+    category: spec
+    description: 通用测试分层和质量门禁规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - spec/TestStrategy.md
+      - AGENTS.md
+    risk: low
+  - name: spec-ui
+    category: spec
+    description: UI 和设计系统规范
+    project_types: [fullstack, frontend, mobile-sdk]
+    outputs:
+      - spec/UISpec.md
+      - AGENTS.md
+    risk: medium
+  - name: spec-architecture
+    category: spec
+    description: 项目架构约束规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - spec/ArchitectureSpec.md
+    risk: medium
+  - name: spec-ios-sdk
+    category: spec
+    description: iOS SDK API、架构和包边界规范
+    project_types: [mobile-sdk]
+    outputs:
+      - spec/iOSSDKAPISpec.md
+      - spec/iOSSDKArchitectureSpec.md
+    risk: medium
+  - name: spec-feature-domain
+    category: spec
+    description: 领域功能规范目录入口
+    project_types: [mobile-sdk]
+    outputs:
+      - spec/features/README.md
+    risk: low
+  - name: skill-jj-management
+    category: skill
+    description: 当前仓库 jj 操作 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/jj-management/SKILL.md
+    risk: low
+  - name: skill-target-jj
+    category: skill
+    description: 进入目标 jj 仓库时的操作 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/target-jj/SKILL.md
+    risk: low
+  - name: skill-coding-standards
+    category: skill
+    description: 编码、审查和测试入口 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/coding-standards/SKILL.md
+    risk: low
+  - name: skill-repo-management
+    category: skill
+    description: 仓库状态、文档索引、提交边界和清理规则 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/repo-management/SKILL.md
+    risk: low

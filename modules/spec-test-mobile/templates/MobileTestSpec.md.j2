@@ -1,0 +1,5 @@
+# 移动端测试规范
+
+- 区分 simulator-safe、device-engine 和真机 UI 测试，不混淆失败来源。
+- 真机依赖的素材应作为 fixture 管理，避免依赖用户本地临时文件。
+- 构建失败、签名失败、运行时崩溃必须分别记录 root cause。

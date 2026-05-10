@@ -1,0 +1,29 @@
+[project]
+name = "agentphilosophy"
+version = "0.1.0"
+description = "Central Agent collaboration specification sync tool"
+requires-python = ">=3.12"
+dependencies = [
+  "Jinja2>=3.1",
+  "PyYAML>=6.0",
+]
+
+[project.scripts]
+agentphilosophy-sync = "agentphilosophy.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.9",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

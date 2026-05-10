@@ -1,0 +1,21 @@
+name: spec-test-mobile
+description: 移动端真机、模拟器和安全测试矩阵规范
+version: 1.0.0
+project_types: [mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - spec:test-mobile
+outputs:
+  - id: mobile-test-spec
+    type: rendered_file
+    template: templates/MobileTestSpec.md.j2
+    target: "{{ paths.spec_dir }}/MobileTestSpec.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: mobile-test-fragment
+    type: fragment
+    template: templates/mobile-test-rules.md.j2
+    target: AGENTS.md
+    section: testing
+    order: 30

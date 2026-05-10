@@ -1,0 +1,15 @@
+name: multi-module-layout
+description: 多子目录入口、跨仓只读搜索和目录边界规范
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - docs:module-boundary
+outputs:
+  - id: module-boundary
+    type: fragment
+    template: templates/module-boundary.md.j2
+    target: AGENTS.md
+    section: module_boundary
+    order: 30

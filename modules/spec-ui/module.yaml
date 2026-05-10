@@ -1,0 +1,21 @@
+name: spec-ui
+description: UI 和设计系统规范
+version: 1.0.0
+project_types: [fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - spec:ui
+outputs:
+  - id: ui-spec
+    type: rendered_file
+    template: templates/UISpec.md.j2
+    target: "{{ paths.spec_dir }}/UISpec.md"
+    strategy: layered
+    on_existing_unmanaged: report_only
+  - id: ui-fragment
+    type: fragment
+    template: templates/ui-rules.md.j2
+    target: AGENTS.md
+    section: ui_rules
+    order: 10
