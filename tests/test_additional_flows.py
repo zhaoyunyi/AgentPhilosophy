@@ -373,6 +373,25 @@ def test_status_reports_manual_edit_and_source_tree_hash_drift(tmp_path: Path, c
     assert "managed file changed manually: skills/skill-pack/SKILL.md" in output
 
 
+def test_status_ignores_revision_drift_when_source_tree_hash_matches(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    state_path = target / ".agents" / "agentphilosophy-state.yaml"
+    state_path.write_text(
+        state_path.read_text(encoding="utf-8").replace("source_revision: none", "source_revision: git:old"),
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "status", "--project", str(target)]) == 0
+    output = capsys.readouterr().out
+    assert "source_tree_hash differs from current source" not in output
+    assert "source_revision differs from current source" not in output
+
+
 def test_init_interactive_creates_config_from_prompts(tmp_path: Path, monkeypatch) -> None:
     source = tmp_path / "source"
     target = tmp_path / "new"
