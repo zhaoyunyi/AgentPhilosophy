@@ -1,0 +1,13 @@
+name: fullstack
+description: Minimal fullstack preset for CLI baseline tests
+modules:
+  - doc-templates
+  - model-constraints
+  - spec-bdd
+  - skill-repo-management
+paths:
+  spec_dir: spec
+skill_targets:
+  repo_skills: skills
+vars:
+  primary_tool: Codex CLI

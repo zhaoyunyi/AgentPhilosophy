@@ -1,0 +1,15 @@
+project_name: admin-app
+project_type: fullstack
+preset: fullstack
+description: Minimal fullstack preset for CLI baseline tests
+paths:
+  spec_dir: spec
+skill_targets:
+  repo_skills: skills
+modules:
+- doc-templates
+- model-constraints
+- spec-bdd
+- skill-repo-management
+vars:
+  primary_tool: Codex CLI

@@ -1,0 +1,13 @@
+name: model-constraints
+description: Shared model constraints fragment
+version: 1.0.0
+project_types: [fullstack]
+requires: []
+conflicts: []
+outputs:
+  - id: model-rules
+    type: fragment
+    template: templates/model-rules.md.j2
+    target: AGENTS.md
+    section: model_constraints
+    order: 10

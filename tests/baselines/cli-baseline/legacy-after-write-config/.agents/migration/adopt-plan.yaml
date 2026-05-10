@@ -1,0 +1,7 @@
+files:
+- path: AGENTS.md
+  module: doc-templates
+  output_id: agents
+- path: skills/repo-management/SKILL.md
+  module: skill-repo-management
+  output_id: repo-skill:SKILL.md

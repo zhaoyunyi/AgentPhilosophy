@@ -1,0 +1,19 @@
+name: doc-templates
+description: Agent document templates
+version: 1.0.0
+project_types: [fullstack]
+requires: []
+conflicts: []
+outputs:
+  - id: agents
+    type: rendered_file
+    template: templates/AGENTS.md.j2
+    target: AGENTS.md
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: claude
+    type: rendered_file
+    template: templates/CLAUDE.md.j2
+    target: CLAUDE.md
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
