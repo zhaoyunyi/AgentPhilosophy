@@ -64,12 +64,17 @@ AgentPhilosophy/
 ├── catalog.yaml
 ├── templates/
 │   └── managed-file-header.md.j2
-├── registry.yaml
+├── registry.example.yaml
+├── registry.yaml        # local, ignored
 ├── sync.py
 ├── pyproject.toml
 ├── README.md
-└── docs/plans/
+└── docs/
+    ├── cli-usage-for-llm.md
+    └── plans/
 ```
+
+`registry.yaml` 是本机真实批量目标入口；`push --all` 和不带 `--project` 的 `status` 都从该文件读取项目列表。该文件可以包含本机绝对路径，已加入 `.gitignore`，不作为跨机器模板使用。`registry.example.yaml` 是可复用模板，用于复制成新的本机 `registry.yaml` 后再改路径。
 
 ### 3.1 模块分层
 
@@ -274,8 +279,6 @@ project_type: orchestrator
 preset: orchestrator
 description: Python 编排器，调度 Claude Code 和 Codex CLI 子 agent
 
-source: /path/to/AgentPhilosophy
-
 paths:
   agent_work_dir: .agents
   spec_dir: spec
@@ -322,6 +325,8 @@ vars:
 `synced_versions` 和 `last_synced` 不再写入 `.agentphilosophy.yaml`，避免工具运行频繁改动用户配置。同步状态统一记录到 `.agents/agentphilosophy-state.yaml`。
 
 `preset` 只记录项目初始化时采用的默认方案，便于审计和后续人工比较。同步时不自动重新展开 preset；如果需要更新项目模块，必须显式修改 `.agentphilosophy.yaml`。
+
+中央源路径不写入目标项目配置；CLI 从当前工作目录推断中央源，或通过全局参数 `--source /path/to/AgentPhilosophy` 显式指定。
 
 ### 5.1 路径差异
 
@@ -432,37 +437,42 @@ files:
 ## 八、sync.py 命令接口
 
 ```bash
-# 推模式
-uv run sync.py push /path/to/target-project
+# 推模式；不带 --apply 时只输出计划，不写目标文件
+uv run sync.py push /path/to/target-project --dry-run
+uv run sync.py push /path/to/target-project --apply
 
-# 拉模式
-uv run /path/to/AgentPhilosophy/sync.py pull
-
-# 初始化新项目
+# 初始化新项目配置
+uv run sync.py init /path/to/new-project --preset mobile-sdk
 uv run sync.py init /path/to/new-project --interactive
 
 # 老项目迁移分析，默认不写正式目标文件
 uv run sync.py migrate /path/to/existing-project
+
+# 如果 migrate --help 已暴露 --write-config：只在正式配置不存在时从迁移草稿写入
+uv run sync.py migrate /path/to/existing-project --write-config
 
 # 校验中央仓库或目标项目配置，不写文件
 uv run sync.py validate
 uv run sync.py validate /path/to/project
 
 # 接管已确认的老项目文件：不改内容，只登记当前 hash 到 state
-uv run sync.py adopt /path/to/project --file AGENTS.md
+uv run sync.py adopt /path/to/project --file AGENTS.md --module doc-templates --output agents-md
 uv run sync.py adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml
 
-# 批量推送 registry.yaml 中的项目
+# 批量推送本机 registry.yaml 中的项目
 uv run sync.py push --all
 
 # 只看变更，不写文件
 uv run sync.py push /path/to/project --dry-run
 
 # 查看状态
-uv run sync.py status
+uv run sync.py status --project /path/to/project
 
-# 仅清理 state 中确认由本工具托管且已废弃的文件
+# 清理 state 中确认由本工具托管且已从当前配置移除的文件
 uv run sync.py push /path/to/project --prune-managed
+
+# 占位命令；第一版只返回 warning
+uv run sync.py pull
 ```
 
 执行流程：
@@ -484,7 +494,8 @@ uv run sync.py push /path/to/project --prune-managed
 - `custom/` 目录永不覆盖。
 - `migrate` 第一版只生成报告和草稿，不直接改正式目标文件。
 - `--dry-run` 必须展示将新增、更新、跳过、冲突的文件列表。
-- `--prune-managed` 只能删除 state 中登记、且当前 hash 仍匹配的托管文件。
+- `--prune-managed` 只删除 state 中登记、当前 hash 仍匹配、且已从当前配置输出中移除的托管文件；它必须要求明确的单个目标项目路径，不和 `--dry-run`、`--apply` 或 `--all` 混用。删除文件后只尝试清理该文件的直接空目录。
+- 如果 `migrate --write-config` 存在，只能在目标项目根目录 `.agentphilosophy.yaml` 不存在时，把 `.agents/migration/proposed.agentphilosophy.yaml` 写入正式配置；正式配置已存在时必须拒绝覆盖。
 - 任何目标路径必须限制在目标项目目录内，禁止 `../` 越界写入。
 - `adopt` 不修改目标文件内容，只把用户确认接管的当前文件 hash 写入 state。
 
@@ -500,12 +511,14 @@ uv run sync.py push /path/to/project --prune-managed
 
 ### 10.1 新项目 init
 
-`init` 可以交互式生成 `.agentphilosophy.yaml`，并执行首次 `push --dry-run`。只有用户明确传入 `--apply` 才写入正式文件。新项目推荐传入 `--preset`，减少重复配置。
+`init` 当前只负责生成项目根目录 `.agentphilosophy.yaml`，不渲染托管输出，也不会自动执行 `push --dry-run`。新项目推荐传入 `--preset`，减少重复配置；需要人工输入项目名、类型、描述和测试命令时可使用 `--interactive`。
 
 ```bash
-uv run sync.py init /path/to/new-project --interactive
 uv run sync.py init /path/to/new-mobile-sdk --preset mobile-sdk
-uv run sync.py push /path/to/new-project --apply
+uv run sync.py init /path/to/new-fullstack --interactive
+uv run sync.py validate /path/to/new-mobile-sdk
+uv run sync.py push /path/to/new-mobile-sdk --dry-run
+uv run sync.py push /path/to/new-mobile-sdk --apply
 ```
 
 ### 10.2 老项目 migrate
@@ -514,7 +527,7 @@ uv run sync.py push /path/to/new-project --apply
 
 1. 扫描 `AGENTS.md`、`CLAUDE.md`、`spec/`、`.claude/skills/`、`skills/`、`docs/guides|guide/`。
 2. 生成模块候选清单。
-3. 生成 `.agents/migration/proposed.agentphilosophy.yaml`。
+3. 生成 `.agents/migration/proposed.agentphilosophy.yaml`，但不自动提升为正式 `.agentphilosophy.yaml`。
 4. 生成现有文件和候选输出的 diff。
 5. 标注哪些内容建议进入 custom，哪些内容建议保持项目自维护。
 6. 生成可选的 `.agents/migration/adopt-plan.yaml`，列出建议接管的文件和建议保持自维护的文件。
@@ -522,8 +535,16 @@ uv run sync.py push /path/to/new-project --apply
 
 ```bash
 uv run sync.py migrate /path/to/ExampleOrchestratorProject
-uv run sync.py push /path/to/ExampleOrchestratorProject --dry-run
 ```
+
+`push` 只读取项目根目录 `.agentphilosophy.yaml`。老项目完成 `migrate` 后，必须先人工确认并落地正式 `.agentphilosophy.yaml`，再运行 `adopt`、`validate`、`push --dry-run` 和 `push --apply`。
+
+如果当前 CLI 提供 `migrate --write-config`，它只是“从迁移草稿写入正式配置”的安全捷径：
+
+- 先生成 `.agents/migration/proposed.agentphilosophy.yaml`。
+- 仅当项目根目录 `.agentphilosophy.yaml` 不存在时写入正式配置。
+- 如果正式配置已经存在，必须报错拒绝覆盖。
+- 不自动接管文件，不写托管输出，不跳过后续 `validate`、`adopt` 和 `push --dry-run`。
 
 ### 10.3 老项目 adopt
 
@@ -543,11 +564,11 @@ adopt 必须满足：
 - 文件路径没有越界。
 - 对应 `module/output_id` 存在。
 - 如果文件已在 state 中，当前 hash 必须等于 state 记录，否则拒绝覆盖登记。
-- adopt 后立刻运行 `push --dry-run`，确认候选更新不会意外覆盖项目特定内容。
+- adopt 后在正式 `.agentphilosophy.yaml` 就绪的前提下立刻运行 `push --dry-run`，确认候选更新不会意外覆盖项目特定内容。
 
 ## 十一、版本管理与状态追踪
 
-`registry.yaml` 保留批量目标：
+`registry.yaml` 保留本机真实批量目标：
 
 ```yaml
 projects:
@@ -561,14 +582,19 @@ projects:
     path: /path/to/ExampleMobileSDKProject
 ```
 
-`status` 对比：
+`registry.example.yaml` 提供可复用模板，不参与真实批量同步。新机器应先复制模板为 `registry.yaml`，再写入本机真实项目路径；`registry.yaml` 属于本机配置，默认不提交。
 
-- registry 中路径是否可达。
+批量同步要求目标项目已经存在正式 `.agentphilosophy.yaml`；未接入项目先通过 `init` 或 `migrate` 接入。
+
+`status --project /path/to/project` 对比：
+
 - 目标项目是否存在 `.agentphilosophy.yaml`。
 - state 中模块版本是否落后于中央 modules。
 - state 中 `source_revision` / `source_tree_hash` 是否落后于当前中央源。
 - state 中托管文件是否被用户手动改动。
 - 是否存在已废弃但仍可安全 prune 的托管文件。
+
+不带 `--project` 的 `status` 检查 `registry.yaml` 中的项目路径；如果自定义中央源未提供 registry，会返回 warning。
 
 ## 十二、Validate 规则
 
@@ -643,23 +669,25 @@ outputs:
 
 必须实现：
 
-- `push`、`pull`、`status`、`migrate`、`init`、`validate`、`adopt` 命令骨架。
+- `push`、`status`、`migrate`、`init`、`validate`、`adopt` 命令骨架，以及 `pull` 占位提示。
 - Jinja2 渲染和 `section(name)` 注入。
 - `rendered_file`、`fragment`、`copy_tree`。
 - `managed_replace`、`layered`、`init_only`、`report_only`。
 - `.agents/agentphilosophy-state.yaml` hash 检查。
 - `source_revision` / `source_tree_hash` 记录。
-- 轻量 preset 展开到 `.agentphilosophy.yaml` 草稿。
+- 轻量 preset 展开到项目根目录正式 `.agentphilosophy.yaml`。
+- `init --interactive` 的交互式配置生成。
 - 模块 `requires` / `conflicts` / `project_types` 校验。
 - `catalog.yaml` 基础校验。
 - 路径越界保护。
-- `--dry-run` 和迁移报告。
+- `--dry-run`、`--prune-managed` 和迁移报告。
 
 暂缓实现：
 
 - 自动语义拆分旧 `AGENTS.md` / `CLAUDE.md`。
 - 自动把旧 spec 内容归并到 custom。
-- `--prune-managed` 的交互式批量确认。
+- 会覆盖已有正式配置的迁移草稿提升。
+- `pull` 反向同步。
 - 复杂 preset 生成器或动态 preset 继承。
 
 ## 十六、验收标准
@@ -673,6 +701,6 @@ outputs:
 - sync 状态不污染用户手写 `.agentphilosophy.yaml`。
 - 第一版 migrate 明确是报告工具，不是自动改写工具。
 - 新项目可以通过 `init --preset` 快速生成配置草稿。
-- 老项目可以通过 `migrate -> adopt -> push --dry-run -> push --apply` 安全接入。
+- 老项目可以通过 `migrate -> 审核草稿配置 -> 写入正式 .agentphilosophy.yaml -> adopt -> push --dry-run -> push --apply` 安全接入；如果提供 `migrate --write-config`，也只能在正式配置不存在时执行这一步。
 - 中央源和目标项目都可以通过 `validate` 独立校验。
 - state 能追溯到中央源 revision 或 tree hash。
