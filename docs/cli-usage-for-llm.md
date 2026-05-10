@@ -166,6 +166,8 @@ vars:
 - `frontend`：前端主导项目。
 - `mobile-sdk`：移动 SDK 或多子工程工作区。
 
+这些 preset 默认包含 `jj-conventions` 和 `skill-jj-management`。LLM 接入目标项目时，如果目标项目是 Git 仓库但还没有 `.jj/`，应先确认 `command -v jj && jj --version`，缺失时安装 jj CLI，然后运行 `jj git init --colocate`，再用 `jj status`、`jj log`、`jj bookmark list` 验证。
+
 常用路径：
 
 - `paths.docs_guide_dir`：项目 guide 文档目录，默认 `docs/guides`。

@@ -48,6 +48,8 @@ uv run sync.py push --all --dry-run
 
 - [docs/cli-usage-for-llm.md](docs/cli-usage-for-llm.md)
 
+默认 preset 会启用 jj colocated git 管理规则。目标项目是普通 Git 仓库但还没有 `.jj/` 时，先确认或安装 jj CLI，再执行 `jj git init --colocate`，最后用 `jj status` / `jj log` / `jj bookmark list` 验证。
+
 执行任何目标项目写入前，先运行：
 
 ```bash
