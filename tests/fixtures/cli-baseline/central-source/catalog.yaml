@@ -1,0 +1,6 @@
+schema_version: 1
+modules:
+  - name: doc-templates
+  - name: model-constraints
+  - name: spec-bdd
+  - name: skill-repo-management

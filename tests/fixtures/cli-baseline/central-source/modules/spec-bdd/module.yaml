@@ -1,0 +1,13 @@
+name: spec-bdd
+description: BDD specification template
+version: 1.0.0
+project_types: [fullstack]
+requires: []
+conflicts: []
+outputs:
+  - id: bdd-spec
+    type: rendered_file
+    template: templates/BDDSpec.md.j2
+    target: "{{ paths.spec_dir }}/BDDSpec.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
