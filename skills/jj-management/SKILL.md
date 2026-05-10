@@ -7,6 +7,10 @@ description: 在 AgentPhilosophy 当前仓库中执行 jj 版本控制、提交�
 
 使用规则：
 
-- 先确认仓库是否存在 `.jj/`。
+- 先确认是否安装 jj CLI：运行 `command -v jj && jj --version`。
+- 如果未安装 jj CLI，先安装 jj：macOS 优先使用 `brew install jj`，没有 Homebrew 时按本机包管理器或官方安装方式安装。
+- 当前仓库默认使用 jj colocated git。若仓库只有 `.git/` 且没有 `.jj/`，先运行 `jj git init --colocate`。
+- 初始化后用 `jj status`、`jj log` 和 `jj bookmark list` 验证 jj 已实际接管工作区。
+- 当前仓库存在 `.jj/` 后，不要再用 `git add`、`git commit`、`git stash` 或 `git checkout` 管理本地变更。
 - 按功能领域拆分中文 change 描述。
 - 推送前核对 bookmark、远端状态和默认工作区。

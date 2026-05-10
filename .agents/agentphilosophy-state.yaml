@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: git:010e47b732cce3fb380ad564da1f8847adad9eef
-source_tree_hash: sha256:bc97ae1a9e30ff17ecbba6280508aa910c799fd504cbfada80de9fe2baad865c
+source_revision: git:3edb6a06432f75582ac20d8f704f54430c3d71fe
+source_tree_hash: sha256:c246ea08d87e13a45d5d36e2bb61288b4c0654c5b31966602adc7092012db585
 modules:
   openspec-skills: 1.0.0
   jj-conventions: 1.0.0
@@ -23,8 +23,8 @@ files:
   output_id: agents-md
   strategy: layered
   source_hash: sha256:2cc12b1ae801d525f8b4d7c2205b8b222a00b542451ff8e0e2cd1a2a2a37b0c3
-  rendered_hash: sha256:4954ef08a8925a36db62816bf7dfa104fc1c8d552d117c4d2495454ff68e09e1
-  last_written_hash: sha256:4954ef08a8925a36db62816bf7dfa104fc1c8d552d117c4d2495454ff68e09e1
+  rendered_hash: sha256:eea3920ab6ab71d01da3a5096fd18beaba2324b6645fe8eea94d47053d91e64a
+  last_written_hash: sha256:eea3920ab6ab71d01da3a5096fd18beaba2324b6645fe8eea94d47053d91e64a
 - path: CLAUDE.md
   module: doc-templates
   output_id: claude-md
@@ -43,9 +43,9 @@ files:
   module: skill-jj-management
   output_id: jj-management-skill
   strategy: managed_replace
-  source_hash: sha256:6cc3daf2eacb17103dfa586b31c22b69fd115a09579a079e5b8513bf2590b2c0
-  rendered_hash: sha256:ba5cc5c13dc05fa36837dca3f3721166b5cbd3a4dbba9ac5fffc3f3bde5d5d5e
-  last_written_hash: sha256:ba5cc5c13dc05fa36837dca3f3721166b5cbd3a4dbba9ac5fffc3f3bde5d5d5e
+  source_hash: sha256:72c7c6f74004204518ce000749e451f7a50c4ef05c0307ba60224f07098295d6
+  rendered_hash: sha256:8b5ed0cb91abf3f74e3fbcbbc7696851d409c9f7363b8370a54776216aefc68d
+  last_written_hash: sha256:8b5ed0cb91abf3f74e3fbcbbc7696851d409c9f7363b8370a54776216aefc68d
 - path: skills/openspec-skills/openspec-apply/SKILL.md
   module: openspec-skills
   output_id: openspec-skills:openspec-apply/SKILL.md
@@ -123,4 +123,4 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-05-10T15:37:40.941172+00:00'
+last_synced: '2026-05-10T16:01:42.819521+00:00'

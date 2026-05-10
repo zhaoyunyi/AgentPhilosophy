@@ -9,7 +9,9 @@
 - 子 agent 修改代码时必须说明负责文件范围，并避免覆盖其他人改动。
 - 使用中文交流和回复。
 - 文档使用中文 Markdown 格式。
-- 如果仓库存在 `.jj/`，默认使用 jj 工作流处理提交、同步和 bookmark。
+- 默认使用 jj colocated git 管理当前仓库；如果仓库还没有 `.jj/`，先执行 `jj git init --colocate`。
+- 如果 `command -v jj` 找不到 jj CLI，先安装 jj：macOS 优先使用 `brew install jj`，没有 Homebrew 时按本机包管理器或官方安装方式安装。
+- 当前仓库存在 `.jj/` 后，本地版本控制操作使用 `jj status`、`jj log`、`jj diff`、`jj describe`、`jj new`、`jj bookmark` 和 `jj git push`，不要再用 `git add`、`git commit`、`git stash` 或 `git checkout` 管理本地变更。
 - 按功能领域拆分中文 change 描述，避免把无关文件混进同一个提交。
 - 推送 `main` 或同步主线时，必须同时确认远端 bookmark 和默认工作区状态。
 - 进入子目录前先读取该目录内的 `AGENTS.md`、`CLAUDE.md` 或 README。
