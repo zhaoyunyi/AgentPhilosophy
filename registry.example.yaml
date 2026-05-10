@@ -1,0 +1,8 @@
+# 可复用模板：复制为 registry.yaml 后，把 path 改成本机真实绝对路径。
+# registry.yaml 是本机真实批量入口；本文件不要直接作为批量同步入口。
+schema_version: 1
+projects:
+  - name: ExampleFullstack
+    path: /absolute/path/to/ExampleFullstack
+  - name: ExampleMobileSDK
+    path: /absolute/path/to/ExampleMobileSDK
