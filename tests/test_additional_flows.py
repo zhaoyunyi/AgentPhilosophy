@@ -3,6 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from shutil import copyfile
 
+import pytest
+
 from agentphilosophy.cli import main
 from agentphilosophy.hashing import source_tree_hash
 
@@ -371,17 +373,272 @@ def test_status_reports_manual_edit_and_source_tree_hash_drift(tmp_path: Path, c
     assert "managed file changed manually: skills/skill-pack/SKILL.md" in output
 
 
-def test_unsupported_init_interactive_and_prune_are_not_silent(tmp_path: Path, capsys) -> None:
+def test_init_interactive_creates_config_from_prompts(tmp_path: Path, monkeypatch) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "new"
+    create_copy_tree_source(source)
+    write(
+        source / "presets" / "fullstack.yaml",
+        """
+name: fullstack
+description: Fullstack preset
+modules:
+  - skill-pack
+paths:
+  docs_guide_dir: docs/guides
+skill_targets:
+  repo_skills: skills
+vars:
+  primary_tool: Codex CLI
+""".strip()
+        + "\n",
+    )
+    answers = iter(["fullstack", "PromptedName", "fullstack", "Prompted description", "pytest -q"])
+    monkeypatch.setattr("builtins.input", lambda _prompt: next(answers))
+
+    assert main(["--source", str(source), "init", str(target), "--interactive"]) == 0
+
+    config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    assert "project_name: PromptedName" in config
+    assert "project_type: fullstack" in config
+    assert "description: Prompted description" in config
+    assert "test_command: pytest -q" in config
+    assert "skill-pack" in config
+
+
+def test_init_interactive_reports_unavailable_stdin(tmp_path: Path, monkeypatch, capsys) -> None:
+    source = tmp_path / "source"
+    create_copy_tree_source(source)
+
+    def unavailable_stdin(_prompt: str) -> str:
+        raise OSError("stdin unavailable")
+
+    monkeypatch.setattr("builtins.input", unavailable_stdin)
+
+    assert main(["--source", str(source), "init", str(tmp_path / "new"), "--interactive"]) == 1
+    assert "interactive input unavailable" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("exc", [EOFError("closed"), KeyboardInterrupt()])
+def test_init_interactive_reports_cancelled_input(tmp_path: Path, monkeypatch, capsys, exc: BaseException) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "new"
+    create_copy_tree_source(source)
+
+    def cancelled_input(_prompt: str) -> str:
+        raise exc
+
+    monkeypatch.setattr("builtins.input", cancelled_input)
+
+    assert main(["--source", str(source), "init", str(target), "--interactive"]) == 1
+    assert "interactive input unavailable" in capsys.readouterr().out
+    assert not (target / ".agentphilosophy.yaml").exists()
+
+
+def test_prune_managed_deletes_only_stale_unchanged_managed_files(tmp_path: Path) -> None:
     source = tmp_path / "source"
     target = tmp_path / "target"
     create_copy_tree_source(source)
     create_target(target)
 
-    assert main(["--source", str(source), "init", str(tmp_path / "new"), "--interactive"]) == 1
-    assert "not implemented" in capsys.readouterr().out
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    assert (target / "skills" / "skill-pack" / "SKILL.md").exists()
+
+    (target / ".agentphilosophy.yaml").write_text(
+        "project_name: Demo\nproject_type: fullstack\nmodules: []\nvars: {}\n",
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 0
+    assert not (target / "skills" / "skill-pack" / "SKILL.md").exists()
+    state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "skills/skill-pack/SKILL.md" not in state_text
+
+
+def test_prune_managed_refuses_manual_edits(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(target / "skills" / "skill-pack" / "SKILL.md", "# User edit\n")
+    (target / ".agentphilosophy.yaml").write_text(
+        "project_name: Demo\nproject_type: fullstack\nmodules: []\nvars: {}\n",
+        encoding="utf-8",
+    )
 
     assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 1
-    assert "not implemented" in capsys.readouterr().out
+    assert "refuse to prune changed managed file" in capsys.readouterr().out
+    assert (target / "skills" / "skill-pack" / "SKILL.md").read_text(encoding="utf-8") == "# User edit\n"
+
+
+def test_prune_managed_preserves_source_metadata_and_removes_empty_dirs(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    state_before = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    old_source_hash = source_tree_hash(source)
+    write(source / "modules" / "skill-pack" / "files" / "OTHER.md", "# Changed source\n")
+    (target / ".agentphilosophy.yaml").write_text(
+        "project_name: Demo\nproject_type: fullstack\nmodules: []\nvars: {}\n",
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 0
+
+    state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert f"source_tree_hash: {old_source_hash}" in state_text
+    assert f"source_tree_hash: {source_tree_hash(source)}" not in state_text
+    assert "last_synced:" in state_text
+    assert "skills/skill-pack/SKILL.md" in state_before
+    assert "skills/skill-pack/SKILL.md" not in state_text
+    assert not (target / "skills" / "skill-pack").exists()
+
+
+def test_prune_managed_refuses_dry_run_apply_and_all_modes(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    (target / ".agentphilosophy.yaml").write_text(
+        "project_name: Demo\nproject_type: fullstack\nmodules: []\nvars: {}\n",
+        encoding="utf-8",
+    )
+
+    for extra_args in (["--dry-run"], ["--apply"], ["--all"]):
+        assert main(["--source", str(source), "push", str(target), "--prune-managed", *extra_args]) == 1
+        assert (target / "skills" / "skill-pack" / "SKILL.md").exists()
+
+
+def test_prune_managed_refuses_invalid_target_config(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    write(
+        source / "modules" / "requires-helper" / "module.yaml",
+        """
+name: requires-helper
+description: Requires helper
+version: 1.0.0
+project_types: [fullstack]
+requires: [helper]
+conflicts: []
+outputs:
+  - id: marker
+    type: rendered_file
+    template: templates/marker.txt.j2
+    target: marker.txt
+    strategy: managed_replace
+""".strip()
+        + "\n",
+    )
+    write(source / "modules" / "requires-helper" / "templates" / "marker.txt.j2", "marker\n")
+    write(
+        source / "modules" / "helper" / "module.yaml",
+        """
+name: helper
+description: Helper
+version: 1.0.0
+project_types: [fullstack]
+requires: []
+conflicts: []
+outputs: []
+""".strip()
+        + "\n",
+    )
+    write(
+        source / "catalog.yaml",
+        "schema_version: 1\nmodules:\n  - name: skill-pack\n  - name: requires-helper\n  - name: helper\n",
+    )
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    (target / ".agentphilosophy.yaml").write_text(
+        "project_name: Demo\nproject_type: fullstack\nmodules:\n  - requires-helper\nvars: {}\n",
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 1
+    assert "requires disabled module" in capsys.readouterr().out
+    assert (target / "skills" / "skill-pack" / "SKILL.md").exists()
+
+
+def test_prune_managed_does_not_mask_active_output_source_drift(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    write(
+        source / "modules" / "active" / "module.yaml",
+        """
+name: active
+description: Active module
+version: 1.0.0
+project_types: [fullstack]
+requires: []
+conflicts: []
+outputs:
+  - id: active
+    type: rendered_file
+    template: templates/active.txt.j2
+    target: active.txt
+    strategy: managed_replace
+""".strip()
+        + "\n",
+    )
+    write(source / "modules" / "active" / "templates" / "active.txt.j2", "old\n")
+    write(source / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: skill-pack\n  - name: active\n")
+    create_target(target, ["skill-pack", "active"])
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    write(source / "modules" / "active" / "templates" / "active.txt.j2", "new\n")
+    (target / ".agentphilosophy.yaml").write_text(
+        "project_name: Demo\nproject_type: fullstack\nmodules:\n  - active\nvars: {}\n",
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 0
+    assert main(["--source", str(source), "status", "--project", str(target)]) == 0
+    assert "source_tree_hash differs from current source" in capsys.readouterr().out
+
+
+def test_migrate_write_config_promotes_draft_when_formal_config_is_missing(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    write(target / "skills" / "skill-pack" / "SKILL.md", "# Legacy\n")
+
+    assert main(["--source", str(source), "migrate", str(target), "--write-config"]) == 0
+
+    assert (target / ".agentphilosophy.yaml").exists()
+    assert main(["--source", str(source), "push", str(target), "--dry-run"]) == 0
+
+
+def test_migrate_write_config_refuses_to_replace_existing_config(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    original_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+
+    assert main(["--source", str(source), "migrate", str(target), "--write-config"]) == 1
+
+    assert (target / ".agentphilosophy.yaml").read_text(encoding="utf-8") == original_config
+    assert (target / ".agents" / "migration" / "inventory.md").exists()
+    assert (target / ".agents" / "migration" / "adopt-plan.yaml").exists()
+
+
+def test_push_help_documents_safety_modes(capsys) -> None:
+    with pytest.raises(SystemExit) as exc:
+        main(["push", "--help"])
+
+    assert exc.value.code == 0
+    output = capsys.readouterr().out
+    assert "preview without writing" in output
+    assert "write rendered outputs" in output
+    assert "prune stale managed files" in output
 
 
 def test_source_tree_hash_excludes_registry_changes(tmp_path: Path) -> None:
