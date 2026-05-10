@@ -102,3 +102,29 @@ def test_push_apply_writes_managed_file_and_blocks_manual_edits(tmp_path: Path) 
 
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
     assert (target / "AGENTS.md").read_text(encoding="utf-8") == "# Demo\n\n用户手写内容\n"
+
+
+def test_current_model_constraints_extra_rules_render_as_compact_markdown_list(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[1]
+    target = tmp_path / "target"
+    write(
+        target / ".agentphilosophy.yaml",
+        """
+project_name: Demo
+project_type: orchestrator
+modules:
+  - doc-templates
+  - model-constraints
+vars:
+  primary_tool: Codex CLI
+  extra_model_rules:
+    - 使用中文交流和回复。
+    - 文档使用中文 Markdown 格式。
+""".strip()
+        + "\n",
+    )
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "- 使用中文交流和回复。\n- 文档使用中文 Markdown 格式。" in agents_text
