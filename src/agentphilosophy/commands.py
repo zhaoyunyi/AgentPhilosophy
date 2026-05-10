@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -121,6 +122,72 @@ def command_init(source_root: Path, project_root: Path, preset: str | None) -> R
     return report
 
 
+def _prompt_value(input_fn: Callable[[str], str], label: str, default: str) -> str:
+    suffix = f" [{default}]" if default else ""
+    value = input_fn(f"{label}{suffix}: ").strip()
+    return value or default
+
+
+def command_init_interactive(
+    source_root: Path,
+    project_root: Path,
+    preset: str | None,
+    *,
+    input_fn: Callable[[str], str] | None = None,
+) -> Report:
+    report = Report()
+    try:
+        if input_fn is None:
+            input_fn = input
+        project_root.mkdir(parents=True, exist_ok=True)
+        config_path = project_config_path(project_root)
+        if config_path.exists():
+            raise SyncError(f"project config already exists: {config_path}")
+
+        preset_names = sorted(path.stem for path in (source_root / "presets").glob("*.yaml"))
+        if preset:
+            default_preset = preset
+        elif "fullstack" in preset_names:
+            default_preset = "fullstack"
+        else:
+            default_preset = preset_names[0] if preset_names else ""
+        selected_preset = _prompt_value(input_fn, "preset", default_preset)
+        if selected_preset.lower() in {"none", "no", "skip"}:
+            selected_preset = ""
+        preset_data = load_preset(source_root, selected_preset) if selected_preset else {}
+
+        project_name = _prompt_value(input_fn, "project_name", project_root.name)
+        project_type = _prompt_value(
+            input_fn,
+            "project_type",
+            selected_preset or preset_data.get("name") or "unknown",
+        )
+        description = _prompt_value(input_fn, "description", preset_data.get("description", ""))
+
+        vars_data = dict(preset_data.get("vars") or {})
+        test_command = _prompt_value(input_fn, "test_command", str(vars_data.get("test_command", "")))
+        if test_command:
+            vars_data["test_command"] = test_command
+
+        config = {
+            "project_name": project_name,
+            "project_type": project_type,
+            "preset": selected_preset or None,
+            "description": description,
+            "paths": preset_data.get("paths") or {},
+            "skill_targets": preset_data.get("skill_targets") or {},
+            "modules": preset_data.get("modules") or [],
+            "vars": vars_data,
+        }
+        write_yaml(config_path, config)
+        report.info(f"created {config_path}")
+    except (EOFError, OSError, KeyboardInterrupt) as exc:
+        report.error(f"interactive input unavailable: {exc}")
+    except SyncError as exc:
+        report.error(str(exc))
+    return report
+
+
 def build_push_plan(source_root: Path, project_root: Path) -> tuple[Report, list[PlannedAction]]:
     report = command_validate(source_root, project_root)
     if not report.ok:
@@ -224,6 +291,76 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
     return report
 
 
+def command_prune_managed(source_root: Path, project_root: Path) -> Report:
+    report = command_validate(source_root, project_root)
+    if not report.ok:
+        return report
+    try:
+        modules = load_modules(source_root)
+        config = load_project_config(project_root)
+        active_outputs = {
+            output.rel_path
+            for output in render_outputs(
+                source_root,
+                project_root,
+                config,
+                selected_modules(config, modules),
+            )
+        }
+        state = load_state(project_root, source_root)
+        state_files = state_file_map(state)
+
+        prune_records = [
+            record
+            for rel_path, record in sorted(state_files.items())
+            if rel_path not in active_outputs
+        ]
+        if not prune_records:
+            report.info("no managed files to prune")
+            return report
+
+        for record in prune_records:
+            rel_path = str(record.get("path"))
+            target = resolve_inside(project_root, rel_path, label="managed file")
+            if target.exists() and sha256_file(target) != record.get("last_written_hash"):
+                raise SyncError(f"refuse to prune changed managed file: {rel_path}")
+
+        removed: set[str] = set()
+        for record in prune_records:
+            rel_path = str(record.get("path"))
+            target = resolve_inside(project_root, rel_path, label="managed file")
+            if target.exists():
+                parent = target.parent
+                target.unlink()
+                _remove_empty_leaf_dir(project_root, parent)
+                report.info(f"pruned {rel_path}")
+            else:
+                report.info(f"removed missing managed record: {rel_path}")
+            removed.add(rel_path)
+
+        state["files"] = [
+            record
+            for record in state.get("files") or []
+            if isinstance(record, dict) and str(record.get("path")) not in removed
+        ]
+        write_state(project_root, state)
+    except (SyncError, UndefinedError) as exc:
+        report.error(str(exc))
+    return report
+
+
+def _remove_empty_leaf_dir(project_root: Path, start: Path) -> None:
+    project_root = project_root.resolve()
+    agent_root = (project_root / DEFAULT_PATHS["agent_work_dir"]).resolve()
+    target = start.resolve()
+    if target in {project_root, agent_root}:
+        return
+    try:
+        target.rmdir()
+    except OSError:
+        return
+
+
 def command_push_all(source_root: Path, *, apply: bool) -> Report:
     report = Report()
     registry = source_root / "registry.yaml"
@@ -252,7 +389,7 @@ def command_push_all(source_root: Path, *, apply: bool) -> Report:
     return report
 
 
-def command_migrate(source_root: Path, project_root: Path) -> Report:
+def command_migrate(source_root: Path, project_root: Path, *, write_config: bool = False) -> Report:
     report = Report()
     project_root.mkdir(parents=True, exist_ok=True)
     migration_dir = project_root / DEFAULT_PATHS["migration_dir"]
@@ -297,6 +434,13 @@ def command_migrate(source_root: Path, project_root: Path) -> Report:
         "vars": preset_data.get("vars") or {},
     }
     write_yaml(migration_config_path(project_root), proposed)
+    if write_config:
+        config_path = project_config_path(project_root)
+        if config_path.exists():
+            report.error(f"project config already exists: {config_path}")
+        else:
+            write_yaml(config_path, proposed)
+            report.info(f"created {config_path}")
 
     rendered_outputs = []
     try:
