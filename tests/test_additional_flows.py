@@ -301,6 +301,33 @@ def test_migrate_generates_candidate_diffs_but_push_requires_formal_config(tmp_p
     assert main(["--source", str(source), "push", str(target), "--dry-run"]) == 0
 
 
+def test_migrate_adopt_plan_includes_copy_tree_outputs(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    write(target / "skills" / "skill-pack" / "SKILL.md", "# Legacy Skill\n")
+
+    assert main(["--source", str(source), "migrate", str(target)]) == 0
+
+    adopt_plan = target / ".agents" / "migration" / "adopt-plan.yaml"
+    assert "skills/skill-pack/SKILL.md" in adopt_plan.read_text(encoding="utf-8")
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "adopt",
+                str(target),
+                "--from-report",
+                ".agents/migration/adopt-plan.yaml",
+            ]
+        )
+        == 0
+    )
+    assert (target / "skills" / "skill-pack" / "SKILL.md").read_text(encoding="utf-8") == "# Legacy Skill\n"
+
+
 def test_status_reports_missing_config_stale_module_and_prune_candidate(tmp_path: Path, capsys) -> None:
     source = tmp_path / "source"
     target = tmp_path / "target"

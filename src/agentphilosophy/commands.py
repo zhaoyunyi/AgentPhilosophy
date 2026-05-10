@@ -12,6 +12,7 @@ from .hashing import sha256_file, source_revision, source_tree_hash
 from .paths import candidate_file_for, relative_path, render_inline_template, resolve_inside
 from .project import (
     DEFAULT_PATHS,
+    DEFAULT_SKILL_TARGETS,
     load_preset,
     load_project_config,
     migration_config_path,
@@ -297,24 +298,26 @@ def command_migrate(source_root: Path, project_root: Path) -> Report:
     }
     write_yaml(migration_config_path(project_root), proposed)
 
+    rendered_outputs = []
     try:
-        rendered = render_outputs(
+        rendered_outputs = render_outputs(
             source_root,
             project_root,
             proposed,
             selected_modules(proposed, modules),
         )
-        for output in rendered:
+        for output in rendered_outputs:
             candidate = candidate_file_for(migration_dir, output.rel_path)
             candidate.parent.mkdir(parents=True, exist_ok=True)
             candidate.write_bytes(output.content)
     except (SyncError, UndefinedError) as exc:
         report.warn(f"candidate generation skipped: {exc}")
 
+    rendered_by_rel = {output.rel_path: (output.module, output.output_id) for output in rendered_outputs}
     adopt_files = []
     for path in interesting:
         rel = path.relative_to(project_root).as_posix()
-        match = _find_output_for_rel(modules, rel)
+        match = rendered_by_rel.get(rel) or _find_output_for_rel(modules, rel)
         if match:
             adopt_files.append({"path": rel, "module": match[0], "output_id": match[1]})
     write_yaml(migration_dir / "adopt-plan.yaml", {"files": adopt_files})
@@ -481,7 +484,7 @@ def _find_output_for_rel(modules: dict[str, Module], rel_path: str) -> tuple[str
             "project_type": "unknown",
             "description": "",
             "paths": DEFAULT_PATHS,
-            "skill_targets": {},
+            "skill_targets": DEFAULT_SKILL_TARGETS,
             "modules": [],
             "vars": {},
         }
