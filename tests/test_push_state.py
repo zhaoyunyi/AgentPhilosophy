@@ -128,3 +128,23 @@ vars:
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "- 使用中文交流和回复。\n- 文档使用中文 Markdown 格式。" in agents_text
+
+
+def test_fullstack_preset_defaults_to_jj_management_with_install_guidance(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[1]
+    target = tmp_path / "target"
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "fullstack"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    jj_skill_text = (target / "skills" / "jj-management" / "SKILL.md").read_text(encoding="utf-8")
+
+    assert "- jj-conventions" in project_config
+    assert "- skill-jj-management" in project_config
+    assert "默认使用 jj colocated git 管理当前仓库" in agents_text
+    assert "command -v jj" in agents_text
+    assert "jj git init --colocate" in agents_text
+    assert "安装 jj CLI" in jj_skill_text
+    assert "jj git init --colocate" in jj_skill_text
