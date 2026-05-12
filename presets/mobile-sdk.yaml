@@ -20,6 +20,7 @@ modules:
   - skill-target-jj
   - skill-coding-standards
   - skill-repo-management
+  - aphilosophy
 paths:
   docs_guide_dir: docs/guide
   spec_dir: spec

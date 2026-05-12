@@ -148,3 +148,12 @@ modules:
     outputs:
       - skills/repo-management/SKILL.md
     risk: low
+  - name: aphilosophy
+    category: philosophy
+    description: Agent 哲学决策框架——元决策原则、架构设计与治理冲突解决协议
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - aphilosophy/meta-decision-principles.md
+      - aphilosophy/architecture-conflict-resolution.md
+      - aphilosophy/governance-conflict-resolution.md
+    risk: low

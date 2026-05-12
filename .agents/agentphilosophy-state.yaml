@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: git:3edb6a06432f75582ac20d8f704f54430c3d71fe
-source_tree_hash: sha256:c246ea08d87e13a45d5d36e2bb61288b4c0654c5b31966602adc7092012db585
+source_revision: jj:omlxlozownlnpszznwvvmkwmuryrvlxs
+source_tree_hash: sha256:6759fdeb5d7841578d8cfc1e409a8c49be066c7b340196d4579291a165293bbc
 modules:
   openspec-skills: 1.0.0
   jj-conventions: 1.0.0
@@ -17,6 +17,7 @@ modules:
   skill-target-jj: 1.0.0
   skill-coding-standards: 1.0.0
   skill-repo-management: 1.0.0
+  aphilosophy: 1.1.0
 files:
 - path: AGENTS.md
   module: doc-templates
@@ -32,6 +33,27 @@ files:
   source_hash: sha256:3145ffb1fdabd52da36dd052b5f987c5e2c82a4549b1d12463fbbf5281ecc652
   rendered_hash: sha256:8b03382989837597e39c38a29ce3b12553d5f557f1166a60ece43e55eefd9530
   last_written_hash: sha256:8b03382989837597e39c38a29ce3b12553d5f557f1166a60ece43e55eefd9530
+- path: aphilosophy/architecture-conflict-resolution.md
+  module: aphilosophy
+  output_id: architecture-conflict-resolution
+  strategy: managed_replace
+  source_hash: sha256:093096654ff930e6cce082588ba699114eff0755e8e0974f1af175ebaccbde56
+  rendered_hash: sha256:093096654ff930e6cce082588ba699114eff0755e8e0974f1af175ebaccbde56
+  last_written_hash: sha256:093096654ff930e6cce082588ba699114eff0755e8e0974f1af175ebaccbde56
+- path: aphilosophy/governance-conflict-resolution.md
+  module: aphilosophy
+  output_id: governance-conflict-resolution
+  strategy: managed_replace
+  source_hash: sha256:f0fa68202edd52b0261209f77b8a1fceccd28d840a89f3b17f27d5d8fd0eb51f
+  rendered_hash: sha256:f0fa68202edd52b0261209f77b8a1fceccd28d840a89f3b17f27d5d8fd0eb51f
+  last_written_hash: sha256:f0fa68202edd52b0261209f77b8a1fceccd28d840a89f3b17f27d5d8fd0eb51f
+- path: aphilosophy/meta-decision-principles.md
+  module: aphilosophy
+  output_id: meta-decision-principles
+  strategy: managed_replace
+  source_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
+  rendered_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
+  last_written_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
 - path: skills/coding-standards/SKILL.md
   module: skill-coding-standards
   output_id: coding-standards-skill
@@ -123,4 +145,4 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-05-10T16:01:42.819521+00:00'
+last_synced: '2026-05-12T09:53:53.483421+00:00'
