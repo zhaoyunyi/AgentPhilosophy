@@ -140,11 +140,23 @@ def test_fullstack_preset_defaults_to_jj_management_with_install_guidance(tmp_pa
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     jj_skill_text = (target / "skills" / "jj-management" / "SKILL.md").read_text(encoding="utf-8")
+    philosophy_text = (target / "aphilosophy" / "meta-decision-principles.md").read_text(encoding="utf-8")
 
     assert "- jj-conventions" in project_config
     assert "- skill-jj-management" in project_config
+    assert "- aphilosophy" in project_config
     assert "默认使用 jj colocated git 管理当前仓库" in agents_text
     assert "command -v jj" in agents_text
     assert "jj git init --colocate" in agents_text
     assert "安装 jj CLI" in jj_skill_text
     assert "jj git init --colocate" in jj_skill_text
+    assert "Agent 元决策原则" in philosophy_text
+
+
+def test_current_source_does_not_keep_stale_migration_candidates() -> None:
+    source = Path(__file__).resolve().parents[1]
+    migration_diffs = source / ".agents" / "migration" / "diffs"
+
+    candidates = sorted(path.relative_to(source).as_posix() for path in migration_diffs.glob("*.new"))
+
+    assert candidates == []
