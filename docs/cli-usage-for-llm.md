@@ -6,12 +6,22 @@
 
 - 默认在 AgentPhilosophy 仓库根目录运行命令。
 - 使用 `uv run sync.py ...` 调用当前源码。
+- 如果已经安装 CLI，也可以使用 `agentphilosophy-sync ...`。安装后的 CLI 在当前目录不是中央规范源时，会自动使用包内规范源。
 - 命令是否可用以 `uv run sync.py <command> --help` 为准；不要把设计文档里的未来能力当成当前可执行参数。
 - 如果从其他目录调用，使用全局参数指定中央源：
 
 ```bash
 uv run /path/to/AgentPhilosophy/sync.py --source /path/to/AgentPhilosophy validate
 uv run /path/to/AgentPhilosophy/sync.py --source /path/to/AgentPhilosophy push /path/to/project --dry-run
+```
+
+安装 CLI 后的等价入口：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync llm-usage
+agentphilosophy-sync init /path/to/project --preset fullstack
+agentphilosophy-sync push /path/to/project --dry-run
 ```
 
 ## 二、真实可用命令
@@ -25,6 +35,7 @@ uv run sync.py push --help
 uv run sync.py migrate --help
 uv run sync.py adopt --help
 uv run sync.py status --help
+uv run sync.py llm-usage --help
 ```
 
 校验中央源：
@@ -37,6 +48,12 @@ uv run sync.py validate
 
 ```bash
 uv run sync.py validate /path/to/project
+```
+
+输出给 LLM 使用的当前 CLI 说明：
+
+```bash
+uv run sync.py llm-usage
 ```
 
 初始化新项目配置：

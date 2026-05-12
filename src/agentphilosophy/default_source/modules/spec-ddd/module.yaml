@@ -1,0 +1,21 @@
+name: spec-ddd
+description: DDD 领域驱动设计规范
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - spec:ddd
+outputs:
+  - id: ddd-spec
+    type: rendered_file
+    template: templates/DDDSpec.md.j2
+    target: "{{ paths.spec_dir }}/DDDSpec.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: ddd-agents-fragment
+    type: fragment
+    template: templates/ddd-rules.md.j2
+    target: AGENTS.md
+    section: ddd_conventions
+    order: 20

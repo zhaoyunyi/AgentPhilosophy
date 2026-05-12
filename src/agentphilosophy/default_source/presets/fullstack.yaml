@@ -1,0 +1,29 @@
+name: fullstack
+description: 前后端、部署和 OpenSpec 项目默认接入方案
+modules:
+  - openspec-skills
+  - jj-conventions
+  - model-constraints
+  - doc-templates
+  - multi-module-layout
+  - deploy-conventions
+  - spec-program
+  - spec-ddd
+  - spec-bdd
+  - spec-test-browser
+  - spec-test-general
+  - spec-ui
+  - spec-architecture
+  - skill-jj-management
+  - skill-target-jj
+  - skill-coding-standards
+  - skill-repo-management
+  - aphilosophy
+paths:
+  docs_guide_dir: docs/guides
+  spec_dir: spec
+skill_targets:
+  repo_skills: skills
+  claude_project: .claude/skills
+vars:
+  primary_tool: Codex CLI

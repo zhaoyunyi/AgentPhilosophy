@@ -1,0 +1,25 @@
+name: orchestrator
+description: 编排器项目默认接入方案
+modules:
+  - openspec-skills
+  - jj-conventions
+  - model-constraints
+  - doc-templates
+  - multi-module-layout
+  - spec-program
+  - spec-ddd
+  - spec-bdd
+  - spec-test-general
+  - spec-architecture
+  - skill-jj-management
+  - skill-target-jj
+  - skill-coding-standards
+  - skill-repo-management
+  - aphilosophy
+paths:
+  docs_guide_dir: docs/guides
+  spec_dir: spec
+skill_targets:
+  repo_skills: skills
+vars:
+  primary_tool: Codex CLI

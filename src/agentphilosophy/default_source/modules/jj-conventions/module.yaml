@@ -1,0 +1,15 @@
+name: jj-conventions
+description: jj colocated git、bookmark 和中文 change 描述规范
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - vcs:jj
+outputs:
+  - id: jj-rules
+    type: fragment
+    template: templates/jj-rules.md.j2
+    target: AGENTS.md
+    section: version_control
+    order: 20

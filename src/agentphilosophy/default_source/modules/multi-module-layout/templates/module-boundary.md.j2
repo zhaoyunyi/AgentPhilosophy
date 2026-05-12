@@ -1,0 +1,5 @@
+- 进入子目录前先读取该目录内的 `AGENTS.md`、`CLAUDE.md` 或 README。
+- 跨仓搜索默认只读；除非任务明确要求，不修改兄弟仓或外部项目文件。
+{% for item in sub_directories | default([], true) %}
+- `{{ item.name }}`：{{ item.description }}
+{% endfor %}

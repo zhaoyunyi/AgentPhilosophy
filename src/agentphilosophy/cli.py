@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -17,14 +18,17 @@ from .commands import (
     command_validate,
 )
 from .errors import Report
+from .resources import llm_usage_path, resolve_source_root
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="sync.py")
+def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog=prog or "sync.py")
     parser.add_argument(
         "--source",
-        default=".",
-        help="AgentPhilosophy central source root. Defaults to current directory.",
+        help=(
+            "AgentPhilosophy central source root. Defaults to the current "
+            "directory when it is a central source, otherwise the packaged source."
+        ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -69,74 +73,86 @@ def build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("pull", help="Reserved first-version command skeleton.")
 
+    subparsers.add_parser("llm-usage", help="Print the LLM usage document for the selected source.")
+
     status = subparsers.add_parser("status", help="Show registry or project status.")
     status.add_argument("--project")
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = build_parser()
+    parser = build_parser(prog=Path(sys.argv[0]).name)
     args = parser.parse_args(argv)
-    source_root = Path(args.source).expanduser().resolve()
 
-    if args.command == "validate":
-        report = command_validate(
-            source_root,
-            Path(args.project).expanduser().resolve() if args.project else None,
-        )
-    elif args.command == "init":
-        if args.interactive:
-            report = command_init_interactive(
-                source_root,
-                Path(args.project).expanduser().resolve(),
-                args.preset,
-            )
-        else:
-            report = command_init(source_root, Path(args.project).expanduser().resolve(), args.preset)
-    elif args.command == "migrate":
-        report = command_migrate(
-            source_root,
-            Path(args.project).expanduser().resolve(),
-            write_config=bool(args.write_config),
-        )
-    elif args.command == "adopt":
-        report = command_adopt(
-            source_root,
-            Path(args.project).expanduser().resolve(),
-            file=args.file,
-            module=args.module,
-            output=args.output,
-            from_report=args.from_report,
-        )
-    elif args.command == "push":
-        if args.prune_managed:
-            if args.dry_run or args.apply or args.all:
+    with resolve_source_root(args.source) as source_root:
+        if args.command == "llm-usage":
+            path = llm_usage_path(source_root)
+            if not path.is_file():
                 report = Report()
-                report.error("push --prune-managed cannot be combined with --dry-run, --apply, or --all")
+                report.error(f"LLM usage document not found: {path}")
                 print(report.format())
                 return 1
-            if not args.project:
-                parser.error("push --prune-managed requires PROJECT")
-            report = command_prune_managed(source_root, Path(args.project).expanduser().resolve())
-        elif args.all:
-            report = command_push_all(source_root, apply=bool(args.apply))
-        elif not args.project:
-            parser.error("push requires PROJECT unless --all is used")
-        else:
-            report = command_push(
+            print(path.read_text(encoding="utf-8"), end="")
+            return 0
+
+        if args.command == "validate":
+            report = command_validate(
+                source_root,
+                Path(args.project).expanduser().resolve() if args.project else None,
+            )
+        elif args.command == "init":
+            if args.interactive:
+                report = command_init_interactive(
+                    source_root,
+                    Path(args.project).expanduser().resolve(),
+                    args.preset,
+                )
+            else:
+                report = command_init(source_root, Path(args.project).expanduser().resolve(), args.preset)
+        elif args.command == "migrate":
+            report = command_migrate(
                 source_root,
                 Path(args.project).expanduser().resolve(),
-                apply=bool(args.apply),
+                write_config=bool(args.write_config),
             )
-    elif args.command == "pull":
-        report = command_pull()
-    elif args.command == "status":
-        report = command_status(
-            source_root,
-            Path(args.project).expanduser().resolve() if args.project else None,
-        )
-    else:
-        parser.error(f"unknown command: {args.command}")
+        elif args.command == "adopt":
+            report = command_adopt(
+                source_root,
+                Path(args.project).expanduser().resolve(),
+                file=args.file,
+                module=args.module,
+                output=args.output,
+                from_report=args.from_report,
+            )
+        elif args.command == "push":
+            if args.prune_managed:
+                if args.dry_run or args.apply or args.all:
+                    report = Report()
+                    report.error("push --prune-managed cannot be combined with --dry-run, --apply, or --all")
+                    print(report.format())
+                    return 1
+                if not args.project:
+                    parser.error("push --prune-managed requires PROJECT")
+                report = command_prune_managed(source_root, Path(args.project).expanduser().resolve())
+            elif args.all:
+                report = command_push_all(source_root, apply=bool(args.apply))
+            elif not args.project:
+                parser.error("push requires PROJECT unless --all is used")
+            else:
+                report = command_push(
+                    source_root,
+                    Path(args.project).expanduser().resolve(),
+                    apply=bool(args.apply),
+                )
+        elif args.command == "pull":
+            report = command_pull()
+        elif args.command == "status":
+            report = command_status(
+                source_root,
+                Path(args.project).expanduser().resolve() if args.project else None,
+            )
+        else:
+            parser.error(f"unknown command: {args.command}")
 
     print(report.format())
     return 0 if report.ok else 1

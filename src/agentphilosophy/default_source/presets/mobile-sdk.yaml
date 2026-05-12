@@ -1,0 +1,31 @@
+name: mobile-sdk
+description: 移动端 SDK / 多子工程工作区默认接入方案
+modules:
+  - openspec-skills
+  - jj-conventions
+  - model-constraints
+  - doc-templates
+  - multi-module-layout
+  - spec-program
+  - spec-ddd
+  - spec-bdd
+  - spec-test-browser
+  - spec-test-mobile
+  - spec-test-general
+  - spec-ui
+  - spec-architecture
+  - spec-ios-sdk
+  - spec-feature-domain
+  - skill-jj-management
+  - skill-target-jj
+  - skill-coding-standards
+  - skill-repo-management
+  - aphilosophy
+paths:
+  docs_guide_dir: docs/guide
+  spec_dir: spec
+skill_targets:
+  repo_skills: skills
+  claude_project: .claude/skills
+vars:
+  primary_tool: Codex CLI

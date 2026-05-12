@@ -1,0 +1,15 @@
+name: model-constraints
+description: 多 Agent 模型和 reasoning 继承约束
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - docs:model-constraints
+outputs:
+  - id: model-rules
+    type: fragment
+    template: templates/model-rules.md.j2
+    target: AGENTS.md
+    section: model_constraints
+    order: 10

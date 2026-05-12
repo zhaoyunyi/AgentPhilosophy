@@ -1,0 +1,6 @@
+- 默认继承当前会话模型和 reasoning，不为子任务随意指定更弱模型。
+- 只有任务能并行、写入范围清晰且不会阻塞主路径时才使用多 agent。
+- 子 agent 修改代码时必须说明负责文件范围，并避免覆盖其他人改动。
+{% for rule in extra_model_rules | default([], true) -%}
+- {{ rule }}
+{% endfor %}
