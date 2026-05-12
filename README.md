@@ -2,6 +2,38 @@
 
 AgentPhilosophy 是中央 Agent 协作规范管理仓库，用于把共享的 Agent 文档、Spec 规范和项目级 skills 按配置同步到目标项目。
 
+## 快速开始
+
+第一版推荐把本仓库作为中央规范源使用；CLI 从当前仓库读取 `catalog.yaml`、`modules/`、`presets/` 和模板文件。
+
+```bash
+git clone git@github.com:zhaoyunyi/AgentPhilosophy.git
+cd AgentPhilosophy
+uv run sync.py validate
+uv run sync.py init /path/to/project --preset fullstack
+uv run sync.py push /path/to/project --dry-run
+uv run sync.py push /path/to/project --apply
+```
+
+如果目标项目已经有 `AGENTS.md`、`spec/` 或 `skills/` 等历史内容，先走迁移流程：
+
+```bash
+uv run sync.py migrate /path/to/project
+uv run sync.py migrate /path/to/project --write-config
+uv run sync.py validate /path/to/project
+uv run sync.py adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml
+uv run sync.py push /path/to/project --dry-run
+uv run sync.py push /path/to/project --apply
+```
+
+## 给 LLM 的入口
+
+让 LLM 或自动化 agent 操作本仓库时，先读：
+
+- [docs/cli-usage-for-llm.md](docs/cli-usage-for-llm.md)
+
+该文档只记录当前已经实现的 CLI 行为，包括新项目接入、老项目迁移、批量 registry、`aphilosophy/` 决策框架的触发式读取规则，以及写入前必须执行的校验步骤。
+
 ## 常用命令
 
 ```bash
@@ -41,12 +73,6 @@ uv run sync.py push --all --dry-run
 - `migrate --write-config` 只能在目标项目根目录 `.agentphilosophy.yaml` 不存在时，把 `.agents/migration/proposed.agentphilosophy.yaml` 写入正式配置；已存在正式配置时必须拒绝覆盖。
 
 `pull` 当前仍是占位命令；第一版推荐从 AgentPhilosophy 中央源向目标项目执行 `push`。
-
-## LLM 操作说明
-
-给 LLM 或自动化 agent 使用时，优先阅读：
-
-- [docs/cli-usage-for-llm.md](docs/cli-usage-for-llm.md)
 
 默认 preset 会启用 jj colocated git 管理规则。目标项目是普通 Git 仓库但还没有 `.jj/` 时，先确认或安装 jj CLI，再执行 `jj git init --colocate`，最后用 `jj status` / `jj log` / `jj bookmark list` 验证。
 

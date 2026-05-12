@@ -153,6 +153,7 @@ modules:
   - skill-target-jj
   - skill-coding-standards
   - skill-repo-management
+  - aphilosophy
 
 vars:
   primary_tool: Codex CLI
@@ -172,11 +173,22 @@ vars:
 
 - `paths.docs_guide_dir`：项目 guide 文档目录，默认 `docs/guides`。
 - `paths.spec_dir`：spec 文档目录，默认 `spec`。
+- `paths.philosophy_dir`：Agent 哲学决策框架目录，默认 `aphilosophy`。
 - `paths.migration_dir`：迁移报告目录，默认 `.agents/migration`。
 - `skill_targets.repo_skills`：仓库级 skills 目录，默认 `skills`。
 - `skill_targets.claude_project`：Claude 项目级 skills 目录，默认 `.claude/skills`。
 
-## 四、Registry 文件
+## 四、Agent 哲学决策框架
+
+`aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
+
+- 遇到指令冲突、任务妥协、不确定性或连续尝试失败时，读取 `aphilosophy/meta-decision-principles.md`。
+- 遇到架构设计、技术选型、抽象层增减、配置化取舍或系统退化判断时，读取 `aphilosophy/architecture-conflict-resolution.md`。
+- 遇到多 Agent 协作、角色边界、用户沟通、命名歧义、治理层级或行为校准问题时，读取 `aphilosophy/governance-conflict-resolution.md`。
+
+这些文档是通用决策锚点，不覆盖项目自己的 `AGENTS.md`、`spec/` 或 `.agents/custom` 规则。若哲学框架与项目特定规范冲突，以项目特定规范为准；若项目规范前提已经失效，应先向用户说明观察到的事实，再提出可验证的调整建议。
+
+## 五、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
@@ -197,7 +209,7 @@ projects:
     path: /absolute/path/to/ExampleProject
 ```
 
-## 五、新项目接入流程
+## 六、新项目接入流程
 
 1. 选择 preset。
 2. 生成 `.agentphilosophy.yaml`。
@@ -220,7 +232,7 @@ uv run sync.py status --project /path/to/project
 uv run sync.py init /path/to/project --interactive
 ```
 
-## 六、老项目迁移流程
+## 七、老项目迁移流程
 
 `migrate` 只做盘点，不会生成正式 `.agentphilosophy.yaml`，也不会覆盖项目已有文件。
 
@@ -246,7 +258,7 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
-## 七、安全边界
+## 八、安全边界
 
 - `push` 不带 `--apply` 时不写目标项目文件；`--dry-run` 是推荐显式写法。
 - `push --apply` 也不会覆盖未托管的既有文件；遇到冲突会写候选文件到迁移目录。
@@ -257,7 +269,7 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 八、占位命令
+## 九、占位命令
 
 以下命令存在于 argparse 中，但当前不应当作为可用功能使用：
 
@@ -267,10 +279,11 @@ uv run sync.py pull
 
 - `pull`：当前只返回 reserved warning，不执行反向同步，不读取目标项目内容回写中央源。
 
-## 九、LLM 执行规则
+## 十、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。
+- 读取 `aphilosophy/` 文档应按场景触发，不要把它们当成每次任务的必读上下文。
 - 执行可选参数前先看对应 `--help`；帮助里没有的参数不要执行。
 - 如果 CLI 输出 `[error]`，停止写入并回报具体错误。
 - 如果 CLI 输出 `[warning]`，继续前先判断 warning 是否影响本次目标。
