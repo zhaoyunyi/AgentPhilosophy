@@ -59,3 +59,49 @@ def test_e2e_validate_init_push_apply_and_status(tmp_path: Path) -> None:
         assert result.returncode == 0, result.stderr + result.stdout
 
     assert (target / "AGENTS.md").read_text(encoding="utf-8") == "# target\n"
+
+
+def test_cli_defaults_to_packaged_source_outside_central_repo(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "init",
+            str(target),
+            "--preset",
+            "fullstack",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr + result.stdout
+    project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    assert "- aphilosophy" in project_config
+
+
+def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "llm-usage",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr + result.stdout
+    assert "# AgentPhilosophy CLI 使用说明（给 LLM）" in result.stdout
+    assert "aphilosophy" in result.stdout

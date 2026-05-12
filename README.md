@@ -4,7 +4,7 @@ AgentPhilosophy 是中央 Agent 协作规范管理仓库，用于把共享的 Ag
 
 ## 快速开始
 
-第一版推荐把本仓库作为中央规范源使用；CLI 从当前仓库读取 `catalog.yaml`、`modules/`、`presets/` 和模板文件。
+### 源码仓库使用
 
 ```bash
 git clone git@github.com:zhaoyunyi/AgentPhilosophy.git
@@ -15,15 +15,28 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
+### 安装 CLI 后使用
+
+安装后的 CLI 默认使用包内规范源；只有需要指定自定义中央源时才传 `--source`。
+
+```bash
+uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git
+agentphilosophy-sync validate
+agentphilosophy-sync llm-usage
+agentphilosophy-sync init /path/to/project --preset fullstack
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
 如果目标项目已经有 `AGENTS.md`、`spec/` 或 `skills/` 等历史内容，先走迁移流程：
 
 ```bash
-uv run sync.py migrate /path/to/project
-uv run sync.py migrate /path/to/project --write-config
-uv run sync.py validate /path/to/project
-uv run sync.py adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml
-uv run sync.py push /path/to/project --dry-run
-uv run sync.py push /path/to/project --apply
+agentphilosophy-sync migrate /path/to/project
+agentphilosophy-sync migrate /path/to/project --write-config
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
 ```
 
 ## 给 LLM 的入口
@@ -40,6 +53,7 @@ uv run sync.py push /path/to/project --apply
 uv run sync.py validate
 uv run sync.py init /path/to/project --preset fullstack
 uv run sync.py init /path/to/project --interactive
+uv run sync.py llm-usage
 uv run sync.py migrate /path/to/project
 uv run sync.py migrate /path/to/project --write-config
 uv run sync.py adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml

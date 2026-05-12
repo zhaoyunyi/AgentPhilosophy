@@ -1,0 +1,23 @@
+name: doc-templates
+description: AGENTS.md 和 CLAUDE.md 主文档骨架
+version: 1.0.0
+default_strategy: layered
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: []
+conflicts: []
+provides:
+  - docs:agents
+  - docs:claude
+outputs:
+  - id: agents-md
+    type: rendered_file
+    template: templates/AGENTS.md.j2
+    target: AGENTS.md
+    strategy: layered
+    on_existing_unmanaged: report_only
+  - id: claude-md
+    type: rendered_file
+    template: templates/CLAUDE.md.j2
+    target: CLAUDE.md
+    strategy: layered
+    on_existing_unmanaged: report_only

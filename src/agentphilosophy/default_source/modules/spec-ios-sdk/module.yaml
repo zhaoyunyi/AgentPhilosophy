@@ -1,0 +1,21 @@
+name: spec-ios-sdk
+description: iOS SDK API、架构和包边界规范
+version: 1.0.0
+project_types: [mobile-sdk]
+requires: []
+conflicts: []
+provides:
+  - spec:ios-sdk
+outputs:
+  - id: ios-sdk-api-spec
+    type: rendered_file
+    template: templates/iOSSDKAPISpec.md.j2
+    target: "{{ paths.spec_dir }}/iOSSDKAPISpec.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: ios-sdk-architecture-spec
+    type: rendered_file
+    template: templates/iOSSDKArchitectureSpec.md.j2
+    target: "{{ paths.spec_dir }}/iOSSDKArchitectureSpec.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
