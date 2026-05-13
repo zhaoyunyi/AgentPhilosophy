@@ -11,7 +11,6 @@ from .commands import (
     command_init_interactive,
     command_migrate,
     command_prune_managed,
-    command_pull,
     command_push,
     command_push_all,
     command_status,
@@ -70,8 +69,6 @@ def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
         action="store_true",
         help="prune stale managed files whose current hash still matches state",
     )
-
-    subparsers.add_parser("pull", help="Reserved first-version command skeleton.")
 
     subparsers.add_parser("llm-usage", help="Print the LLM usage document for the selected source.")
 
@@ -144,8 +141,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                     Path(args.project).expanduser().resolve(),
                     apply=bool(args.apply),
                 )
-        elif args.command == "pull":
-            report = command_pull()
         elif args.command == "status":
             report = command_status(
                 source_root,

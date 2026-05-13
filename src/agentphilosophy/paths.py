@@ -33,3 +33,8 @@ def relative_path(root: Path, path: Path) -> str:
 def candidate_file_for(migration_dir: Path, rel_path: str) -> Path:
     safe_name = rel_path.replace("/", "__").replace("..", "__")
     return migration_dir / "diffs" / f"{safe_name}.new"
+
+
+def candidate_diff_file_for(migration_dir: Path, rel_path: str) -> Path:
+    safe_name = rel_path.replace("/", "__").replace("..", "__")
+    return migration_dir / "diffs" / f"{safe_name}.diff"

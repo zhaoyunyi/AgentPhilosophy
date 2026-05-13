@@ -88,7 +88,7 @@ def test_push_dry_run_does_not_write_target_or_state(tmp_path: Path) -> None:
     assert not (target / ".agents" / "agentphilosophy-state.yaml").exists()
 
 
-def test_push_apply_writes_managed_file_and_blocks_manual_edits(tmp_path: Path) -> None:
+def test_push_apply_writes_managed_file_and_blocks_manual_edits(tmp_path: Path, capsys) -> None:
     source = tmp_path / "source"
     target = tmp_path / "target"
     create_source(source)
@@ -102,6 +102,46 @@ def test_push_apply_writes_managed_file_and_blocks_manual_edits(tmp_path: Path) 
 
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
     assert (target / "AGENTS.md").read_text(encoding="utf-8") == "# Demo\n\n用户手写内容\n"
+    output = capsys.readouterr().out
+    assert "diff: .agents/migration/diffs/AGENTS.md.diff" in output
+    diff_text = (target / ".agents" / "migration" / "diffs" / "AGENTS.md.diff").read_text(encoding="utf-8")
+    assert "--- current/AGENTS.md" in diff_text
+    assert "+++ candidate/AGENTS.md" in diff_text
+    assert "-用户手写内容" in diff_text
+    assert "+- 使用 Codex CLI" in diff_text
+
+
+def test_push_conflict_diff_handles_existing_directory_target(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_source(source)
+    create_target(target)
+    (target / "AGENTS.md").mkdir(parents=True)
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
+
+    output = capsys.readouterr().out
+    assert "conflict: AGENTS.md" in output
+    diff_text = (target / ".agents" / "migration" / "diffs" / "AGENTS.md.diff").read_text(encoding="utf-8")
+    assert "Cannot diff existing non-file target: AGENTS.md" in diff_text
+
+
+def test_push_conflict_diff_handles_managed_file_replaced_by_directory(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    (target / "AGENTS.md").unlink()
+    (target / "AGENTS.md").mkdir()
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
+
+    output = capsys.readouterr().out
+    assert "conflict: AGENTS.md" in output
+    assert "managed file is not a regular file" in output
+    diff_text = (target / ".agents" / "migration" / "diffs" / "AGENTS.md.diff").read_text(encoding="utf-8")
+    assert "Cannot diff existing non-file target: AGENTS.md" in diff_text
 
 
 def test_current_model_constraints_extra_rules_render_as_compact_markdown_list(tmp_path: Path) -> None:

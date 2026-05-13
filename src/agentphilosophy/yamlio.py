@@ -6,6 +6,7 @@ from typing import Any
 import yaml
 
 from .errors import SyncError
+from .fileio import write_bytes_atomic
 
 
 def read_yaml(path: Path) -> dict[str, Any]:
@@ -23,8 +24,7 @@ def read_yaml(path: Path) -> dict[str, Any]:
 
 
 def write_yaml(path: Path, data: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
-        encoding="utf-8",
+    write_bytes_atomic(
+        path,
+        yaml.safe_dump(data, allow_unicode=True, sort_keys=False).encode("utf-8"),
     )

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from .errors import SyncError
+from .errors import Report, SyncError
 from .source import Module
 from .yamlio import read_yaml
 
@@ -45,6 +46,27 @@ def load_project_config(project_root: Path, *, allow_migration_draft: bool = Fal
     config.setdefault("vars", {})
     config.setdefault("modules", [])
     return config
+
+
+def validate_project_config_shape(config: dict[str, Any], *, label: str = "project") -> Report:
+    report = Report()
+    for key in ("paths", "skill_targets", "vars"):
+        value = config.get(key)
+        if value is None:
+            value = {}
+        if not isinstance(value, Mapping):
+            report.error(f"{label} {key} must be a mapping")
+
+    modules = config.get("modules")
+    if modules is None:
+        modules = []
+    if not isinstance(modules, list):
+        report.error(f"{label} modules must be a list")
+    else:
+        for index, module_name in enumerate(modules):
+            if not isinstance(module_name, str):
+                report.error(f"{label} modules[{index}] must be a string")
+    return report
 
 
 def preset_path(source_root: Path, name: str) -> Path:
