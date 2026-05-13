@@ -79,6 +79,7 @@ def test_bdd_new_project_cli_generation_matches_golden_baseline(tmp_path: Path, 
         allowed_extra_files={".agents/agentphilosophy-state.yaml"},
     )
     assert managed_state_paths(target) == [
+        ".codex/skills/repo-management/SKILL.md",
         "AGENTS.md",
         "CLAUDE.md",
         "skills/repo-management/SKILL.md",
@@ -136,6 +137,7 @@ def test_bdd_legacy_project_migration_adoption_and_conflict_baseline(tmp_path: P
         allowed_extra_files={
             ".agents/agentphilosophy-state.yaml",
             ".agents/migration/adopt-plan.yaml",
+            ".agents/migration/diffs/.codex__skills__repo-management__SKILL.md.new",
             ".agents/migration/diffs/AGENTS.md.diff",
             ".agents/migration/diffs/AGENTS.md.new",
             ".agents/migration/diffs/CLAUDE.md.new",
@@ -230,6 +232,7 @@ def test_bdd_registry_batch_dry_run_and_apply_use_declared_projects(tmp_path: Pa
         allowed_extra_files={".agents/agentphilosophy-state.yaml"},
     )
     assert managed_state_paths(product) == [
+        ".codex/skills/repo-management/SKILL.md",
         "AGENTS.md",
         "CLAUDE.md",
         "skills/repo-management/SKILL.md",
@@ -241,6 +244,7 @@ def test_bdd_registry_batch_dry_run_and_apply_use_declared_projects(tmp_path: Pa
         allowed_extra_files={".agents/agentphilosophy-state.yaml"},
     )
     assert managed_state_paths(admin) == [
+        ".codex/skills/repo-management/SKILL.md",
         "AGENTS.md",
         "CLAUDE.md",
         "skills/repo-management/SKILL.md",

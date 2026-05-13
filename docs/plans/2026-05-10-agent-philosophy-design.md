@@ -23,7 +23,7 @@ AgentPhilosophy 是一个**中央规范管理仓库**，统一管理跨项目共
 | 输出行为 | 以 `outputs[]` 为准 | 避免模块级 `mode` 和输出类型冲突 |
 | 定制方式 | yaml 配置 + custom 文件 + managed state | 结构化配置管路径/变量，长内容放 custom，状态文件保证安全更新 |
 | Spec 定制 | 混合模式 | 通用原则可托管，项目落地约束必须可扩展 |
-| Skill 安装 | target 抽象 | 同时支持 `.claude/skills/`、仓库 `skills/` 和未来 Codex 项目级 skill |
+| Skill 安装 | target 抽象 | 同时支持 `.claude/skills/`、仓库 `skills/` 和 Codex 原生 `.codex/skills/` |
 | 老项目迁移 | report-first | 第一版只生成报告和草稿，不自动覆盖现有有效规则 |
 | 新项目接入 | 轻量 preset | 用声明式默认模块和路径提升 init 速度，不引入复杂生成器 |
 | 老项目接管 | adopt 流程 | 用户确认后只登记 hash，不改内容，后续才能安全托管更新 |
@@ -144,6 +144,8 @@ paths:
   docs_guide_dir: docs/guide
   spec_dir: spec
 skill_targets:
+  repo_skills: skills
+  codex_project: .codex/skills
   claude_project: .claude/skills
 ```
 
@@ -290,6 +292,7 @@ paths:
 skill_targets:
   claude_project: .claude/skills
   repo_skills: skills
+  codex_project: .codex/skills
 
 modules:
   - openspec-skills
@@ -647,7 +650,7 @@ outputs:
     strategy: managed_replace
 ```
 
-项目强相关 skill 优先输出到仓库 `skills/`；Claude Code 专用 skill 输出到 `.claude/skills/`；未来 Codex 项目级 skill 若路径确定，再新增对应 `skill_targets.codex_project`。
+项目强相关 skill 优先输出到仓库 `skills/`；Claude Code 专用 skill 输出到 `.claude/skills/`；Codex 原生项目级 skill 输出到 `.codex/skills/`，由 `skill_targets.codex_project` 控制。
 
 ## 十四、扩展新模块的流程
 

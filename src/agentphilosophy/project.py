@@ -19,6 +19,7 @@ DEFAULT_PATHS = {
 
 DEFAULT_SKILL_TARGETS = {
     "claude_project": ".claude/skills",
+    "codex_project": ".codex/skills",
     "repo_skills": "skills",
 }
 

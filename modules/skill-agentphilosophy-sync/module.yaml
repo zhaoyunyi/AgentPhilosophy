@@ -1,0 +1,21 @@
+name: skill-agentphilosophy-sync
+description: AgentPhilosophy 同步、迁移、托管输出和 Codex skill discovery 操作 skill
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: []
+conflicts: []
+provides:
+  - skill:agentphilosophy-sync
+outputs:
+  - id: agentphilosophy-sync-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.repo_skills }}/agentphilosophy-sync/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: agentphilosophy-sync-codex-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.codex_project }}/agentphilosophy-sync/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only

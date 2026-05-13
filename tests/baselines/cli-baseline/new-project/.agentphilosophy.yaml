@@ -6,6 +6,7 @@ paths:
   spec_dir: spec
 skill_targets:
   repo_skills: skills
+  codex_project: .codex/skills
 modules:
 - doc-templates
 - model-constraints

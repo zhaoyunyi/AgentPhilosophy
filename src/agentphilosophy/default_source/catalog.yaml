@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.2.0
+content_version: 0.3.0
 modules:
   - name: openspec-skills
     category: base
@@ -7,6 +7,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/openspec-skills/
+      - .codex/skills/openspec-skills/
     risk: low
   - name: jj-conventions
     category: base
@@ -121,12 +122,21 @@ modules:
     outputs:
       - spec/features/README.md
     risk: low
+  - name: skill-agentphilosophy-sync
+    category: skill
+    description: AgentPhilosophy 同步、迁移、托管输出和 Codex skill discovery 操作 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/agentphilosophy-sync/SKILL.md
+      - .codex/skills/agentphilosophy-sync/SKILL.md
+    risk: low
   - name: skill-jj-management
     category: skill
     description: 当前仓库 jj 操作 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/jj-management/SKILL.md
+      - .codex/skills/jj-management/SKILL.md
     risk: low
   - name: skill-target-jj
     category: skill
@@ -134,6 +144,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/target-jj/SKILL.md
+      - .codex/skills/target-jj/SKILL.md
     risk: low
   - name: skill-coding-standards
     category: skill
@@ -141,6 +152,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/coding-standards/SKILL.md
+      - .codex/skills/coding-standards/SKILL.md
     risk: low
   - name: skill-repo-management
     category: skill
@@ -148,6 +160,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/repo-management/SKILL.md
+      - .codex/skills/repo-management/SKILL.md
     risk: low
   - name: aphilosophy
     category: philosophy

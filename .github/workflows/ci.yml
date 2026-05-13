@@ -43,5 +43,14 @@ jobs:
           "$smoke_root/venv/bin/agentphilosophy-sync" validate "$target"
           "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run
           "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply
-          grep -q "source_content_version: 0.2.0" "$target/.agents/agentphilosophy-state.yaml"
+          expected_content_version="$("$smoke_root/venv/bin/python" - <<'PY'
+          from importlib.resources import files
+
+          import yaml
+
+          catalog = yaml.safe_load((files("agentphilosophy") / "default_source" / "catalog.yaml").read_text(encoding="utf-8"))
+          print(catalog["content_version"])
+          PY
+          )"
+          grep -q "source_content_version: ${expected_content_version}" "$target/.agents/agentphilosophy-state.yaml"
           "$smoke_root/venv/bin/agentphilosophy-sync" status --project "$target"
