@@ -35,7 +35,7 @@ outputs:
         + "\n",
     )
     write(root / "modules" / "skill-pack" / "files" / "SKILL.md", "# Skill\n")
-    write(root / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: skill-pack\n")
+    write(root / "catalog.yaml", "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: skill-pack\n")
 
 
 def create_target(root: Path, modules: list[str] | None = None) -> None:
@@ -69,7 +69,7 @@ outputs:
 """.strip()
         + "\n",
     )
-    write(source / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: bad-skill\n")
+    write(source / "catalog.yaml", "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: bad-skill\n")
 
     assert main(["--source", str(source), "validate"]) == 1
 
@@ -99,7 +99,7 @@ outputs:
     write(source / "modules" / "direct-file" / "templates" / "SKILL.md.j2", "# Direct\n")
     write(
         source / "catalog.yaml",
-        "schema_version: 1\nmodules:\n  - name: skill-pack\n  - name: direct-file\n",
+        "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: skill-pack\n  - name: direct-file\n",
     )
     create_target(target, ["skill-pack", "direct-file"])
 
@@ -142,7 +142,7 @@ outputs:
         + "\n",
     )
     write(source / "modules" / "feature-domain" / "templates" / "README.md.j2", "# Generated\n")
-    write(source / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: feature-domain\n")
+    write(source / "catalog.yaml", "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: feature-domain\n")
     create_target(target, ["feature-domain"])
     write(target / "spec" / "features" / "README.md", "# User Owned\n")
 
@@ -175,7 +175,7 @@ outputs:
         + "\n",
     )
     write(source / "modules" / "report-module" / "templates" / "report.md.j2", "# Candidate\n")
-    write(source / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: report-module\n")
+    write(source / "catalog.yaml", "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: report-module\n")
     create_target(target, ["report-module"])
 
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
@@ -229,7 +229,8 @@ files:
         == 0
     )
     assert (target / "skills" / "skill-pack" / "SKILL.md").read_text(encoding="utf-8") == "# User Skill\n"
-    assert (target / ".agents" / "agentphilosophy-state.yaml").exists()
+    state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "source_content_version: 0.2.0" in state_text
 
 
 def test_adopt_rejects_file_that_does_not_match_output_target(tmp_path: Path) -> None:
@@ -342,6 +343,13 @@ def test_status_reports_missing_config_stale_module_and_prune_candidate(tmp_path
         state_path.read_text(encoding="utf-8").replace("skill-pack: 1.0.0", "skill-pack: 0.9.0"),
         encoding="utf-8",
     )
+    state_path.write_text(
+        state_path.read_text(encoding="utf-8").replace(
+            "source_content_version: 0.2.0",
+            "source_content_version: 0.1.0",
+        ),
+        encoding="utf-8",
+    )
     (target / ".agentphilosophy.yaml").write_text(
         "project_name: Demo\nproject_type: fullstack\nmodules: []\nvars: {}\n",
         encoding="utf-8",
@@ -349,12 +357,35 @@ def test_status_reports_missing_config_stale_module_and_prune_candidate(tmp_path
 
     assert main(["--source", str(source), "status", "--project", str(target)]) == 0
     output = capsys.readouterr().out
+    assert "source_content_version stale: 0.1.0 -> 0.2.0" in output
     assert "module version stale: skill-pack" in output
     assert "managed file can be pruned" in output
 
     (target / ".agentphilosophy.yaml").unlink()
     assert main(["--source", str(source), "status", "--project", str(target)]) == 0
     assert "project config missing" in capsys.readouterr().out
+
+
+def test_status_reports_newer_state_content_version_without_stale(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    state_path = target / ".agents" / "agentphilosophy-state.yaml"
+    state_path.write_text(
+        state_path.read_text(encoding="utf-8").replace(
+            "source_content_version: 0.2.0",
+            "source_content_version: 0.3.0",
+        ),
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "status", "--project", str(target)]) == 0
+    output = capsys.readouterr().out
+    assert "source_content_version newer than current source: 0.3.0 -> 0.2.0" in output
+    assert "source_content_version stale" not in output
 
 
 def test_status_reports_manual_edit_and_source_tree_hash_drift(tmp_path: Path, capsys) -> None:
@@ -590,7 +621,12 @@ outputs: []
     )
     write(
         source / "catalog.yaml",
-        "schema_version: 1\nmodules:\n  - name: skill-pack\n  - name: requires-helper\n  - name: helper\n",
+        "schema_version: 1\n"
+        "content_version: 0.2.0\n"
+        "modules:\n"
+        "  - name: skill-pack\n"
+        "  - name: requires-helper\n"
+        "  - name: helper\n",
     )
     create_target(target)
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
@@ -627,7 +663,10 @@ outputs:
         + "\n",
     )
     write(source / "modules" / "active" / "templates" / "active.txt.j2", "old\n")
-    write(source / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: skill-pack\n  - name: active\n")
+    write(
+        source / "catalog.yaml",
+        "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: skill-pack\n  - name: active\n",
+    )
     create_target(target, ["skill-pack", "active"])
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
 

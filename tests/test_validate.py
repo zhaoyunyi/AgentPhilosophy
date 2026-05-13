@@ -36,6 +36,7 @@ outputs:
         root / "catalog.yaml",
         """
 schema_version: 1
+content_version: 0.2.0
 modules:
   - name: doc-templates
     category: docs
@@ -69,6 +70,34 @@ def test_validate_central_source_accepts_minimal_catalog_and_module(tmp_path: Pa
     exit_code = main(["--source", str(tmp_path), "validate"])
 
     assert exit_code == 0
+
+
+def test_validate_central_source_rejects_missing_content_version(tmp_path: Path, capsys) -> None:
+    create_minimal_source(tmp_path)
+    catalog_path = tmp_path / "catalog.yaml"
+    catalog_path.write_text(
+        catalog_path.read_text(encoding="utf-8").replace("content_version: 0.2.0\n", ""),
+        encoding="utf-8",
+    )
+
+    exit_code = main(["--source", str(tmp_path), "validate"])
+
+    assert exit_code == 1
+    assert "catalog.yaml missing content_version" in capsys.readouterr().out
+
+
+def test_validate_central_source_rejects_invalid_content_version(tmp_path: Path, capsys) -> None:
+    create_minimal_source(tmp_path)
+    catalog_path = tmp_path / "catalog.yaml"
+    catalog_path.write_text(
+        catalog_path.read_text(encoding="utf-8").replace("content_version: 0.2.0", "content_version: latest"),
+        encoding="utf-8",
+    )
+
+    exit_code = main(["--source", str(tmp_path), "validate"])
+
+    assert exit_code == 1
+    assert "catalog.yaml content_version must use MAJOR.MINOR.PATCH" in capsys.readouterr().out
 
 
 def test_validate_central_source_fails_for_duplicate_output_ids(tmp_path: Path) -> None:
@@ -158,6 +187,7 @@ outputs:
         tmp_path / "catalog.yaml",
         """
 schema_version: 1
+content_version: 0.2.0
 modules:
   - name: doc-templates
   - name: other-docs
@@ -215,6 +245,7 @@ outputs: []
         tmp_path / "catalog.yaml",
         """
 schema_version: 1
+content_version: 0.2.0
 modules:
   - name: doc-templates
   - name: requires-docs

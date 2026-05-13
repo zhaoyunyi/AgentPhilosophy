@@ -5,6 +5,7 @@ from typing import Any
 
 from .hashing import sha256_file, source_revision, source_tree_hash
 from .project import DEFAULT_PATHS
+from .source import source_content_version
 from .yamlio import read_yaml, write_yaml
 
 
@@ -16,6 +17,7 @@ def empty_state(source_root: Path) -> dict[str, Any]:
     return {
         "schema_version": 1,
         "source": str(source_root),
+        "source_content_version": source_content_version(source_root),
         "source_revision": source_revision(source_root),
         "source_tree_hash": source_tree_hash(source_root),
         "modules": {},
@@ -28,6 +30,7 @@ def load_state(project_root: Path, source_root: Path) -> dict[str, Any]:
     if not path.exists():
         return empty_state(source_root)
     state = read_yaml(path)
+    state.setdefault("source_content_version", "0.0.0")
     state.setdefault("modules", {})
     state.setdefault("files", [])
     return state

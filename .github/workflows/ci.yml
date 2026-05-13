@@ -42,3 +42,6 @@ jobs:
           "$smoke_root/venv/bin/agentphilosophy-sync" init "$target" --preset fullstack
           "$smoke_root/venv/bin/agentphilosophy-sync" validate "$target"
           "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run
+          "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply
+          grep -q "source_content_version: 0.2.0" "$target/.agents/agentphilosophy-state.yaml"
+          "$smoke_root/venv/bin/agentphilosophy-sync" status --project "$target"

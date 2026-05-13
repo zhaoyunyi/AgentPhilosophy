@@ -24,7 +24,7 @@ from .project import (
     validate_project_config_shape,
 )
 from .rendering import RenderedOutput, render_outputs
-from .source import Module, load_modules, validate_source
+from .source import Module, compare_content_versions, load_modules, source_content_version, validate_source
 from .state import load_state, state_file_map, write_state
 from .yamlio import read_yaml, write_yaml
 
@@ -347,6 +347,7 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
     config = load_project_config(project_root)
     state = load_state(project_root, source_root)
     state["source"] = str(source_root)
+    state["source_content_version"] = source_content_version(source_root)
     state["source_revision"] = source_revision(source_root)
     state["source_tree_hash"] = source_tree_hash(source_root)
     state["last_synced"] = datetime.now(UTC).isoformat()
@@ -652,6 +653,7 @@ def command_adopt(
             state.setdefault("modules", {})[entry["module"]] = modules[entry["module"]].version
             report.info(f"adopted {rel}")
         state["source"] = str(source_root)
+        state["source_content_version"] = source_content_version(source_root)
         state["source_revision"] = source_revision(source_root)
         state["source_tree_hash"] = source_tree_hash(source_root)
         state["files"] = [state_files[key] for key in sorted(state_files)]
@@ -694,6 +696,19 @@ def command_status(source_root: Path, project_root: Path | None = None) -> Repor
 
     try:
         state = load_state(project_root, source_root)
+        current_content_version = source_content_version(source_root)
+        state_content_version = str(state.get("source_content_version") or "0.0.0")
+        if state_content_version != current_content_version:
+            comparison = compare_content_versions(state_content_version, current_content_version)
+            if comparison is None:
+                report.warn(f"source_content_version differs: {state_content_version} -> {current_content_version}")
+            elif comparison < 0:
+                report.warn(f"source_content_version stale: {state_content_version} -> {current_content_version}")
+            else:
+                report.warn(
+                    f"source_content_version newer than current source: "
+                    f"{state_content_version} -> {current_content_version}"
+                )
         current_source_hash = source_tree_hash(source_root)
         current_revision = source_revision(source_root)
         source_hash_drifted = state.get("source_tree_hash") != current_source_hash
