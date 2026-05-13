@@ -136,8 +136,10 @@ def test_bdd_legacy_project_migration_adoption_and_conflict_baseline(tmp_path: P
         allowed_extra_files={
             ".agents/agentphilosophy-state.yaml",
             ".agents/migration/adopt-plan.yaml",
+            ".agents/migration/diffs/AGENTS.md.diff",
             ".agents/migration/diffs/AGENTS.md.new",
             ".agents/migration/diffs/CLAUDE.md.new",
+            ".agents/migration/diffs/skills__repo-management__SKILL.md.diff",
             ".agents/migration/diffs/skills__repo-management__SKILL.md.new",
             ".agents/migration/diffs/spec__BDDSpec.md.new",
             ".agents/migration/inventory.md",

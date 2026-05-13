@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import difflib
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -9,8 +10,9 @@ from typing import Any
 from jinja2 import UndefinedError
 
 from .errors import Report, SyncError
+from .fileio import write_bytes_atomic
 from .hashing import sha256_file, source_revision, source_tree_hash
-from .paths import candidate_file_for, relative_path, render_inline_template, resolve_inside
+from .paths import candidate_diff_file_for, candidate_file_for, relative_path, render_inline_template, resolve_inside
 from .project import (
     DEFAULT_PATHS,
     DEFAULT_SKILL_TARGETS,
@@ -19,6 +21,7 @@ from .project import (
     migration_config_path,
     project_config_path,
     selected_modules,
+    validate_project_config_shape,
 )
 from .rendering import RenderedOutput, render_outputs
 from .source import Module, load_modules, validate_source
@@ -35,8 +38,72 @@ class PlannedAction:
 
 def command_validate(source_root: Path, project: Path | None = None) -> Report:
     report = validate_source(source_root)
+    if report.ok:
+        report.extend(validate_source_presets(source_root))
     if project is not None and report.ok:
         report.extend(validate_target(source_root, project))
+    return report
+
+
+def validate_source_presets(source_root: Path) -> Report:
+    report = Report()
+    try:
+        modules = load_modules(source_root, report)
+    except SyncError as exc:
+        report.error(str(exc))
+        return report
+    presets_dir = source_root / "presets"
+    if not presets_dir.exists():
+        return report
+
+    for preset_path in sorted(presets_dir.glob("*.yaml")):
+        preset_name = preset_path.stem
+        try:
+            preset_data = load_preset(source_root, preset_name)
+            config = {
+                "project_name": f"{preset_name}-validation",
+                "project_type": preset_data.get("name") or preset_name,
+                "preset": preset_name,
+                "description": preset_data.get("description", ""),
+                "paths": preset_data.get("paths") if preset_data.get("paths") is not None else {},
+                "skill_targets": (
+                    preset_data.get("skill_targets") if preset_data.get("skill_targets") is not None else {}
+                ),
+                "modules": preset_data.get("modules") if preset_data.get("modules") is not None else [],
+                "vars": preset_data.get("vars") if preset_data.get("vars") is not None else {},
+            }
+            shape = validate_project_config_shape(config, label=f"preset {preset_name}")
+            report.extend(shape)
+            if shape.errors:
+                continue
+            error_count = len(report.errors)
+            selected = validate_config_modules(
+                source_root,
+                source_root / ".agentphilosophy-validate" / preset_name,
+                config,
+                modules,
+                report,
+                label=f"preset {preset_name}",
+            )
+            if len(report.errors) > error_count:
+                continue
+            rendered_outputs = render_outputs(
+                source_root,
+                source_root / ".agentphilosophy-validate" / preset_name,
+                config,
+                selected,
+            )
+            written_targets: dict[str, str] = {}
+            for output in rendered_outputs:
+                owner = f"{output.module}:{output.output_id}"
+                previous = written_targets.get(output.rel_path)
+                if previous:
+                    report.error(
+                        f"preset {preset_name} writes {output.rel_path} multiple times: {previous}, {owner}"
+                    )
+                written_targets[output.rel_path] = owner
+        except (SyncError, UndefinedError) as exc:
+            report.error(f"preset {preset_name} render invalid: {exc}")
     return report
 
 
@@ -49,37 +116,18 @@ def validate_target(source_root: Path, project_root: Path) -> Report:
         report.error(str(exc))
         return report
 
+    shape = validate_project_config_shape(config)
+    report.extend(shape)
+    if shape.errors:
+        return report
+
     preset = config.get("preset")
     if preset and not (source_root / "presets" / f"{preset}.yaml").is_file():
         report.error(f"project preset not found: {preset}")
 
-    selected_names = list(config.get("modules") or [])
-    selected_set = set(selected_names)
-    selected: list[Module] = []
-    for name in selected_names:
-        if name not in modules:
-            report.error(f"project references missing module: {name}")
-        else:
-            selected.append(modules[name])
+    selected = validate_config_modules(source_root, project_root, config, modules, report)
     if report.errors:
         return report
-
-    for module in selected:
-        for required in module.data.get("requires") or []:
-            if required not in selected_set:
-                report.error(f"project module {module.name} requires disabled module: {required}")
-        for conflict in module.data.get("conflicts") or []:
-            if conflict in selected_set:
-                report.error(f"project module {module.name} conflicts with enabled module: {conflict}")
-        project_types = module.data.get("project_types") or []
-        if (
-            project_types
-            and config.get("project_type") not in project_types
-            and not config.get("allow_project_type_mismatch", False)
-        ):
-            report.warn(
-                f"module {module.name} is not declared for project_type={config.get('project_type')}"
-            )
 
     try:
         rendered_outputs = render_outputs(source_root, project_root, config, selected)
@@ -93,6 +141,45 @@ def validate_target(source_root: Path, project_root: Path) -> Report:
     except (SyncError, UndefinedError) as exc:
         report.error(str(exc))
     return report
+
+
+def validate_config_modules(
+    source_root: Path,
+    project_root: Path,
+    config: dict[str, Any],
+    modules: dict[str, Module],
+    report: Report,
+    *,
+    label: str = "project",
+) -> list[Module]:
+    del source_root, project_root
+    selected_names = list(config.get("modules") or [])
+    selected_set = set(selected_names)
+    selected: list[Module] = []
+    error_count = len(report.errors)
+    for name in selected_names:
+        if name not in modules:
+            report.error(f"{label} references missing module: {name}")
+        else:
+            selected.append(modules[name])
+    if len(report.errors) > error_count:
+        return selected
+
+    for module in selected:
+        for required in module.data.get("requires") or []:
+            if required not in selected_set:
+                report.error(f"{label} module {module.name} requires disabled module: {required}")
+        for conflict in module.data.get("conflicts") or []:
+            if conflict in selected_set:
+                report.error(f"{label} module {module.name} conflicts with enabled module: {conflict}")
+        project_types = module.data.get("project_types") or []
+        if (
+            project_types
+            and config.get("project_type") not in project_types
+            and not config.get("allow_project_type_mismatch", False)
+        ):
+            report.warn(f"{label} module {module.name} is not declared for project_type={config.get('project_type')}")
+    return selected
 
 
 def command_init(source_root: Path, project_root: Path, preset: str | None) -> Report:
@@ -211,13 +298,16 @@ def build_push_plan(source_root: Path, project_root: Path) -> tuple[Report, list
         elif not target.exists():
             plan.append(PlannedAction(output, "add"))
         elif record:
-            current_hash = sha256_file(target)
-            if current_hash != record.get("last_written_hash"):
-                plan.append(PlannedAction(output, "conflict", "managed file was changed manually"))
-            elif current_hash == output.rendered_hash:
-                plan.append(PlannedAction(output, "skip", "already up to date"))
+            if not target.is_file():
+                plan.append(PlannedAction(output, "conflict", "managed file is not a regular file"))
             else:
-                plan.append(PlannedAction(output, "update"))
+                current_hash = sha256_file(target)
+                if current_hash != record.get("last_written_hash"):
+                    plan.append(PlannedAction(output, "conflict", "managed file was changed manually"))
+                elif current_hash == output.rendered_hash:
+                    plan.append(PlannedAction(output, "skip", "already up to date"))
+                else:
+                    plan.append(PlannedAction(output, "update"))
         elif output.strategy == "init_only":
             plan.append(PlannedAction(output, "skip", "target exists and strategy is init_only"))
         elif output.on_existing_unmanaged == "warn":
@@ -247,9 +337,7 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
     migration_dir = project_root / DEFAULT_PATHS["migration_dir"]
     report_only = [item for item in plan if item.action == "report_only"]
     for item in [*report_only, *conflicts]:
-        candidate = candidate_file_for(migration_dir, item.output.rel_path)
-        candidate.parent.mkdir(parents=True, exist_ok=True)
-        candidate.write_bytes(item.output.content)
+        _write_candidate_artifacts(project_root, migration_dir, item, report)
         if item.action == "conflict":
             report.error(f"conflict: {item.output.rel_path} ({item.reason})")
     if conflicts:
@@ -274,8 +362,7 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
             continue
         if item.action in {"add", "update"}:
             target = project_root / item.output.rel_path
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(item.output.content)
+            write_bytes_atomic(target, item.output.content)
         state_files[item.output.rel_path] = {
             "path": item.output.rel_path,
             "module": item.output.module,
@@ -289,6 +376,40 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
     state["files"] = [state_files[key] for key in sorted(state_files)]
     write_state(project_root, state)
     return report
+
+
+def _write_candidate_artifacts(
+    project_root: Path,
+    migration_dir: Path,
+    item: PlannedAction,
+    report: Report,
+) -> None:
+    candidate = candidate_file_for(migration_dir, item.output.rel_path)
+    write_bytes_atomic(candidate, item.output.content)
+    diff_path = candidate_diff_file_for(migration_dir, item.output.rel_path)
+    write_bytes_atomic(diff_path, _candidate_diff(project_root, item.output.rel_path, item.output.content))
+    report.info(f"diff: {relative_path(project_root, diff_path)}")
+
+
+def _candidate_diff(project_root: Path, rel_path: str, candidate_content: bytes) -> bytes:
+    current_path = project_root / rel_path
+    if current_path.exists() and not current_path.is_file():
+        return f"Cannot diff existing non-file target: {rel_path}\n".encode()
+    try:
+        current_text = current_path.read_text(encoding="utf-8") if current_path.exists() else ""
+        candidate_text = candidate_content.decode("utf-8")
+    except OSError as exc:
+        return f"Cannot read existing target for diff: {rel_path} ({exc})\n".encode()
+    except UnicodeDecodeError:
+        return f"Binary files differ: {rel_path}\n".encode()
+
+    diff = difflib.unified_diff(
+        current_text.splitlines(keepends=True),
+        candidate_text.splitlines(keepends=True),
+        fromfile=f"current/{rel_path}",
+        tofile=f"candidate/{rel_path}",
+    )
+    return "".join(diff).encode("utf-8")
 
 
 def command_prune_managed(source_root: Path, project_root: Path) -> Report:
@@ -417,7 +538,7 @@ def command_migrate(source_root: Path, project_root: Path, *, write_config: bool
             inventory_lines.append(f"- `{path.relative_to(project_root).as_posix()}`")
     else:
         inventory_lines.append("- 未发现既有 Agent/Spec/Skill 文件")
-    (migration_dir / "inventory.md").write_text("\n".join(inventory_lines) + "\n", encoding="utf-8")
+    write_bytes_atomic((migration_dir / "inventory.md"), ("\n".join(inventory_lines) + "\n").encode("utf-8"))
 
     modules = load_modules(source_root)
     preset_name = _default_preset_name(source_root)
@@ -452,8 +573,7 @@ def command_migrate(source_root: Path, project_root: Path, *, write_config: bool
         )
         for output in rendered_outputs:
             candidate = candidate_file_for(migration_dir, output.rel_path)
-            candidate.parent.mkdir(parents=True, exist_ok=True)
-            candidate.write_bytes(output.content)
+            write_bytes_atomic(candidate, output.content)
     except (SyncError, UndefinedError) as exc:
         report.warn(f"candidate generation skipped: {exc}")
 
@@ -554,8 +674,22 @@ def command_status(source_root: Path, project_root: Path | None = None) -> Repor
             report.error(str(exc))
             return report
         for project in data.get("projects") or []:
-            path = Path(str(project.get("path", ""))).expanduser()
-            report.info(f"{project.get('name', path.name)}: {'reachable' if path.exists() else 'missing'}")
+            if not isinstance(project, dict) or not project.get("path"):
+                report.error("registry project entry must contain path")
+                continue
+            path = Path(str(project.get("path", ""))).expanduser().resolve()
+            name = str(project.get("name") or path.name)
+            if not path.exists():
+                report.warn(f"{name}: missing")
+                continue
+            report.info(f"{name}: reachable")
+            child = command_status(source_root, path)
+            for message in child.errors:
+                report.error(f"{name}: {message}")
+            for message in child.warnings:
+                report.warn(f"{name}: {message}")
+            for message in child.infos:
+                report.info(f"{name}: {message}")
         return report
 
     try:
@@ -606,12 +740,6 @@ def command_status(source_root: Path, project_root: Path | None = None) -> Repor
         report.info(f"status checked: {project_root}")
     except SyncError as exc:
         report.error(str(exc))
-    return report
-
-
-def command_pull() -> Report:
-    report = Report()
-    report.warn("pull is reserved in the first version; use push from the central source")
     return report
 
 

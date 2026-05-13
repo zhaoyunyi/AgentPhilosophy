@@ -373,6 +373,25 @@ def test_status_reports_manual_edit_and_source_tree_hash_drift(tmp_path: Path, c
     assert "managed file changed manually: skills/skill-pack/SKILL.md" in output
 
 
+def test_registry_status_runs_real_project_health_checks(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(target / "skills" / "skill-pack" / "SKILL.md", "# Manual Edit\n")
+    write(
+        source / "registry.yaml",
+        f"projects:\n  - name: Demo\n    path: {target.as_posix()}\n",
+    )
+
+    assert main(["--source", str(source), "status"]) == 0
+
+    output = capsys.readouterr().out
+    assert "Demo: managed file changed manually: skills/skill-pack/SKILL.md" in output
+    assert f"Demo: status checked: {target}" in output
+
+
 def test_status_ignores_revision_drift_when_source_tree_hash_matches(tmp_path: Path, capsys) -> None:
     source = tmp_path / "source"
     target = tmp_path / "target"

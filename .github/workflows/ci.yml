@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-and-package:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Test
+        run: uv run pytest -q
+
+      - name: Validate central source
+        run: uv run sync.py validate
+
+      - name: Build package
+        run: uv build
+
+      - name: Smoke test installed CLI
+        run: |
+          smoke_root="$(mktemp -d)"
+          uv venv --python 3.12 "$smoke_root/venv"
+          uv pip install --python "$smoke_root/venv/bin/python" dist/agentphilosophy-*.whl
+          cd "$smoke_root"
+          "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage >"$smoke_root/llm-usage.md"
+          target="$smoke_root/project"
+          "$smoke_root/venv/bin/agentphilosophy-sync" init "$target" --preset fullstack
+          "$smoke_root/venv/bin/agentphilosophy-sync" validate "$target"
+          "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run

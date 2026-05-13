@@ -1,6 +1,6 @@
 # AgentPhilosophy CLI 使用说明（给 LLM）
 
-本文只记录当前程序已经实现的 CLI 行为。LLM 执行项目配置任务时，应以本文为准；设计文档中的未来能力或占位命令不得当成已可用功能。
+本文只记录当前程序已经实现的 CLI 行为。LLM 执行项目配置任务时，应以本文为准；设计文档中的未来能力不得当成已可用功能。
 
 ## 一、运行前提
 
@@ -286,17 +286,7 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 九、占位命令
-
-以下命令存在于 argparse 中，但当前不应当作为可用功能使用：
-
-```bash
-uv run sync.py pull
-```
-
-- `pull`：当前只返回 reserved warning，不执行反向同步，不读取目标项目内容回写中央源。
-
-## 十、LLM 执行规则
+## 九、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。
@@ -305,4 +295,4 @@ uv run sync.py pull
 - 如果 CLI 输出 `[error]`，停止写入并回报具体错误。
 - 如果 CLI 输出 `[warning]`，继续前先判断 warning 是否影响本次目标。
 - 不要手工编辑 `.agents/agentphilosophy-state.yaml`。
-- 不要把未来设计或占位命令当成当前能力。
+- 不要把未来设计当成当前能力。
