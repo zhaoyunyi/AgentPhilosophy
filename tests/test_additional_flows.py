@@ -5,6 +5,7 @@ from shutil import copyfile
 
 import pytest
 
+from agentphilosophy import __version__
 from agentphilosophy.cli import main
 from agentphilosophy.hashing import source_tree_hash
 
@@ -230,6 +231,7 @@ files:
     )
     assert (target / "skills" / "skill-pack" / "SKILL.md").read_text(encoding="utf-8") == "# User Skill\n"
     state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert f"agentphilosophy_version: {__version__}" in state_text
     assert "source_content_version: 0.2.0" in state_text
 
 
@@ -386,6 +388,27 @@ def test_status_reports_newer_state_content_version_without_stale(tmp_path: Path
     output = capsys.readouterr().out
     assert "source_content_version newer than current source: 0.3.0 -> 0.2.0" in output
     assert "source_content_version stale" not in output
+
+
+def test_status_reports_agentphilosophy_version_drift(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    state_path = target / ".agents" / "agentphilosophy-state.yaml"
+    state_path.write_text(
+        state_path.read_text(encoding="utf-8").replace(
+            f"agentphilosophy_version: {__version__}",
+            "agentphilosophy_version: 0.1.0",
+        ),
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "status", "--project", str(target)]) == 0
+    output = capsys.readouterr().out
+    assert f"agentphilosophy_version stale: 0.1.0 -> {__version__}" in output
 
 
 def test_status_reports_manual_edit_and_source_tree_hash_drift(tmp_path: Path, capsys) -> None:

@@ -37,6 +37,13 @@ jobs:
           uv venv --python 3.12 "$smoke_root/venv"
           uv pip install --python "$smoke_root/venv/bin/python" dist/agentphilosophy-*.whl
           cd "$smoke_root"
+          expected_agentphilosophy_version="$("$smoke_root/venv/bin/python" - <<'PY'
+          import agentphilosophy
+
+          print(agentphilosophy.__version__)
+          PY
+          )"
+          "$smoke_root/venv/bin/agentphilosophy-sync" --version | grep -q "${expected_agentphilosophy_version}"
           "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage >"$smoke_root/llm-usage.md"
           target="$smoke_root/project"
           "$smoke_root/venv/bin/agentphilosophy-sync" init "$target" --preset fullstack
@@ -52,5 +59,6 @@ jobs:
           print(catalog["content_version"])
           PY
           )"
+          grep -q "agentphilosophy_version: ${expected_agentphilosophy_version}" "$target/.agents/agentphilosophy-state.yaml"
           grep -q "source_content_version: ${expected_content_version}" "$target/.agents/agentphilosophy-state.yaml"
           "$smoke_root/venv/bin/agentphilosophy-sync" status --project "$target"

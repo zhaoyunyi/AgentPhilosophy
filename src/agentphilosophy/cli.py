@@ -5,6 +5,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from . import __version__
 from .commands import (
     command_adopt,
     command_init,
@@ -29,6 +30,7 @@ def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
             "directory when it is a central source, otherwise the packaged source."
         ),
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     validate = subparsers.add_parser("validate", help="Validate central source or target project.")

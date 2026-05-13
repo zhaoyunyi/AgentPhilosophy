@@ -17,10 +17,15 @@ def test_ci_workflow_runs_release_gate_commands() -> None:
     assert "uv pip install --python" in content
     assert "smoke_root=\"$(mktemp -d)\"" in content
     assert "cd \"$smoke_root\"" in content
+    assert "expected_agentphilosophy_version=" in content
+    assert "import agentphilosophy" in content
+    assert "agentphilosophy-sync\" --version" in content
     assert "agentphilosophy-sync\" llm-usage" in content
     assert "agentphilosophy-sync\" init" in content
     assert "expected_content_version=" in content
     assert "importlib.resources import files" in content
     assert "default_source\" / \"catalog.yaml" in content
+    assert "agentphilosophy_version: ${expected_agentphilosophy_version}" in content
     assert "source_content_version: ${expected_content_version}" in content
+    assert "agentphilosophy_version: 0.1.0" not in content
     assert "source_content_version: 0.2.0" not in content
