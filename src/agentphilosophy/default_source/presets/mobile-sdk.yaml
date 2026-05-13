@@ -16,6 +16,7 @@ modules:
   - spec-architecture
   - spec-ios-sdk
   - spec-feature-domain
+  - skill-agentphilosophy-sync
   - skill-jj-management
   - skill-target-jj
   - skill-coding-standards
@@ -26,6 +27,7 @@ paths:
   spec_dir: spec
 skill_targets:
   repo_skills: skills
+  codex_project: .codex/skills
   claude_project: .claude/skills
 vars:
   primary_tool: Codex CLI

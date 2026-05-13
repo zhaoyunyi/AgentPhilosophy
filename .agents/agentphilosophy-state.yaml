@@ -1,9 +1,9 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:oomyvkyxkmlwttqxtyqrwkkxrpktzsmm
-source_tree_hash: sha256:6759fdeb5d7841578d8cfc1e409a8c49be066c7b340196d4579291a165293bbc
+source_revision: jj:ywvytqywnvwxtxtkykwxqnxmzmtylmpy
+source_tree_hash: sha256:d645c114e928e2c95ca13af32dc64c25a43338dfd8dd0a377c0d3a44864148c7
 modules:
-  openspec-skills: 1.0.0
+  openspec-skills: 1.1.0
   jj-conventions: 1.0.0
   model-constraints: 1.0.0
   doc-templates: 1.0.0
@@ -13,12 +13,76 @@ modules:
   spec-bdd: 1.0.0
   spec-test-general: 1.0.0
   spec-architecture: 1.0.0
-  skill-jj-management: 1.0.0
-  skill-target-jj: 1.0.0
-  skill-coding-standards: 1.0.0
-  skill-repo-management: 1.0.0
+  skill-agentphilosophy-sync: 1.0.0
+  skill-jj-management: 1.1.0
+  skill-target-jj: 1.1.0
+  skill-coding-standards: 1.1.0
+  skill-repo-management: 1.1.0
   aphilosophy: 1.1.0
 files:
+- path: .codex/skills/agentphilosophy-sync/SKILL.md
+  module: skill-agentphilosophy-sync
+  output_id: agentphilosophy-sync-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:403148206551d74c0d642224181eb374f68c59921954e5f2317872afc74db917
+  rendered_hash: sha256:403148206551d74c0d642224181eb374f68c59921954e5f2317872afc74db917
+  last_written_hash: sha256:403148206551d74c0d642224181eb374f68c59921954e5f2317872afc74db917
+- path: .codex/skills/coding-standards/SKILL.md
+  module: skill-coding-standards
+  output_id: coding-standards-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:8295c770c8bd0c4edf3b5cb6e04d3118b67ed5c5ae94fe84513baa6e17520627
+  rendered_hash: sha256:488d8aa0c6f683d27ac8505ecc05ef698d3dbd843c533df52db8f1d61e42a264
+  last_written_hash: sha256:488d8aa0c6f683d27ac8505ecc05ef698d3dbd843c533df52db8f1d61e42a264
+- path: .codex/skills/jj-management/SKILL.md
+  module: skill-jj-management
+  output_id: jj-management-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:72c7c6f74004204518ce000749e451f7a50c4ef05c0307ba60224f07098295d6
+  rendered_hash: sha256:8b5ed0cb91abf3f74e3fbcbbc7696851d409c9f7363b8370a54776216aefc68d
+  last_written_hash: sha256:8b5ed0cb91abf3f74e3fbcbbc7696851d409c9f7363b8370a54776216aefc68d
+- path: .codex/skills/openspec-skills/openspec-apply/SKILL.md
+  module: openspec-skills
+  output_id: openspec-skills-codex:openspec-apply/SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:f76bfbcb3672fc029e1a2edb3ab65751e13676ef0cd7d0a3cc844ad28f63509d
+  rendered_hash: sha256:f76bfbcb3672fc029e1a2edb3ab65751e13676ef0cd7d0a3cc844ad28f63509d
+  last_written_hash: sha256:f76bfbcb3672fc029e1a2edb3ab65751e13676ef0cd7d0a3cc844ad28f63509d
+- path: .codex/skills/openspec-skills/openspec-archive/SKILL.md
+  module: openspec-skills
+  output_id: openspec-skills-codex:openspec-archive/SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:6b1a9574c1ca6684fdf11a46a5434033ecb7b1f43c1849afc6701c6fafc51921
+  rendered_hash: sha256:6b1a9574c1ca6684fdf11a46a5434033ecb7b1f43c1849afc6701c6fafc51921
+  last_written_hash: sha256:6b1a9574c1ca6684fdf11a46a5434033ecb7b1f43c1849afc6701c6fafc51921
+- path: .codex/skills/openspec-skills/openspec-explore/SKILL.md
+  module: openspec-skills
+  output_id: openspec-skills-codex:openspec-explore/SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:604103dc29b6d31cd2e263a15c5fd9886c1847299a8d6a35c80f7444eee98350
+  rendered_hash: sha256:604103dc29b6d31cd2e263a15c5fd9886c1847299a8d6a35c80f7444eee98350
+  last_written_hash: sha256:604103dc29b6d31cd2e263a15c5fd9886c1847299a8d6a35c80f7444eee98350
+- path: .codex/skills/openspec-skills/openspec-propose/SKILL.md
+  module: openspec-skills
+  output_id: openspec-skills-codex:openspec-propose/SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
+  rendered_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
+  last_written_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
+- path: .codex/skills/repo-management/SKILL.md
+  module: skill-repo-management
+  output_id: repo-management-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:f23538c4938525f3aaf6249368585a1dc18699a5de08801d60ed5e6f34a2ec0d
+  rendered_hash: sha256:ebb9cab7ecbd8da78f28981820302315b2ad814de79a45c43c914fd3154dc09e
+  last_written_hash: sha256:ebb9cab7ecbd8da78f28981820302315b2ad814de79a45c43c914fd3154dc09e
+- path: .codex/skills/target-jj/SKILL.md
+  module: skill-target-jj
+  output_id: target-jj-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:77b36491b2a323bb69e5f3f8930c81468578ad1017f49329ceb3fc58864ff126
+  rendered_hash: sha256:77b36491b2a323bb69e5f3f8930c81468578ad1017f49329ceb3fc58864ff126
+  last_written_hash: sha256:77b36491b2a323bb69e5f3f8930c81468578ad1017f49329ceb3fc58864ff126
 - path: AGENTS.md
   module: doc-templates
   output_id: agents-md
@@ -54,6 +118,13 @@ files:
   source_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
   rendered_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
   last_written_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
+- path: skills/agentphilosophy-sync/SKILL.md
+  module: skill-agentphilosophy-sync
+  output_id: agentphilosophy-sync-skill
+  strategy: managed_replace
+  source_hash: sha256:403148206551d74c0d642224181eb374f68c59921954e5f2317872afc74db917
+  rendered_hash: sha256:403148206551d74c0d642224181eb374f68c59921954e5f2317872afc74db917
+  last_written_hash: sha256:403148206551d74c0d642224181eb374f68c59921954e5f2317872afc74db917
 - path: skills/coding-standards/SKILL.md
   module: skill-coding-standards
   output_id: coding-standards-skill
@@ -145,4 +216,5 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-05-12T10:25:58.308475+00:00'
+last_synced: '2026-05-13T11:17:16.334721+00:00'
+source_content_version: 0.3.0

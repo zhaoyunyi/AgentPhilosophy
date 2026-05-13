@@ -2,6 +2,8 @@
 
 AgentPhilosophy 是中央 Agent 协作规范管理仓库，用于把共享的 Agent 文档、Spec 规范和项目级 skills 按配置同步到目标项目。
 
+默认同步会同时写入仓库级 `skills/` 和 Codex 原生项目级 `.codex/skills/`，后者用于让 Codex skill discovery 在进入项目后自动发现并按 frontmatter 触发。
+
 ## 快速开始
 
 ### 源码仓库使用

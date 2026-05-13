@@ -1,6 +1,6 @@
 name: openspec-skills
 description: OpenSpec propose/apply/explore/archive skill 基础包
-version: 1.0.0
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
@@ -11,5 +11,11 @@ outputs:
     type: copy_tree
     source: files/
     target: "{{ skill_targets.repo_skills }}/openspec-skills/"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: openspec-skills-codex
+    type: copy_tree
+    source: files/
+    target: "{{ skill_targets.codex_project }}/openspec-skills/"
     strategy: managed_replace
     on_existing_unmanaged: report_only

@@ -404,6 +404,22 @@ def test_status_reports_manual_edit_and_source_tree_hash_drift(tmp_path: Path, c
     assert "managed file changed manually: skills/skill-pack/SKILL.md" in output
 
 
+def test_status_warns_when_managed_file_is_replaced_by_directory(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    managed_file = target / "skills" / "skill-pack" / "SKILL.md"
+    managed_file.unlink()
+    managed_file.mkdir()
+
+    assert main(["--source", str(source), "status", "--project", str(target)]) == 0
+    output = capsys.readouterr().out
+    assert "managed file is not a regular file: skills/skill-pack/SKILL.md" in output
+
+
 def test_registry_status_runs_real_project_health_checks(tmp_path: Path, capsys) -> None:
     source = tmp_path / "source"
     target = tmp_path / "target"
@@ -540,6 +556,28 @@ def test_prune_managed_refuses_manual_edits(tmp_path: Path, capsys) -> None:
     assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 1
     assert "refuse to prune changed managed file" in capsys.readouterr().out
     assert (target / "skills" / "skill-pack" / "SKILL.md").read_text(encoding="utf-8") == "# User edit\n"
+
+
+def test_prune_managed_refuses_directory_replacing_managed_file(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    create_target(target)
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    managed_file = target / "skills" / "skill-pack" / "SKILL.md"
+    managed_file.unlink()
+    managed_file.mkdir()
+    (target / ".agentphilosophy.yaml").write_text(
+        "project_name: Demo\nproject_type: fullstack\nmodules: []\nvars: {}\n",
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 1
+    assert "refuse to prune managed path that is not a regular file: skills/skill-pack/SKILL.md" in (
+        capsys.readouterr().out
+    )
+    assert managed_file.is_dir()
 
 
 def test_prune_managed_preserves_source_metadata_and_removes_empty_dirs(tmp_path: Path) -> None:
@@ -691,6 +729,18 @@ def test_migrate_write_config_promotes_draft_when_formal_config_is_missing(tmp_p
 
     assert (target / ".agentphilosophy.yaml").exists()
     assert main(["--source", str(source), "push", str(target), "--dry-run"]) == 0
+
+
+def test_migrate_inventory_includes_codex_project_skills(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_copy_tree_source(source)
+    write(target / ".codex" / "skills" / "legacy-codex" / "SKILL.md", "# Legacy Codex Skill\n")
+
+    assert main(["--source", str(source), "migrate", str(target)]) == 0
+
+    inventory = (target / ".agents" / "migration" / "inventory.md").read_text(encoding="utf-8")
+    assert "`.codex/skills/legacy-codex/SKILL.md`" in inventory
 
 
 def test_migrate_write_config_refuses_to_replace_existing_config(tmp_path: Path) -> None:

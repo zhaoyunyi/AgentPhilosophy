@@ -11,3 +11,9 @@ outputs:
     target: "{{ skill_targets.repo_skills }}/repo-management/"
     strategy: managed_replace
     on_existing_unmanaged: report_only
+  - id: repo-codex-skill
+    type: copy_tree
+    source: files/
+    target: "{{ skill_targets.codex_project }}/repo-management/"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only

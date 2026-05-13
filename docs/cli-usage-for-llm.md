@@ -164,6 +164,7 @@ paths:
 
 skill_targets:
   repo_skills: skills
+  codex_project: .codex/skills
   claude_project: .claude/skills
 
 modules:
@@ -178,6 +179,7 @@ modules:
   - spec-test-mobile
   - spec-test-general
   - spec-architecture
+  - skill-agentphilosophy-sync
   - skill-jj-management
   - skill-target-jj
   - skill-coding-standards
@@ -205,6 +207,7 @@ vars:
 - `paths.philosophy_dir`：Agent 哲学决策框架目录，默认 `aphilosophy`。
 - `paths.migration_dir`：迁移报告目录，默认 `.agents/migration`。
 - `skill_targets.repo_skills`：仓库级 skills 目录，默认 `skills`。
+- `skill_targets.codex_project`：Codex 原生项目级 skill discovery 目录，默认 `.codex/skills`。需要让 Codex 自动发现项目级 skill 时保持该默认值，并在 `push --apply` 后验证 `.codex/skills/**/SKILL.md` 存在。
 - `skill_targets.claude_project`：Claude 项目级 skills 目录，默认 `.claude/skills`。
 
 ## 五、Agent 哲学决策框架
@@ -271,7 +274,7 @@ uv run sync.py migrate /path/to/project
 
 迁移产物在目标项目的 `.agents/migration/` 下：
 
-- `inventory.md`：既有 Agent、Spec、Skill 文件清单。
+- `inventory.md`：既有 Agent、Spec、Skill 文件清单，包括 `skills/`、`.codex/skills/` 和 `.claude/skills/` 下的 `SKILL.md`。
 - `proposed.agentphilosophy.yaml`：建议配置草稿。
 - `adopt-plan.yaml`：可接管文件清单。
 - `diffs/`：候选输出文件。

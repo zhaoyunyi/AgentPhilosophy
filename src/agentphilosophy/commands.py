@@ -444,8 +444,11 @@ def command_prune_managed(source_root: Path, project_root: Path) -> Report:
         for record in prune_records:
             rel_path = str(record.get("path"))
             target = resolve_inside(project_root, rel_path, label="managed file")
-            if target.exists() and sha256_file(target) != record.get("last_written_hash"):
-                raise SyncError(f"refuse to prune changed managed file: {rel_path}")
+            if target.exists():
+                if not target.is_file():
+                    raise SyncError(f"refuse to prune managed path that is not a regular file: {rel_path}")
+                if sha256_file(target) != record.get("last_written_hash"):
+                    raise SyncError(f"refuse to prune changed managed file: {rel_path}")
 
         removed: set[str] = set()
         for record in prune_records:
@@ -527,6 +530,7 @@ def command_migrate(source_root: Path, project_root: Path, *, write_config: bool
         "spec/**/*.md",
         "docs/guides/**/*.md",
         "docs/guide/**/*.md",
+        ".codex/skills/**/SKILL.md",
         ".claude/skills/**/SKILL.md",
         "skills/**/SKILL.md",
     ):
@@ -748,6 +752,8 @@ def command_status(source_root: Path, project_root: Path | None = None) -> Repor
             path = project_root / str(record.get("path"))
             if not path.exists():
                 report.warn(f"managed file missing: {record.get('path')}")
+            elif not path.is_file():
+                report.warn(f"managed file is not a regular file: {record.get('path')}")
             elif sha256_file(path) != record.get("last_written_hash"):
                 report.warn(f"managed file changed manually: {record.get('path')}")
             elif active_outputs is not None and record.get("path") not in active_outputs:

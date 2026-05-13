@@ -19,3 +19,8 @@ def test_ci_workflow_runs_release_gate_commands() -> None:
     assert "cd \"$smoke_root\"" in content
     assert "agentphilosophy-sync\" llm-usage" in content
     assert "agentphilosophy-sync\" init" in content
+    assert "expected_content_version=" in content
+    assert "importlib.resources import files" in content
+    assert "default_source\" / \"catalog.yaml" in content
+    assert "source_content_version: ${expected_content_version}" in content
+    assert "source_content_version: 0.2.0" not in content
