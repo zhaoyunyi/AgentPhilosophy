@@ -12,6 +12,7 @@ AgentPhilosophy 是中央 Agent 协作规范管理仓库，用于把共享的 Ag
 git clone git@github.com:zhaoyunyi/AgentPhilosophy.git
 cd AgentPhilosophy
 uv run sync.py validate
+uv run sync.py --version
 uv run sync.py init /path/to/project --preset fullstack
 uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
@@ -73,7 +74,7 @@ AgentPhilosophy 使用三层版本描述中央源与目标项目的同步状态�
 - `catalog.yaml` 的 `content_version` 表示中央规范内容源整体版本，用于依赖项目判断是否需要更新一轮。
 - 各 `module.yaml` 的 `version` 表示单个模块版本，用于 `status` 判断目标项目中具体模块是否 stale。
 
-`push --apply` 和 `adopt` 会把当前 `source_content_version` 写入目标项目 `.agents/agentphilosophy-state.yaml`；后续 `status --project` 会在 state 版本落后于当前中央源时提示 `source_content_version stale`。如果 state 版本高于当前中央源，先检查是否误用了旧的 `--source` 或安装包。`source_tree_hash` 是源文件指纹，`catalog.yaml` 变更可能同时触发 hash drift 和内容版本提示。
+`push --apply` 和 `adopt` 会把当前 `agentphilosophy_version` 与 `source_content_version` 写入目标项目 `.agents/agentphilosophy-state.yaml`。后续 `status --project` 会在 state 中的 CLI 版本落后于当前安装包时提示 `agentphilosophy_version stale`，在内容源版本落后于当前中央源时提示 `source_content_version stale`。如果 state 版本高于当前中央源或当前 CLI，先检查是否误用了旧的 `--source`、旧安装包或回退后的中央源。`source_tree_hash` 是源文件指纹，`catalog.yaml` 变更可能同时触发 hash drift 和内容版本提示。
 
 `init --interactive` 用于交互式生成目标项目根目录 `.agentphilosophy.yaml`，适合还没有确定 preset、项目类型、描述或测试命令的新项目；它不会渲染托管输出，也不会自动执行 `push`。
 

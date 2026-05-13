@@ -4,6 +4,7 @@ from pathlib import Path
 
 import yaml
 
+from agentphilosophy import __version__
 from agentphilosophy.cli import main
 
 
@@ -102,6 +103,7 @@ def test_push_apply_writes_managed_file_and_blocks_manual_edits(tmp_path: Path, 
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
     assert (target / "AGENTS.md").read_text(encoding="utf-8") == "# Demo\n\n- 使用 Codex CLI\n"
     state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert f"agentphilosophy_version: {__version__}" in state_text
     assert "source_content_version: 0.2.0" in state_text
 
     write(target / "AGENTS.md", "# Demo\n\n用户手写内容\n")

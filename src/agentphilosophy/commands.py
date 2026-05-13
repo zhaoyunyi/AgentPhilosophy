@@ -9,6 +9,7 @@ from typing import Any
 
 from jinja2 import UndefinedError
 
+from . import __version__ as agentphilosophy_version
 from .errors import Report, SyncError
 from .fileio import write_bytes_atomic
 from .hashing import sha256_file, source_revision, source_tree_hash
@@ -346,6 +347,7 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
     modules = load_modules(source_root)
     config = load_project_config(project_root)
     state = load_state(project_root, source_root)
+    state["agentphilosophy_version"] = agentphilosophy_version
     state["source"] = str(source_root)
     state["source_content_version"] = source_content_version(source_root)
     state["source_revision"] = source_revision(source_root)
@@ -468,6 +470,7 @@ def command_prune_managed(source_root: Path, project_root: Path) -> Report:
             for record in state.get("files") or []
             if isinstance(record, dict) and str(record.get("path")) not in removed
         ]
+        state["agentphilosophy_version"] = agentphilosophy_version
         write_state(project_root, state)
     except (SyncError, UndefinedError) as exc:
         report.error(str(exc))
@@ -657,6 +660,7 @@ def command_adopt(
             state.setdefault("modules", {})[entry["module"]] = modules[entry["module"]].version
             report.info(f"adopted {rel}")
         state["source"] = str(source_root)
+        state["agentphilosophy_version"] = agentphilosophy_version
         state["source_content_version"] = source_content_version(source_root)
         state["source_revision"] = source_revision(source_root)
         state["source_tree_hash"] = source_tree_hash(source_root)
@@ -700,6 +704,24 @@ def command_status(source_root: Path, project_root: Path | None = None) -> Repor
 
     try:
         state = load_state(project_root, source_root)
+        state_agentphilosophy_version = str(state.get("agentphilosophy_version") or "0.0.0")
+        if state_agentphilosophy_version != agentphilosophy_version:
+            comparison = compare_content_versions(state_agentphilosophy_version, agentphilosophy_version)
+            if comparison is None:
+                report.warn(
+                    f"agentphilosophy_version differs: "
+                    f"{state_agentphilosophy_version} -> {agentphilosophy_version}"
+                )
+            elif comparison < 0:
+                report.warn(
+                    f"agentphilosophy_version stale: "
+                    f"{state_agentphilosophy_version} -> {agentphilosophy_version}"
+                )
+            else:
+                report.warn(
+                    f"agentphilosophy_version newer than current CLI: "
+                    f"{state_agentphilosophy_version} -> {agentphilosophy_version}"
+                )
         current_content_version = source_content_version(source_root)
         state_content_version = str(state.get("source_content_version") or "0.0.0")
         if state_content_version != current_content_version:
