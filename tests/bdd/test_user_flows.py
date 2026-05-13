@@ -32,7 +32,7 @@ outputs:
         + "\n",
     )
     write(root / "modules" / "doc-templates" / "templates" / "AGENTS.md.j2", "# {{ project_name }}\n")
-    write(root / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: doc-templates\n")
+    write(root / "catalog.yaml", "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: doc-templates\n")
     write(
         root / "presets" / "mobile-sdk.yaml",
         """

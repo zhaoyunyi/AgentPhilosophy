@@ -134,7 +134,19 @@ uv run sync.py push --all --apply
 - 文件已经缺失时，只清理 state 记录。
 - 成功删除文件后，会尝试删除该文件的直接空目录；不会继续向上清理项目父目录。
 
-## 三、目标项目配置
+## 三、版本与更新判断
+
+AgentPhilosophy 使用三层版本判断目标项目是否需要更新：
+
+- CLI 工具版本来自 `pyproject.toml` 和 `agentphilosophy.__version__`，只表示同步程序自身版本。
+- 中央规范内容源版本来自 `catalog.yaml` 的 `content_version`，用于判断依赖项目是否需要同步新一轮中央内容。
+- 单个模块版本来自各 `module.yaml` 的 `version`，用于判断具体模块是否 stale。
+
+`push --apply` 和 `adopt` 会把当前 `source_content_version` 写入目标项目 `.agents/agentphilosophy-state.yaml`；`status --project` 如果发现 state 中版本落后于当前中央源，会输出 `source_content_version stale: <old> -> <new>`。看到该提示时，先运行 `push /path/to/project --dry-run` 审查计划，再决定是否 `--apply`。
+
+如果 state 中的 `source_content_version` 高于当前中央源，`status` 会提示 `source_content_version newer than current source`；此时先检查是否误用了旧的 `--source`、旧安装包或回退后的中央源，不要直接覆盖目标项目。`source_tree_hash` 是源文件指纹，`catalog.yaml` 变更可能同时触发 hash drift 和内容版本提示。
+
+## 四、目标项目配置
 
 目标项目根目录使用 `.agentphilosophy.yaml` 声明配置。CLI 不从该文件读取中央源路径；中央源由当前工作目录或 `--source` 参数决定。
 
@@ -195,7 +207,7 @@ vars:
 - `skill_targets.repo_skills`：仓库级 skills 目录，默认 `skills`。
 - `skill_targets.claude_project`：Claude 项目级 skills 目录，默认 `.claude/skills`。
 
-## 四、Agent 哲学决策框架
+## 五、Agent 哲学决策框架
 
 `aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
 
@@ -205,7 +217,7 @@ vars:
 
 这些文档是通用决策锚点，不覆盖项目自己的 `AGENTS.md`、`spec/` 或 `.agents/custom` 规则。若哲学框架与项目特定规范冲突，以项目特定规范为准；若项目规范前提已经失效，应先向用户说明观察到的事实，再提出可验证的调整建议。
 
-## 五、Registry 文件
+## 六、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
@@ -226,7 +238,7 @@ projects:
     path: /absolute/path/to/ExampleProject
 ```
 
-## 六、新项目接入流程
+## 七、新项目接入流程
 
 1. 选择 preset。
 2. 生成 `.agentphilosophy.yaml`。
@@ -249,7 +261,7 @@ uv run sync.py status --project /path/to/project
 uv run sync.py init /path/to/project --interactive
 ```
 
-## 七、老项目迁移流程
+## 八、老项目迁移流程
 
 `migrate` 只做盘点，不会生成正式 `.agentphilosophy.yaml`，也不会覆盖项目已有文件。
 
@@ -275,7 +287,7 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
-## 八、安全边界
+## 九、安全边界
 
 - `push` 不带 `--apply` 时不写目标项目文件；`--dry-run` 是推荐显式写法。
 - `push --apply` 也不会覆盖未托管的既有文件；遇到冲突会写候选文件到迁移目录。
@@ -286,7 +298,7 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 九、LLM 执行规则
+## 十、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。

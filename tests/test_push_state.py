@@ -54,7 +54,10 @@ outputs:
         + "\n",
     )
     write(root / "modules" / "model-constraints" / "templates" / "model.md.j2", "- 使用 {{ primary_tool }}\n")
-    write(root / "catalog.yaml", "schema_version: 1\nmodules:\n  - name: doc-templates\n  - name: model-constraints\n")
+    write(
+        root / "catalog.yaml",
+        "schema_version: 1\ncontent_version: 0.2.0\nmodules:\n  - name: doc-templates\n  - name: model-constraints\n",
+    )
 
 
 def create_target(root: Path) -> None:
@@ -96,7 +99,8 @@ def test_push_apply_writes_managed_file_and_blocks_manual_edits(tmp_path: Path, 
 
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
     assert (target / "AGENTS.md").read_text(encoding="utf-8") == "# Demo\n\n- 使用 Codex CLI\n"
-    assert (target / ".agents" / "agentphilosophy-state.yaml").exists()
+    state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "source_content_version: 0.2.0" in state_text
 
     write(target / "AGENTS.md", "# Demo\n\n用户手写内容\n")
 

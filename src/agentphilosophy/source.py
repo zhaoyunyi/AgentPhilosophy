@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -10,6 +11,7 @@ from .yamlio import read_yaml
 KNOWN_OUTPUT_TYPES = {"rendered_file", "fragment", "copy_file", "copy_tree"}
 KNOWN_STRATEGIES = {"managed_replace", "layered", "init_only", "report_only"}
 KNOWN_UNMANAGED_POLICIES = {"fail", "warn", "report_only"}
+CONTENT_VERSION_PATTERN = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 
 
 @dataclass(frozen=True)
@@ -156,6 +158,11 @@ def validate_catalog(source_root: Path, modules: dict[str, Module], report: Repo
     except SyncError as exc:
         report.error(str(exc))
         return
+    content_version = catalog.get("content_version")
+    if content_version is None:
+        report.error("catalog.yaml missing content_version")
+    elif parse_content_version(str(content_version)) is None:
+        report.error("catalog.yaml content_version must use MAJOR.MINOR.PATCH")
     declared: set[str] = set()
     catalog_modules = catalog.get("modules") or []
     if not isinstance(catalog_modules, list):
@@ -171,6 +178,29 @@ def validate_catalog(source_root: Path, modules: dict[str, Module], report: Repo
             report.error(f"catalog.yaml references missing module: {name}")
     for name in sorted(set(modules) - declared):
         report.warn(f"module exists but is not listed in catalog.yaml: {name}")
+
+
+def source_content_version(source_root: Path) -> str:
+    catalog_path = source_root / "catalog.yaml"
+    if not catalog_path.exists():
+        return "0.0.0"
+    catalog = read_yaml(catalog_path)
+    return str(catalog.get("content_version") or "0.0.0")
+
+
+def parse_content_version(version: str) -> tuple[int, int, int] | None:
+    match = CONTENT_VERSION_PATTERN.fullmatch(version)
+    if not match:
+        return None
+    return tuple(int(part) for part in match.groups())
+
+
+def compare_content_versions(left: str, right: str) -> int | None:
+    left_parts = parse_content_version(left)
+    right_parts = parse_content_version(right)
+    if left_parts is None or right_parts is None:
+        return None
+    return (left_parts > right_parts) - (left_parts < right_parts)
 
 
 def validate_presets(source_root: Path, modules: dict[str, Module], report: Report) -> None:
