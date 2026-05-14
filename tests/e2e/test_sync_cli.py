@@ -104,4 +104,46 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
 
     assert result.returncode == 0, result.stderr + result.stdout
     assert "# AgentPhilosophy CLI 使用说明（给 LLM）" in result.stdout
+    assert "skill-portless-local-dev" in result.stdout
     assert "aphilosophy" in result.stdout
+
+
+def test_optional_portless_skill_renders_from_default_source(tmp_path: Path) -> None:
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+    target = tmp_path / "target"
+    write(
+        target / ".agentphilosophy.yaml",
+        """
+project_name: DemoProject
+project_type: fullstack
+modules:
+  - skill-portless-local-dev
+""".lstrip(),
+    )
+
+    commands = [
+        ["validate", str(target)],
+        ["push", str(target), "--dry-run"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    repo_skill = target / "skills" / "portless-local-dev" / "SKILL.md"
+    codex_skill = target / ".codex" / "skills" / "portless-local-dev" / "SKILL.md"
+    assert repo_skill.is_file()
+    assert codex_skill.is_file()
+    assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+    assert "Portless 官方仓库" in repo_skill.read_text(encoding="utf-8")

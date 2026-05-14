@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.3.1
+content_version: 0.3.2
 modules:
   - name: openspec-skills
     category: base
@@ -161,6 +161,14 @@ modules:
     outputs:
       - skills/repo-management/SKILL.md
       - .codex/skills/repo-management/SKILL.md
+    risk: low
+  - name: skill-portless-local-dev
+    category: skill
+    description: Portless 稳定本地 URL、安装、项目脚本改造和本地验收入口 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/portless-local-dev/SKILL.md
+      - .codex/skills/portless-local-dev/SKILL.md
     risk: low
   - name: aphilosophy
     category: philosophy
