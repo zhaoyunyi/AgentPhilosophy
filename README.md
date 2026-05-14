@@ -49,7 +49,7 @@ agentphilosophy-sync push /path/to/project --apply
 - [docs/cli-usage-for-llm.md](docs/cli-usage-for-llm.md)
 - [docs/release-process.md](docs/release-process.md)
 
-CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、`aphilosophy/` 决策框架的触发式读取规则，以及写入前必须执行的校验步骤；发版文档记录版本口径、准备脚本、发布脚本和依赖项目更新判断。
+CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、可选 Portless 本地开发入口改造、`aphilosophy/` 决策框架的触发式读取规则，以及写入前必须执行的校验步骤；发版文档记录版本口径、准备脚本、发布脚本和依赖项目更新判断。
 
 ## 常用命令
 

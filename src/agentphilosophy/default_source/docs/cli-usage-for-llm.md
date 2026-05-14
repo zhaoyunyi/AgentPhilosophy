@@ -210,7 +210,98 @@ vars:
 - `skill_targets.codex_project`：Codex 原生项目级 skill discovery 目录，默认 `.codex/skills`。需要让 Codex 自动发现项目级 skill 时保持该默认值，并在 `push --apply` 后验证 `.codex/skills/**/SKILL.md` 存在。
 - `skill_targets.claude_project`：Claude 项目级 skills 目录，默认 `.claude/skills`。
 
-## 五、Agent 哲学决策框架
+## 五、Portless 本地开发入口
+
+Portless 官方仓库：https://github.com/vercel-labs/portless
+
+Portless 用于把本地开发服务从不稳定的端口号改成稳定命名 URL，例如 `https://web.myapp.localhost`。LLM 在目标项目中处理本地启动、浏览器验收、端口冲突、monorepo 多服务、worktree、多端联调或 Tailscale 分享时，应先评估是否需要引入 Portless。
+
+当前中央源提供可选模块 `skill-portless-local-dev`。该模块不会默认出现在 preset 中；只有当目标项目存在本地 Web/API/docs/admin/storybook/Expo/React Native 等 dev server，或用户明确希望 agent 使用稳定本地 URL 时，才把它加入目标项目 `.agentphilosophy.yaml`。必须追加到现有 `modules`，不要替换或删除 preset 已有模块；如果目标项目还没有正式 `.agentphilosophy.yaml`，先走新项目 `init` 或老项目 `migrate` 流程。
+
+```yaml
+modules:
+  - existing-module
+  - skill-portless-local-dev
+```
+
+加入模块后仍必须走标准同步流程：
+
+```bash
+uv run sync.py validate
+uv run sync.py validate /path/to/project
+uv run sync.py push /path/to/project --dry-run
+uv run sync.py push /path/to/project --apply
+```
+
+安装版 CLI 的等价入口：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
+LLM 进行 Portless 改造时遵循以下顺序：
+
+1. 先读取目标项目 README、`AGENTS.md`、`package.json`、workspace 配置、`turbo.json`、Docker Compose、dev 脚本和测试入口，确认真实本地服务，而不是凭端口习惯猜测。
+2. 如果项目没有本地 Web/API/移动调试服务，不要为了 Portless 引入 Node 工具链；记录不适用原因即可。
+3. 安装策略优先遵循项目包管理器。全局安装用 `npm install -g portless`；团队锁版本时作为 dev dependency 安装，例如 `pnpm add -D portless`、`npm install -D portless`、`yarn add -D portless` 或 `bun add -d portless`。
+4. Portless 需要 Node.js 20+，且仍是 pre-1.0；项目内安装时应锁版本，并在文档或提交说明中记录升级影响。
+5. 不使用一次性远程执行入口，例如 `npx portless`、`pnpm dlx portless`。如果 Portless 已是项目依赖，可以通过 package script 调用本地二进制。
+6. 保留直接启动命令作为回退路径，例如 `dev:app`、`dev:raw` 或 `PORTLESS=0 pnpm dev`；不要让 Portless 成为唯一可启动方式。
+7. 单应用优先用 `portless`、`portless run <cmd>` 或 package.json 的 `"portless"` 配置命名；monorepo 优先用根 `portless.json` 的 `apps` 映射；Docker 或固定端口服务可用 `portless alias <name> <port>`。
+8. 多服务代理到另一个 Portless app 时，目标应写稳定 URL，例如 `https://api.myapp.localhost`；Vite、webpack-dev-server 等代理必须设置 `changeOrigin: true`，避免代理循环。
+9. 验收必须包含 `portless --version`、`portless list`、目标 URL 浏览器访问或 Browser/Playwright 访问、原直接启动路径可回退；Safari 或系统 DNS 问题用 `portless hosts sync` 验证并记录 `portless hosts clean`。
+10. 权限和 CI 边界必须前置：Portless 默认 HTTPS 首跑会生成并信任本地 CA，绑定 443/80 在 macOS/Linux 上可能触发 `sudo`；非交互环境、无 TTY 或 `CI=1` 下不要默认启动需要提示或提权的 Portless，应使用直接端口或预先配置好的代理。
+11. 涉及修改 `/etc/hosts`、安装 OS startup service、Tailscale 分享或 Funnel 公网暴露时，先向用户说明影响范围并获得确认；不要把 Funnel 或公网暴露作为默认分享路径。
+12. LAN/真机联调使用 `portless proxy start --lan` 时，URL 会切到 mDNS 的 `<name>.local`；该模式会被记住，回到 `.localhost` 前需要显式关闭，例如 `PORTLESS_LAN=0 portless proxy start`。Linux 需要确认 mDNS 工具可用，Next.js 等框架还要按项目配置允许 `.local` dev origin。
+13. Tailscale 分享需要先确认 `tailscale` CLI 已安装并连接，Tailscale HTTPS 证书已启用；`--funnel` 还要求 tailnet 和当前节点已启用 Funnel，并会公开暴露服务。
+14. 不把 Portless 当作 QA、线上或 port-forward 默认入口。它只解决本地开发、联调、agent 浏览器验收和临时分享。
+
+常见改造片段：
+
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "dev:portless": "portless run next dev"
+  },
+  "portless": { "name": "web.myapp" }
+}
+```
+
+Turborepo 或 workspace 包内脚本：
+
+```json
+{
+  "scripts": {
+    "dev": "portless",
+    "dev:app": "next dev"
+  },
+  "portless": { "name": "web.myapp", "script": "dev:app" }
+}
+```
+
+根目录 `portless.json`：
+
+```json
+{
+  "apps": {
+    "apps/web": { "name": "web.myapp" },
+    "apps/api": { "name": "api.myapp" }
+  }
+}
+```
+
+Docker 或已有固定端口服务：
+
+```bash
+portless alias api.myapp 8080
+portless alias --remove api.myapp
+```
+
+## 六、Agent 哲学决策框架
 
 `aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
 
@@ -220,7 +311,7 @@ vars:
 
 这些文档是通用决策锚点，不覆盖项目自己的 `AGENTS.md`、`spec/` 或 `.agents/custom` 规则。若哲学框架与项目特定规范冲突，以项目特定规范为准；若项目规范前提已经失效，应先向用户说明观察到的事实，再提出可验证的调整建议。
 
-## 六、Registry 文件
+## 七、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
@@ -241,7 +332,7 @@ projects:
     path: /absolute/path/to/ExampleProject
 ```
 
-## 七、新项目接入流程
+## 八、新项目接入流程
 
 1. 选择 preset。
 2. 生成 `.agentphilosophy.yaml`。
@@ -264,7 +355,7 @@ uv run sync.py status --project /path/to/project
 uv run sync.py init /path/to/project --interactive
 ```
 
-## 八、老项目迁移流程
+## 九、老项目迁移流程
 
 `migrate` 只做盘点，不会生成正式 `.agentphilosophy.yaml`，也不会覆盖项目已有文件。
 
@@ -290,7 +381,7 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
-## 九、安全边界
+## 十、安全边界
 
 - `push` 不带 `--apply` 时不写目标项目文件；`--dry-run` 是推荐显式写法。
 - `push --apply` 也不会覆盖未托管的既有文件；遇到冲突会写候选文件到迁移目录。
@@ -301,7 +392,7 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 十、LLM 执行规则
+## 十一、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。
