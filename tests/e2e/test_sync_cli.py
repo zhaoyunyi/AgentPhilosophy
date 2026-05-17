@@ -4,6 +4,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from agentphilosophy import __version__
+
 
 def write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -86,6 +88,47 @@ def test_cli_defaults_to_packaged_source_outside_central_repo(tmp_path: Path) ->
     assert "- aphilosophy" in project_config
 
 
+def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    commands = [
+        ["init", str(target), "--preset", "fullstack"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    expected_docs = {
+        "meta-decision-principles.md",
+        "architecture-conflict-resolution.md",
+        "governance-conflict-resolution.md",
+        "cognitive-conflict-resolution.md",
+        "authority-conflict-resolution.md",
+    }
+    generated_docs = {
+        path.name
+        for path in (target / "aphilosophy").glob("*.md")
+    }
+    assert expected_docs <= generated_docs
+
+    state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    for doc_name in expected_docs:
+        assert f"aphilosophy/{doc_name}" in state
+
+
 def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:
     workdir = tmp_path / "workdir"
     workdir.mkdir()
@@ -106,6 +149,14 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "# AgentPhilosophy CLI 使用说明（给 LLM）" in result.stdout
     assert "skill-portless-local-dev" in result.stdout
     assert "aphilosophy" in result.stdout
+    assert "aphilosophy/cognitive-conflict-resolution.md" in result.stdout
+    assert "aphilosophy/authority-conflict-resolution.md" in result.stdout
+
+
+def test_readme_documents_current_stable_release_install_command() -> None:
+    readme = (Path(__file__).resolve().parents[2] / "README.md").read_text(encoding="utf-8")
+
+    assert f"AgentPhilosophy.git@v{__version__}" in readme
 
 
 def test_optional_portless_skill_renders_from_default_source(tmp_path: Path) -> None:
