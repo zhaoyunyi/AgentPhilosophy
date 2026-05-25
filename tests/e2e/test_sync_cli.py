@@ -148,6 +148,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert result.returncode == 0, result.stderr + result.stdout
     assert "# AgentPhilosophy CLI 使用说明（给 LLM）" in result.stdout
     assert "skill-portless-local-dev" in result.stdout
+    assert "最低有效接入深度" in result.stdout
     assert "aphilosophy" in result.stdout
     assert "aphilosophy/cognitive-conflict-resolution.md" in result.stdout
     assert "aphilosophy/authority-conflict-resolution.md" in result.stdout
@@ -197,4 +198,7 @@ modules:
     assert repo_skill.is_file()
     assert codex_skill.is_file()
     assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
-    assert "Portless 官方仓库" in repo_skill.read_text(encoding="utf-8")
+    repo_skill_text = repo_skill.read_text(encoding="utf-8")
+    assert "Portless 官方仓库" in repo_skill_text
+    assert "接入深度决策" in repo_skill_text
+    assert "一次性 `portless run`，不改文件" in repo_skill_text

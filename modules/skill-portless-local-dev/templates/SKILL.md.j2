@@ -1,6 +1,6 @@
 ---
 name: portless-local-dev
-description: 为 {{ project_name }} 判断、安装和改造 Portless 本地开发入口；适用于 localhost 端口冲突、多个本地服务、monorepo/worktree、浏览器验收、移动设备联调、Tailscale 分享或需要稳定 .localhost URL 的任务。
+description: 为 {{ project_name }} 判断、按需安装和改造 Portless 本地开发入口；适用于 localhost 端口冲突、多个本地服务、monorepo/worktree、浏览器验收、移动设备联调、Tailscale 分享或需要稳定 .localhost URL 的任务。
 ---
 
 # Portless local dev
@@ -9,7 +9,7 @@ Portless 官方仓库：https://github.com/vercel-labs/portless
 
 ## 何时使用
 
-在以下场景优先评估 Portless：
+在以下场景优先评估 Portless，但不要默认安装或改造项目：
 
 - 项目有 Web、API、docs、admin、storybook、Expo、React Native 或其他本地 dev server。
 - 多个服务需要同时启动，端口容易冲突或被 agent 猜错。
@@ -19,24 +19,40 @@ Portless 官方仓库：https://github.com/vercel-labs/portless
 
 如果仓库没有本地 Web/API/移动调试服务，不要为了使用 Portless 引入 Node 工具链；只在用户明确要求时记录“不适用”和原因。
 
+## 接入深度决策
+
+先按项目具体情况选择最低有效接入深度：
+
+| 项目情况 | 推荐做法 |
+| --- | --- |
+| 没有本地 Web/API/移动调试服务 | 不接入，只说明 Portless 不适用 |
+| 只是当前任务需要浏览器验收 | 使用已有全局或项目内 Portless 做一次性 `portless run`，不改文件 |
+| 团队要稳定复用 URL | 加 dev dependency，新增 `dev:portless` 或等价非破坏性脚本 |
+| monorepo、多 app、多 worktree | 用根 `portless.json` 或各 package `"portless"` 命名 |
+| Docker Compose、数据库、mock server、固定端口服务 | 用 `portless alias <name> <port>`，不要重写服务拓扑 |
+| 手机、同网段设备、Tailscale 分享 | 先确认权限、网络和暴露面，再开启 LAN/Tailscale/Funnel |
+
+不要把 Portless 改造成唯一启动方式。保留原命令，并让用户能用 `PORTLESS=0` 或 `dev:raw` 回退。
+
 ## 先判断项目现状
 
 1. 读取根目录和相关子目录的 `AGENTS.md`、README、`package.json`、workspace 配置、`turbo.json`、Docker Compose、dev 脚本和测试入口。
 2. 确认包管理器：优先遵循已有 lockfile 和脚本，不混用 npm/pnpm/yarn/bun。
 3. 找出真实启动命令、服务边界和期望主机名；主机名必须由项目名、包名或目录名转成小写 ASCII slug，例如 `web.myapp.localhost`、`api.myapp.localhost`，不要直接使用包含空格、中文或特殊字符的展示名。
 4. 判断框架是否读取 `PORT` 环境变量；Portless 会自动处理常见框架，但自定义 server 仍应显式读取 `process.env.PORT`。
-5. 写改造前先保留一个无 Portless 的直接启动路径，便于 `PORTLESS=0` 或 `pnpm run dev:app` 回退。
+5. 判断是否已有全局 `portless` 或项目内依赖；只有需要团队复用、写脚本或锁版本时才修改 package 文件。
+6. 写改造前先保留一个无 Portless 的直接启动路径，便于 `PORTLESS=0`、`pnpm run dev:app` 或 `pnpm run dev:raw` 回退。
 
 ## 安装策略
 
 - 全局安装适合个人机器和多项目协作：`npm install -g portless`。
 - 项目内安装适合团队锁版本：使用项目包管理器添加 dev dependency，例如 `npm install -D portless`、`pnpm add -D portless`、`yarn add -D portless` 或 `bun add -d portless`。
-- Portless 需要 Node.js 20+，且仍是 pre-1.0；项目内安装时应锁版本并记录升级影响。
+- Portless 需要 Node.js 24+，且仍是 pre-1.0；项目内安装时应锁版本并记录升级影响。
 - 不使用一次性的 `npx portless`、`pnpm dlx portless` 或类似远程临时执行方式；如果是项目依赖里的本地二进制，可通过 package script 调用。
 
 ## 改造模式
 
-单应用项目：
+单应用项目可先做非破坏性脚本：
 
 ```json
 {
@@ -48,14 +64,14 @@ Portless 官方仓库：https://github.com/vercel-labs/portless
 }
 ```
 
-也可以保留原 `dev`，让 agent 和验收命令显式运行 `portless`：
+如果只是当前任务需要稳定 URL，优先保留项目文件不变，让 agent 和验收命令显式运行：
 
 ```bash
 portless
 portless run --name myapp pnpm dev
 ```
 
-Turborepo 或 workspace：
+Turborepo 或 workspace 在需要长期复用时再写入 package 配置：
 
 ```json
 {
@@ -67,7 +83,7 @@ Turborepo 或 workspace：
 }
 ```
 
-根目录可放 `portless.json` 统一命名：
+多 app 或多 worktree 场景可在根目录放 `portless.json` 统一命名：
 
 ```json
 {
@@ -78,7 +94,7 @@ Turborepo 或 workspace：
 }
 ```
 
-Docker 或固定端口服务：
+Docker、数据库、mock server 或其他固定端口服务优先使用 alias：
 
 ```bash
 portless alias api.myapp 8080
@@ -127,8 +143,9 @@ PORTLESS=0 pnpm dev
 ## 验收标准
 
 - 能从 `portless list` 看到期望服务名和 URL。
-- 浏览器或 Browser/Playwright 能打开稳定 URL，例如 `https://web.myapp.localhost`。
+- 浏览器或 Browser/Playwright 能打开稳定 URL，例如 `https://web.myapp.localhost`；一次性使用不要求写入项目配置。
 - 原直接启动命令仍可作为回退路径，或 `PORTLESS=0 <原命令>` 可用。
+- 项目脚本或 `portless.json` 改造后，必须证明原脚本、Portless 脚本和回退路径都可用。
 - 多服务场景中，前端、API、WebSocket、OAuth callback、CORS 和 cookie origin 都指向稳定 hostname。
 - worktree 场景中不同工作区不会互相抢端口；必要时检查生成的子域名前缀。
 - Safari 或系统 DNS 无法解析 `.localhost` 子域名时，运行 `portless hosts sync` 并记录清理方式 `portless hosts clean`。
