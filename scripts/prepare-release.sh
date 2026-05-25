@@ -8,6 +8,7 @@ Usage:
 
 Prepare a local AgentPhilosophy release:
   - bump CLI version in pyproject.toml and src/agentphilosophy/__init__.py
+  - bump README stable install command tag
   - bump content_version in catalog.yaml and packaged default_source/catalog.yaml
   - refresh uv.lock and this repo's managed state
   - run lint, tests, central-source validation, build, and installed-wheel smoke
@@ -92,6 +93,10 @@ replacements = {
     Path("src/agentphilosophy/__init__.py"): (
         r'(?m)^__version__ = "[^"]+"$',
         f'__version__ = "{version}"',
+    ),
+    Path("README.md"): (
+        r"AgentPhilosophy\.git@v[0-9]+\.[0-9]+\.[0-9]+",
+        f"AgentPhilosophy.git@v{version}",
     ),
     Path("catalog.yaml"): (
         r"(?m)^content_version: .+$",
