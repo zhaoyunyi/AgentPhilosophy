@@ -18,7 +18,7 @@ from .commands import (
     command_validate,
 )
 from .errors import Report
-from .resources import llm_usage_path, resolve_source_root
+from .resources import LLM_USAGE_MODE_REL_PATHS, llm_usage_path, resolve_source_root
 
 
 def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
@@ -72,7 +72,13 @@ def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
         help="prune stale managed files whose current hash still matches state",
     )
 
-    subparsers.add_parser("llm-usage", help="Print the LLM usage document for the selected source.")
+    llm_usage = subparsers.add_parser("llm-usage", help="Print an LLM usage document for the selected source.")
+    llm_usage.add_argument(
+        "--mode",
+        choices=sorted(LLM_USAGE_MODE_REL_PATHS),
+        default="full",
+        help="Usage profile to print.",
+    )
 
     status = subparsers.add_parser("status", help="Show registry or project status.")
     status.add_argument("--project")
@@ -85,7 +91,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     with resolve_source_root(args.source) as source_root:
         if args.command == "llm-usage":
-            path = llm_usage_path(source_root)
+            path = llm_usage_path(source_root, args.mode)
             if not path.is_file():
                 report = Report()
                 report.error(f"LLM usage document not found: {path}")

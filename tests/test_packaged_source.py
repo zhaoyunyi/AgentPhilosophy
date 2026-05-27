@@ -7,6 +7,8 @@ def source_files(root: Path) -> list[Path]:
     include_files = [
         root / "catalog.yaml",
         root / "docs" / "cli-usage-for-llm.md",
+        root / "docs" / "llm-usage-auto-config.md",
+        root / "docs" / "llm-usage-user-breakpoints.md",
     ]
     include_dirs = [
         root / "modules",

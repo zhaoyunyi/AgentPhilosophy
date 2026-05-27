@@ -6,7 +6,11 @@ from importlib.resources import as_file, files
 from pathlib import Path
 
 PACKAGED_SOURCE_DIR = "default_source"
-LLM_USAGE_REL_PATH = Path("docs/cli-usage-for-llm.md")
+LLM_USAGE_MODE_REL_PATHS = {
+    "full": Path("docs/cli-usage-for-llm.md"),
+    "auto-config": Path("docs/llm-usage-auto-config.md"),
+    "user-breakpoints": Path("docs/llm-usage-user-breakpoints.md"),
+}
 
 
 def is_central_source_root(path: Path) -> bool:
@@ -33,5 +37,5 @@ def resolve_source_root(source: str | None) -> Iterator[Path]:
         yield packaged_source
 
 
-def llm_usage_path(source_root: Path) -> Path:
-    return source_root / LLM_USAGE_REL_PATH
+def llm_usage_path(source_root: Path, mode: str = "full") -> Path:
+    return source_root / LLM_USAGE_MODE_REL_PATHS[mode]

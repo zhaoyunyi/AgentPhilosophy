@@ -20,6 +20,8 @@ uv run /path/to/AgentPhilosophy/sync.py --source /path/to/AgentPhilosophy push /
 ```bash
 agentphilosophy-sync validate
 agentphilosophy-sync llm-usage
+agentphilosophy-sync llm-usage --mode auto-config
+agentphilosophy-sync llm-usage --mode user-breakpoints
 agentphilosophy-sync init /path/to/project --preset fullstack
 agentphilosophy-sync push /path/to/project --dry-run
 ```
@@ -54,7 +56,11 @@ uv run sync.py validate /path/to/project
 
 ```bash
 uv run sync.py llm-usage
+uv run sync.py llm-usage --mode auto-config
+uv run sync.py llm-usage --mode user-breakpoints
 ```
+
+`llm-usage` 默认输出完整 CLI 说明。`--mode auto-config` 输出“LLM 根据项目事实自动选择配置并安装”的精简协议；`--mode user-breakpoints` 输出“LLM 返回用户断点、由用户选择配置后再安装”的精简协议。用户没有明确授权自动选择配置时，优先使用 `user-breakpoints`，并让断点问题包含推荐项、选项影响和回复方式。
 
 初始化新项目配置：
 
