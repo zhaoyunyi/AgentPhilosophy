@@ -132,11 +132,12 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
 def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:
     workdir = tmp_path / "workdir"
     workdir.mkdir()
+    sync_py = str(Path(__file__).resolve().parents[2] / "sync.py")
 
     result = subprocess.run(
         [
             sys.executable,
-            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            sync_py,
             "llm-usage",
         ],
         cwd=workdir,
@@ -152,6 +153,28 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "aphilosophy" in result.stdout
     assert "aphilosophy/cognitive-conflict-resolution.md" in result.stdout
     assert "aphilosophy/authority-conflict-resolution.md" in result.stdout
+
+    auto_result = subprocess.run(
+        [sys.executable, sync_py, "llm-usage", "--mode", "auto-config"],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert auto_result.returncode == 0, auto_result.stderr + auto_result.stdout
+    assert "# AgentPhilosophy 自动配置安装说明（给 LLM）" in auto_result.stdout
+    assert "停止自动写入，返回用户断点" in auto_result.stdout
+
+    breakpoint_result = subprocess.run(
+        [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints"],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert breakpoint_result.returncode == 0, breakpoint_result.stderr + breakpoint_result.stdout
+    assert "# AgentPhilosophy 用户断点配置说明（给 LLM）" in breakpoint_result.stdout
+    assert "reply_format: 回复选项编号或 id" in breakpoint_result.stdout
 
 
 def test_readme_documents_current_stable_release_install_command() -> None:

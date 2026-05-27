@@ -61,6 +61,25 @@ def assert_report_has_no_warnings(output: str) -> None:
     assert "[error]" not in output
 
 
+def test_bdd_llm_usage_modes_explain_auto_and_user_breakpoint_flows(capsys) -> None:
+    source = TEST_ROOT.parent
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "auto-config"]) == 0
+    auto_output = capsys.readouterr().out
+    assert "# AgentPhilosophy 自动配置安装说明（给 LLM）" in auto_output
+    assert "停止自动写入，返回用户断点" in auto_output
+    assert "push --dry-run" in auto_output
+    assert "skill-portless-local-dev" in auto_output
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "user-breakpoints"]) == 0
+    breakpoint_output = capsys.readouterr().out
+    assert "# AgentPhilosophy 用户断点配置说明（给 LLM）" in breakpoint_output
+    assert "## 配置断点：<配置主题>" in breakpoint_output
+    assert "推荐选择：" in breakpoint_output
+    assert "可选项：" in breakpoint_output
+    assert "reply_format: 回复选项编号或 id" in breakpoint_output
+
+
 def test_bdd_new_project_cli_generation_matches_golden_baseline(tmp_path: Path, capsys) -> None:
     source = copy_fixture("central-source", tmp_path / "source")
     target = tmp_path / "product-app"

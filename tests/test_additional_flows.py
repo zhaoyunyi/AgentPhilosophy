@@ -514,6 +514,31 @@ vars:
     assert "skill-pack" in config
 
 
+def test_llm_usage_prints_mode_specific_documents(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    write(source / "docs" / "cli-usage-for-llm.md", "# Full usage\n")
+    write(source / "docs" / "llm-usage-auto-config.md", "# Auto config usage\n")
+    write(source / "docs" / "llm-usage-user-breakpoints.md", "# Breakpoint config usage\n")
+
+    assert main(["--source", str(source), "llm-usage"]) == 0
+    assert capsys.readouterr().out == "# Full usage\n"
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "auto-config"]) == 0
+    assert capsys.readouterr().out == "# Auto config usage\n"
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "user-breakpoints"]) == 0
+    assert capsys.readouterr().out == "# Breakpoint config usage\n"
+
+
+def test_llm_usage_mode_reports_missing_document(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    write(source / "docs" / "cli-usage-for-llm.md", "# Full usage\n")
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "auto-config"]) == 1
+
+    assert "LLM usage document not found:" in capsys.readouterr().out
+
+
 def test_init_interactive_reports_unavailable_stdin(tmp_path: Path, monkeypatch, capsys) -> None:
     source = tmp_path / "source"
     create_copy_tree_source(source)
