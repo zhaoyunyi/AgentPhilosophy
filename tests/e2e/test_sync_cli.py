@@ -129,6 +129,42 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
         assert f"aphilosophy/{doc_name}" in state
 
 
+def test_packaged_fullstack_preset_renders_product_copy_standard(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    commands = [
+        ["init", str(target), "--preset", "fullstack"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    product_copy_spec = target / "spec" / "ProductCopySpec.md"
+    assert product_copy_spec.is_file()
+
+    spec_text = product_copy_spec.read_text(encoding="utf-8")
+    assert "用户可见文案不得解释内部实现细节" in spec_text
+    assert "不得用文案区分产品 key 与上游或供应商 API key" in spec_text
+    assert "客户服务端集成" in spec_text
+
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "用户可见文案不得解释内部实现、上游供应商或产品内部边界" in agents_text
+    assert "SuperAgentAI API key" in agents_text
+
+
 def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:
     workdir = tmp_path / "workdir"
     workdir.mkdir()

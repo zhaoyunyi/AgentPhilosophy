@@ -10,6 +10,7 @@ modules:
   - spec-ddd
   - spec-bdd
   - spec-test-general
+  - spec-product-copy
   - spec-architecture
   - skill-agentphilosophy-sync
   - skill-jj-management

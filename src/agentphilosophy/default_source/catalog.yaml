@@ -100,6 +100,14 @@ modules:
       - spec/UISpec.md
       - AGENTS.md
     risk: medium
+  - name: spec-product-copy
+    category: spec
+    description: 产品文案外显边界和用户可见信息规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - spec/ProductCopySpec.md
+      - AGENTS.md
+    risk: medium
   - name: spec-architecture
     category: spec
     description: 项目架构约束规范

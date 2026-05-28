@@ -1,0 +1,21 @@
+name: spec-product-copy
+description: 产品文案外显边界和用户可见信息规范
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - spec:product-copy
+outputs:
+  - id: product-copy-spec
+    type: rendered_file
+    template: templates/ProductCopySpec.md.j2
+    target: "{{ paths.spec_dir }}/ProductCopySpec.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: product-copy-fragment
+    type: fragment
+    template: templates/product-copy-rules.md.j2
+    target: AGENTS.md
+    section: product_copy_rules
+    order: 15

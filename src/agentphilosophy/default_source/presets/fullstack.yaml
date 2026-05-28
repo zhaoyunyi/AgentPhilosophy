@@ -13,6 +13,7 @@ modules:
   - spec-test-browser
   - spec-test-general
   - spec-ui
+  - spec-product-copy
   - spec-architecture
   - skill-agentphilosophy-sync
   - skill-jj-management

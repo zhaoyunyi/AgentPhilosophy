@@ -13,6 +13,7 @@ modules:
   - spec-test-mobile
   - spec-test-general
   - spec-ui
+  - spec-product-copy
   - spec-architecture
   - spec-ios-sdk
   - spec-feature-domain

@@ -184,6 +184,7 @@ modules:
   - spec-bdd
   - spec-test-mobile
   - spec-test-general
+  - spec-product-copy
   - spec-architecture
   - skill-agentphilosophy-sync
   - skill-jj-management
