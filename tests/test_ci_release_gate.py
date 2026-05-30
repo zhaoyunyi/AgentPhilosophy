@@ -31,6 +31,9 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "agentphilosophy-sync\" llm-usage --mode auto-config" in content
     assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints" in content
     assert "agentphilosophy-sync\" init" in content
+    assert "skill-philosophy-extraction" in content
+    assert "skills/philosophy-extraction/SKILL.md" in content
+    assert ".codex/skills/philosophy-extraction/SKILL.md" in content
     assert "expected_content_version=" in content
     assert "importlib.resources import files" in content
     assert "default_source\" / \"catalog.yaml" in content

@@ -185,6 +185,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert result.returncode == 0, result.stderr + result.stdout
     assert "# AgentPhilosophy CLI 使用说明（给 LLM）" in result.stdout
     assert "skill-portless-local-dev" in result.stdout
+    assert "skill-philosophy-extraction" in result.stdout
     assert "最低有效接入深度" in result.stdout
     assert "aphilosophy" in result.stdout
     assert "aphilosophy/cognitive-conflict-resolution.md" in result.stdout
@@ -200,6 +201,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert auto_result.returncode == 0, auto_result.stderr + auto_result.stdout
     assert "# AgentPhilosophy 自动配置安装说明（给 LLM）" in auto_result.stdout
     assert "停止自动写入，返回用户断点" in auto_result.stdout
+    assert "skill-philosophy-extraction" in auto_result.stdout
 
     breakpoint_result = subprocess.run(
         [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints"],
@@ -211,6 +213,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert breakpoint_result.returncode == 0, breakpoint_result.stderr + breakpoint_result.stdout
     assert "# AgentPhilosophy 用户断点配置说明（给 LLM）" in breakpoint_result.stdout
     assert "reply_format: 回复选项编号或 id" in breakpoint_result.stdout
+    assert "skill-philosophy-extraction" in breakpoint_result.stdout
 
 
 def test_readme_documents_current_stable_release_install_command() -> None:
@@ -261,3 +264,50 @@ modules:
     assert "Portless 官方仓库" in repo_skill_text
     assert "接入深度决策" in repo_skill_text
     assert "一次性 `portless run`，不改文件" in repo_skill_text
+
+
+def test_optional_philosophy_extraction_skill_renders_from_default_source(tmp_path: Path) -> None:
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+    target = tmp_path / "target"
+    write(
+        target / ".agentphilosophy.yaml",
+        """
+project_name: DemoProject
+project_type: orchestrator
+modules:
+  - aphilosophy
+  - skill-philosophy-extraction
+""".lstrip(),
+    )
+
+    commands = [
+        ["validate", str(target)],
+        ["push", str(target), "--dry-run"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    repo_skill = target / "skills" / "philosophy-extraction" / "SKILL.md"
+    codex_skill = target / ".codex" / "skills" / "philosophy-extraction" / "SKILL.md"
+    assert repo_skill.is_file()
+    assert codex_skill.is_file()
+    assert (target / "aphilosophy" / "meta-decision-principles.md").is_file()
+    assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+    repo_skill_text = repo_skill.read_text(encoding="utf-8")
+    assert "Philosophy Extraction Skill" in repo_skill_text
+    assert "脱水" in repo_skill_text
+    assert "不要直接改托管的 `aphilosophy/`" in repo_skill_text
+    assert "modules/aphilosophy/templates/{domain}-conflict-resolution.md.j2" in repo_skill_text
