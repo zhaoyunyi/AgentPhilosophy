@@ -1,0 +1,21 @@
+name: skill-philosophy-extraction
+description: 哲学/概念性文章脱水、操作性原则提取和 aphilosophy 冲突协议模板生成 skill
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [aphilosophy]
+conflicts: []
+provides:
+  - skill:philosophy-extraction
+outputs:
+  - id: philosophy-extraction-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.repo_skills }}/philosophy-extraction/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: philosophy-extraction-codex-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.codex_project }}/philosophy-extraction/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only

@@ -15,11 +15,23 @@ description: 从哲学/概念性文章中提取可操作的 Agent 决策框架�
 
 ## 工作流程
 
+### 阶段 0：判断当前工作区类型
+
+先判断当前目录是 AgentPhilosophy 中央源，还是已接入 AgentPhilosophy 的目标项目。
+
+| 工作区类型 | 判断信号 | 写入策略 |
+|------|------|------|
+| AgentPhilosophy 中央源 | 同时存在 `catalog.yaml`、`modules/`、`src/agentphilosophy/default_source/` | 可以修改 `modules/aphilosophy/`、packaged source、catalog 和 CLI 文档 |
+| 目标项目 | 存在 `.agentphilosophy.yaml`、`.agents/agentphilosophy-state.yaml` 或生成的 `aphilosophy/` | 不要直接改托管的 `aphilosophy/`；先输出候选协议到 `.agents/custom/aphilosophy-extraction/`，再建议回中央源集成 |
+
+如果只是目标项目需要一次性吸收某篇文章的原则，不要把生成内容直接写进受 AgentPhilosophy 管理的 `aphilosophy/*.md`。这些文件下一次 `agentphilosophy-sync push --apply` 可能被覆盖。需要长期分发时，应回到中央源按“中央源集成”流程修改模块模板。
+
 ### 阶段 1：获取文章内容
 
-1. 使用 CDP 浏览器模式获取文章（微信公众号等反爬平台）
-2. 分段提取全文（每段 8000 字符）
-3. 提取完成后关闭 tab
+1. 只处理用户有权访问或已经提供的文章内容；不要绕过登录、付费、权限、反爬或访问控制。
+2. 使用 CDP 浏览器模式获取用户已授权访问的文章（微信公众号等动态页面）。
+3. 分段提取必要内容（每段 8000 字符以内）；长文只保留完成分析所需的摘要、结构和短摘录。
+4. 提取完成后关闭 tab，并避免在最终回复中大段复现原文。
 
 ### 阶段 2：批判性分析
 
@@ -101,7 +113,7 @@ description: 从哲学/概念性文章中提取可操作的 Agent 决策框架�
 - [ ] 没有哲学术语残留（如果必须用，已经给出了工程定义）
 - [ ] 冲突类型之间没有重叠（每个场景只匹配一个类型）
 
-### 阶段 4：模块集成
+### 阶段 4A：中央源集成
 
 1. **放置模板文件**
    ```
@@ -139,6 +151,23 @@ description: 从哲学/概念性文章中提取可操作的 Agent 决策框架�
    print(tmpl.render())
    "
    ```
+
+### 阶段 4B：目标项目候选输出
+
+当当前目录是普通目标项目时，只生成候选材料，不直接覆盖托管文档：
+
+1. **放置候选协议**
+   ```
+   .agents/custom/aphilosophy-extraction/{domain}-conflict-resolution.md
+   ```
+
+2. **记录来源与判断**
+   - 同目录放置 `{domain}-analysis.md`，包含文章标题、提取日期、可操作原则和被丢弃内容。
+   - 明确说明该候选尚未进入中央 `aphilosophy` 模块，不会被安装版 CLI 分发给其他项目。
+
+3. **需要长期分发时**
+   - 回到 AgentPhilosophy 中央源执行“阶段 4A：中央源集成”。
+   - 完成后用安装版或源码版 CLI 对目标项目执行 `validate`、`push --dry-run`、`push --apply`。
 
 ## 脱水原则——什么该留，什么该扔
 
