@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 from agentphilosophy import __version__
 
@@ -129,13 +132,14 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
         assert f"aphilosophy/{doc_name}" in state
 
 
-def test_packaged_fullstack_preset_renders_product_copy_standard(tmp_path: Path) -> None:
+@pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: str) -> None:
     target = tmp_path / "target"
     workdir = tmp_path / "workdir"
     workdir.mkdir()
 
     commands = [
-        ["init", str(target), "--preset", "fullstack"],
+        ["init", str(target), "--preset", preset],
         ["push", str(target), "--apply"],
     ]
     for args in commands:
@@ -214,6 +218,22 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "# AgentPhilosophy 用户断点配置说明（给 LLM）" in breakpoint_result.stdout
     assert "reply_format: 回复选项编号或 id" in breakpoint_result.stdout
     assert "skill-philosophy-extraction" in breakpoint_result.stdout
+
+    breakpoint_json_result = subprocess.run(
+        [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints", "--format", "json"],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert breakpoint_json_result.returncode == 0, breakpoint_json_result.stderr + breakpoint_json_result.stdout
+    breakpoint_payload = json.loads(breakpoint_json_result.stdout)
+    assert breakpoint_payload["mode"] == "user-breakpoints"
+    assert breakpoint_payload["format_version"] == 1
+    assert breakpoint_payload["breakpoints"][0]["title"] == "选择接入路径"
+    assert breakpoint_payload["breakpoints"][0]["recommended"]["id"] == "migrate"
+    assert breakpoint_payload["breakpoints"][0]["options"][0]["id"] == "migrate"
+    assert breakpoint_payload["breakpoints"][0]["reply_format"] == "回复选项编号或 id"
 
 
 def test_readme_documents_current_stable_release_install_command() -> None:

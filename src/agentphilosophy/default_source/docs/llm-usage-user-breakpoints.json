@@ -1,0 +1,300 @@
+{
+  "mode": "user-breakpoints",
+  "format": "json",
+  "format_version": 1,
+  "title": "AgentPhilosophy 用户断点配置说明（给 LLM）",
+  "markdown_equivalent": "docs/llm-usage-user-breakpoints.md",
+  "default_reply_format": "回复选项编号或 id；如果要覆盖默认值，请同时给出具体值",
+  "breakpoints": [
+    {
+      "id": "entry-path",
+      "title": "选择接入路径",
+      "question": "我需要确认这个项目是新接入还是迁移接管。",
+      "why": "这个选择会决定是否直接创建 `.agentphilosophy.yaml`，以及是否先生成 `.agents/migration/` 报告。",
+      "recommended": {
+        "id": "migrate",
+        "reason": "仓库里已经有 AGENTS、spec 或 skills 内容。"
+      },
+      "options": [
+        {
+          "id": "migrate",
+          "label": "已有 Agent 文档或 skills 的项目",
+          "impact": "先生成迁移报告和候选配置，不覆盖正式配置。"
+        },
+        {
+          "id": "init",
+          "label": "全新项目",
+          "impact": "直接创建 `.agentphilosophy.yaml`。"
+        },
+        {
+          "id": "adjust-existing",
+          "label": "已有 `.agentphilosophy.yaml` 的项目",
+          "impact": "只做增量修改。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
+      "id": "preset-selection",
+      "title": "选择 preset",
+      "question": "我需要确认项目 preset。",
+      "why": "preset 会决定默认 modules、jj 规则、文档模板和后续托管输出。",
+      "recommended": {
+        "id": "fullstack",
+        "reason": "项目包含 Web、API、worker、部署或 OpenSpec 入口时默认选择更完整。"
+      },
+      "options": [
+        {
+          "id": "fullstack",
+          "label": "前后端、API、worker、部署或 OpenSpec 项目",
+          "impact": "写入 fullstack preset 默认 modules。"
+        },
+        {
+          "id": "frontend",
+          "label": "前端主导项目",
+          "impact": "写入 frontend preset 默认 modules。"
+        },
+        {
+          "id": "mobile-sdk",
+          "label": "iOS、Android、SDK 或多子工程移动仓",
+          "impact": "写入 mobile-sdk preset 默认 modules，测试规则偏移动端。"
+        },
+        {
+          "id": "orchestrator",
+          "label": "任务编排、多 agent workflow 或 provider harness",
+          "impact": "写入 orchestrator preset 默认 modules，关注编排协作边界。"
+        },
+        {
+          "id": "none",
+          "label": "暂不使用 preset",
+          "impact": "不按 preset 注入默认 modules，后续需要显式选择模块。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
+      "id": "project-metadata",
+      "title": "确认项目基础信息",
+      "question": "我需要确认 `project_name`、`project_type` 和 `description`。",
+      "why": "这些值会出现在生成的 Agent 文档、Spec 和托管状态中。",
+      "recommended": {
+        "id": "use-detected",
+        "reason": "优先使用仓库名、preset 和 README 中能确认的项目描述。"
+      },
+      "options": [
+        {
+          "id": "use-detected",
+          "label": "使用已识别信息",
+          "impact": "按当前项目事实写入基础信息。"
+        },
+        {
+          "id": "custom",
+          "label": "用户指定值",
+          "impact": "按用户回复覆盖一个或多个基础字段。"
+        },
+        {
+          "id": "keep-existing",
+          "label": "保留现有配置",
+          "impact": "不改已有 `.agentphilosophy.yaml` 中的基础字段。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id；选择 custom 时同时给出字段值"
+    },
+    {
+      "id": "paths",
+      "title": "确认目录路径",
+      "question": "我需要确认规范、guide 和哲学文档目录。",
+      "why": "`paths.docs_guide_dir`、`paths.spec_dir`、`paths.philosophy_dir` 会决定托管文档写入位置。",
+      "recommended": {
+        "id": "defaults",
+        "reason": "没有既有目录约定时，默认路径最容易和中央规范保持一致。"
+      },
+      "options": [
+        {
+          "id": "defaults",
+          "label": "使用默认路径",
+          "impact": "使用 `docs/guides`、`spec`、`aphilosophy`。"
+        },
+        {
+          "id": "match-existing",
+          "label": "匹配仓库已有目录",
+          "impact": "把托管输出写到当前仓库已经使用的文档目录。"
+        },
+        {
+          "id": "custom",
+          "label": "用户指定路径",
+          "impact": "按用户回复写入 paths 配置。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id；选择 custom 时同时给出路径值"
+    },
+    {
+      "id": "skill-targets",
+      "title": "确认 skill 输出位置",
+      "question": "我需要确认 repo skills、Codex 项目 skills 和 Claude 项目 skills 的输出位置。",
+      "why": "这些路径会决定同步后的 skill discovery 是否能在目标工具中生效。",
+      "recommended": {
+        "id": "repo-and-codex",
+        "reason": "当前仓库默认同时支持仓库级 skills 和 Codex 原生项目级 skill discovery。"
+      },
+      "options": [
+        {
+          "id": "repo-and-codex",
+          "label": "写入 `skills/` 和 `.codex/skills/`",
+          "impact": "同时生成仓库级 skills 和 Codex 项目级 skills。"
+        },
+        {
+          "id": "repo-only",
+          "label": "只写入仓库级 `skills/`",
+          "impact": "保留通用仓库 skill 目录，不生成 Codex 项目级 discovery 文件。"
+        },
+        {
+          "id": "repo-codex-claude",
+          "label": "同时写入 repo、Codex 和 Claude",
+          "impact": "额外生成 `.claude/skills/`。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
+      "id": "portless-local-dev",
+      "title": "是否沉淀 Portless 本地开发规则",
+      "question": "我需要确认是否把 Portless 规则写成项目级 skill。",
+      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-portless-local-dev`。",
+      "recommended": {
+        "id": "skip-module",
+        "reason": "当前只需要一次性本地验收时，不需要团队长期复用。"
+      },
+      "options": [
+        {
+          "id": "skip-module",
+          "label": "不修改项目配置",
+          "impact": "可以临时使用 Portless，但不会生成项目级 skill。"
+        },
+        {
+          "id": "add-module",
+          "label": "追加 `skill-portless-local-dev`",
+          "impact": "后续 `push --apply` 会同步 Portless 项目级 skill。"
+        },
+        {
+          "id": "no-portless",
+          "label": "明确不使用 Portless",
+          "impact": "本地验收继续使用直接端口或现有脚本。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id；选择 add-module 时说明是否已有稳定本地域名"
+    },
+    {
+      "id": "philosophy-extraction",
+      "title": "是否安装哲学脱水 skill",
+      "question": "我需要确认是否把哲学或概念性文章脱水规则写成项目级 skill。",
+      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-philosophy-extraction`。",
+      "recommended": {
+        "id": "skip-module",
+        "reason": "当前只是使用已有 `aphilosophy` 决策文档时，不需要扩展模板。"
+      },
+      "options": [
+        {
+          "id": "skip-module",
+          "label": "不修改项目配置",
+          "impact": "继续使用已有 `aphilosophy` 文档，不生成额外 skill。"
+        },
+        {
+          "id": "add-module",
+          "label": "追加 `aphilosophy` 和 `skill-philosophy-extraction`",
+          "impact": "后续 `push --apply` 会同步哲学决策文档、repo skills 和 Codex 项目级 skill。"
+        },
+        {
+          "id": "no-aphilosophy-extension",
+          "label": "不维护哲学提取流程",
+          "impact": "只保留项目当前 Agent 规则。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
+      "id": "test-command",
+      "title": "确认测试命令",
+      "question": "我需要确认 `vars.test_command`。",
+      "why": "生成的规范会要求完成前运行这个命令。",
+      "recommended": {
+        "id": "existing-script",
+        "reason": "项目 README、package 脚本或已有 CI 中通常能识别测试入口。"
+      },
+      "options": [
+        {
+          "id": "existing-script",
+          "label": "使用识别到的命令",
+          "impact": "写入 `vars.test_command`。"
+        },
+        {
+          "id": "custom",
+          "label": "用户提供命令",
+          "impact": "按用户回复写入 `vars.test_command`。"
+        },
+        {
+          "id": "empty",
+          "label": "暂不写测试命令",
+          "impact": "保留为空，后续规范只使用默认提示。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id；选择 custom 时直接给出命令"
+    },
+    {
+      "id": "adopt-existing-files",
+      "title": "是否接管已有文件",
+      "question": "我需要确认是否按迁移报告接管已有 Agent 文档或 skills。",
+      "why": "接管会把已有文件登记进 `.agents/agentphilosophy-state.yaml`，后续才能安全同步更新。",
+      "recommended": {
+        "id": "adopt-from-report",
+        "reason": "迁移报告已经列出可接管文件且用户希望中央规范继续管理时最安全。"
+      },
+      "options": [
+        {
+          "id": "adopt-from-report",
+          "label": "按迁移报告接管",
+          "impact": "执行 `adopt --from-report .agents/migration/adopt-plan.yaml`。"
+        },
+        {
+          "id": "manual-review",
+          "label": "先人工审查",
+          "impact": "暂不接管，先查看候选文件和 diff。"
+        },
+        {
+          "id": "skip-adopt",
+          "label": "不接管已有文件",
+          "impact": "保留已有文件为非托管状态，后续同步可能报告冲突。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
+      "id": "apply-dry-run",
+      "title": "是否应用 dry-run 计划",
+      "question": "`push --dry-run` 已完成，我需要确认是否写入目标项目。",
+      "why": "这个选择会决定是否创建或更新托管输出和 `.agents/agentphilosophy-state.yaml`。",
+      "recommended": {
+        "id": "apply",
+        "reason": "dry-run 没有 error，且候选写入符合刚才确认的配置。"
+      },
+      "options": [
+        {
+          "id": "apply",
+          "label": "执行 `push --apply`",
+          "impact": "写入托管输出和 state。"
+        },
+        {
+          "id": "review-diff",
+          "label": "先查看候选 diff",
+          "impact": "暂不写入正式输出。"
+        },
+        {
+          "id": "stop",
+          "label": "停止安装",
+          "impact": "保留当前文件，不执行 apply。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    }
+  ]
+}

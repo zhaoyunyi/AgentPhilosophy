@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from shutil import copytree
 
@@ -78,6 +79,14 @@ def test_bdd_llm_usage_modes_explain_auto_and_user_breakpoint_flows(capsys) -> N
     assert "推荐选择：" in breakpoint_output
     assert "可选项：" in breakpoint_output
     assert "reply_format: 回复选项编号或 id" in breakpoint_output
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "user-breakpoints", "--format", "json"]) == 0
+    structured_output = json.loads(capsys.readouterr().out)
+    assert structured_output["mode"] == "user-breakpoints"
+    assert structured_output["breakpoints"][0]["title"] == "选择接入路径"
+    assert structured_output["breakpoints"][0]["recommended"]["id"] == "migrate"
+    assert structured_output["breakpoints"][0]["options"][0]["impact"] == "先生成迁移报告和候选配置，不覆盖正式配置。"
+    assert structured_output["breakpoints"][0]["reply_format"] == "回复选项编号或 id"
 
 
 def test_bdd_new_project_cli_generation_matches_golden_baseline(tmp_path: Path, capsys) -> None:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from shutil import copyfile
 
@@ -530,6 +531,63 @@ def test_llm_usage_prints_mode_specific_documents(tmp_path: Path, capsys) -> Non
     assert capsys.readouterr().out == "# Breakpoint config usage\n"
 
 
+def test_llm_usage_prints_user_breakpoints_json_format(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    write(source / "docs" / "llm-usage-user-breakpoints.md", "# Breakpoint config usage\n")
+    write(
+        source / "docs" / "llm-usage-user-breakpoints.json",
+        json.dumps(
+            {
+                "mode": "user-breakpoints",
+                "format_version": 1,
+                "breakpoints": [
+                    {
+                        "id": "preset-selection",
+                        "title": "选择 preset",
+                        "recommended": {
+                            "id": "fullstack",
+                            "reason": "项目包含 Web、API 或部署入口。",
+                        },
+                        "options": [
+                            {
+                                "id": "fullstack",
+                                "label": "前后端或部署项目",
+                                "impact": "写入 fullstack preset 默认 modules。",
+                            },
+                            {
+                                "id": "frontend",
+                                "label": "前端主导项目",
+                                "impact": "写入 frontend preset 默认 modules。",
+                            },
+                        ],
+                        "reply_format": "回复选项编号或 id",
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        )
+        + "\n",
+    )
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "user-breakpoints", "--format", "json"]) == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["mode"] == "user-breakpoints"
+    assert payload["format_version"] == 1
+    assert payload["breakpoints"][0]["title"] == "选择 preset"
+    assert payload["breakpoints"][0]["recommended"]["id"] == "fullstack"
+    assert payload["breakpoints"][0]["options"][0]["impact"] == "写入 fullstack preset 默认 modules。"
+    assert payload["breakpoints"][0]["reply_format"] == "回复选项编号或 id"
+
+
+def test_llm_usage_json_format_is_limited_to_user_breakpoints(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+
+    assert main(["--source", str(source), "llm-usage", "--mode", "auto-config", "--format", "json"]) == 1
+
+    assert "LLM usage format not supported: mode=auto-config format=json" in capsys.readouterr().out
+
+
 def test_llm_usage_mode_reports_missing_document(tmp_path: Path, capsys) -> None:
     source = tmp_path / "source"
     write(source / "docs" / "cli-usage-for-llm.md", "# Full usage\n")
@@ -824,3 +882,20 @@ def test_source_tree_hash_excludes_registry_changes(tmp_path: Path) -> None:
     write(source / "registry.yaml", "projects: []\n")
 
     assert source_tree_hash(source) == before
+
+
+def test_source_tree_hash_includes_llm_usage_json_docs(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    create_copy_tree_source(source)
+    write(
+        source / "docs" / "llm-usage-user-breakpoints.json",
+        '{"mode":"user-breakpoints","format_version":1,"breakpoints":[]}\n',
+    )
+    before = source_tree_hash(source)
+
+    write(
+        source / "docs" / "llm-usage-user-breakpoints.json",
+        '{"mode":"user-breakpoints","format_version":1,"breakpoints":[{"id":"preset"}]}\n',
+    )
+
+    assert source_tree_hash(source) != before
