@@ -57,6 +57,8 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 只有一次性本地浏览器验收或临时端口冲突 | 不修改 `.agentphilosophy.yaml`，只记录一次性 Portless 使用 |
 | 团队需要长期复用 Portless 规则 | 追加 `skill-portless-local-dev`，再同步生成项目级 skill |
 | 没有本地 Web/API/移动调试服务 | 不加入 Portless 相关模块 |
+| 目标项目要维护或扩展 `aphilosophy` 决策框架 | 追加 `aphilosophy` 和 `skill-philosophy-extraction`，再同步生成哲学脱水项目级 skill |
+| 目标项目只是使用已有 `aphilosophy` 文档做决策参考 | 不加入 `skill-philosophy-extraction` |
 
 ## 六、必须返回用户断点的情况
 
