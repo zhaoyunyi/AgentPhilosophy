@@ -30,6 +30,8 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "agentphilosophy-sync\" llm-usage" in content
     assert "agentphilosophy-sync\" llm-usage --mode auto-config" in content
     assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints" in content
+    assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints --format json" in content
+    assert "payload[\"breakpoints\"][0][\"reply_format\"]" in content
     assert "agentphilosophy-sync\" init" in content
     assert "skill-philosophy-extraction" in content
     assert "skills/philosophy-extraction/SKILL.md" in content
@@ -66,6 +68,8 @@ def test_release_scripts_have_prepare_and_publish_safety_gates() -> None:
     assert "uv run ruff check ." in prepare
     assert "uv run pytest -q" in prepare
     assert "bash scripts/release-smoke.sh" in prepare
+    assert "scripts/generate-release-notes.py" in prepare
+    assert "请补充" not in prepare
     assert "gh release create" in publish
     assert "main is not synced to origin" in publish
     assert "dist/release-notes-v${version}.md" in publish

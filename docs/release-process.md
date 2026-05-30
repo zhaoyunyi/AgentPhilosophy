@@ -44,7 +44,7 @@ bash scripts/prepare-release.sh 0.3.2 --content-version 0.3.1
 - 运行 `uv lock`。
 - 运行 `uv run sync.py push . --apply`，刷新本仓 state 中的 `agentphilosophy_version` 与 `source_content_version`。
 - 运行 lint、测试、中央源校验、构建和安装后 smoke。
-- 生成 `dist/release-notes-v<version>.md`，供 GitHub release 使用。
+- 根据版本相关 diff、最近提交和模块版本变化生成 `dist/release-notes-v<version>.md`，供 GitHub release 审阅和使用。
 
 ## 审查与提交
 
@@ -126,26 +126,13 @@ uv run sync.py push /path/to/project --apply
 uv run sync.py status --project /path/to/project
 ```
 
-## Release Notes 模板
+## Release Notes 审阅
 
-```markdown
-## 变更摘要
+`prepare-release.sh` 会自动生成中文 release notes，不再保留需要手工补写的占位文案。审阅时重点看四块信息：
 
-- 发布 AgentPhilosophy CLI vX.Y.Z。
-- 默认内容源 `content_version` 升级到 `A.B.C`。
-- ...
+- `变更摘要`：确认 CLI 版本、内容源版本、比较基准和最近提交摘要是否匹配本次发布。
+- `本次 diff 重点`：确认 CLI/脚本、中央内容源、文档和测试范围没有混入无关文件。
+- `模块版本变化`：确认 `modules/*/module.yaml` 的 version bump 与模块语义变化一致。
+- `依赖项目影响`：确认 stale 提示、dry-run 建议和需要优先审查的模块输出清楚。
 
-## 依赖项目影响
-
-- `agentphilosophy_version` 会写入 `.agents/agentphilosophy-state.yaml`。
-- `source_content_version` 用于提示依赖项目是否需要同步新一轮中央内容。
-- ...
-
-## 验证
-
-- `uv run ruff check .`
-- `uv run pytest -q`
-- `uv run sync.py validate`
-- `uv build`
-- `bash scripts/release-smoke.sh dist/agentphilosophy-X.Y.Z-py3-none-any.whl`
-```
+如果摘要没有捕捉到发布语义，可以直接编辑 `dist/release-notes-v<version>.md` 后再运行 `publish-release.sh`。
