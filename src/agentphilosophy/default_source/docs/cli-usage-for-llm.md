@@ -333,6 +333,23 @@ portless alias --remove api.myapp
 
 这些文档是通用决策锚点，不覆盖项目自己的 `AGENTS.md`、`spec/` 或 `.agents/custom` 规则。若哲学框架与项目特定规范冲突，以项目特定规范为准；若项目规范前提已经失效，应先向用户说明观察到的事实，再提出可验证的调整建议。
 
+当前中央源还提供可选模块 `skill-philosophy-extraction`。该模块不会默认出现在 preset 中；只有当目标项目需要维护或扩展 `aphilosophy` 决策框架、从哲学/概念性文章中提取可操作规则、生成新的冲突解决协议模板时，才把它加入目标项目 `.agentphilosophy.yaml`。该模块依赖 `aphilosophy`，不能单独启用；加入后，安装版 CLI 会同步生成 `skills/philosophy-extraction/SKILL.md` 和 `.codex/skills/philosophy-extraction/SKILL.md`，让 Codex 原生 skill discovery 能在目标项目内触发。
+
+```yaml
+modules:
+  - aphilosophy
+  - skill-philosophy-extraction
+```
+
+启用后仍必须执行标准同步流程：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
 ## 七、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：

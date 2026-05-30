@@ -51,7 +51,7 @@ meta-decision-principles（元决策锚点）
 
 ## 处理新文章的流程
 
-使用 `skills/philosophy-extraction/SKILL.md` 中定义的完整工作流：
+使用 `skills/philosophy-extraction/SKILL.md` 中定义的完整工作流。该 skill 已作为可选模块 `skill-philosophy-extraction` productize；需要在目标项目维护或扩展 `aphilosophy` 时，把 `aphilosophy` 和该模块一起加入目标项目 `.agentphilosophy.yaml`，再通过安装版 CLI 同步到 `skills/` 和 `.codex/skills/`。目标项目中不要直接改托管的 `aphilosophy/`，长期分发的新协议应回到中央源集成。
 
 1. 获取文章 → 2. 批判性分析 → 3. 模板生成 → 4. 模块集成 → 5. 验证
 

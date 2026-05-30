@@ -71,7 +71,7 @@ breakpoint:
 3. 项目基础信息：`project_name`、`project_type`、`description`。
 4. 目录路径：`paths.docs_guide_dir`、`paths.spec_dir`、`paths.philosophy_dir`。
 5. skill 输出位置：`skill_targets.repo_skills`、`skill_targets.codex_project`、`skill_targets.claude_project`。
-6. 可选模块：例如 `skill-portless-local-dev` 是否沉淀为项目级 skill。
+6. 可选模块：例如 `skill-portless-local-dev` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
 7. 验证命令：`vars.test_command`。
 8. 老文件接管：是否按 `adopt-plan.yaml` 接管已有文件。
 9. dry-run 结果确认：是否允许执行 `push --apply`。
@@ -130,7 +130,24 @@ breakpoint:
 请回复选项编号或 id；如果选择 `add-module`，请说明是否已有团队约定的稳定本地域名。
 ```
 
-### 4. 验证命令
+### 4. 哲学脱水可选模块
+
+```markdown
+## 配置断点：是否安装哲学脱水 skill
+
+我需要确认是否把哲学/概念性文章脱水规则写成项目级 skill。这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-philosophy-extraction`。
+
+推荐选择：`skip-module`，因为当前只是使用已有 `aphilosophy` 决策文档，不需要扩展模板。
+
+可选项：
+1. `skip-module`：不修改项目配置。影响：继续使用已有 `aphilosophy` 文档，不生成额外 skill。
+2. `add-module`：追加 `aphilosophy` 和 `skill-philosophy-extraction`。影响：后续 `push --apply` 会同步哲学决策文档、repo skills 和 Codex 项目级 skill。
+3. `no-aphilosophy-extension`：明确不在本项目维护哲学提取流程。影响：只保留项目当前 Agent 规则。
+
+请回复选项编号或 id；`add-module` 会同时启用 `aphilosophy`，因为哲学脱水 skill 依赖这组决策文档。
+```
+
+### 5. 验证命令
 
 ```markdown
 ## 配置断点：确认测试命令
@@ -147,7 +164,7 @@ breakpoint:
 请回复选项编号或 id；如果选择 `custom`，请直接给出命令。
 ```
 
-### 5. apply 确认
+### 6. apply 确认
 
 ```markdown
 ## 配置断点：是否应用 dry-run 计划
