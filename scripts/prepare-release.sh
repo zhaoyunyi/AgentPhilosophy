@@ -127,27 +127,7 @@ uv build
 bash scripts/release-smoke.sh "dist/agentphilosophy-${version}-py3-none-any.whl"
 
 mkdir -p dist
-cat >"dist/release-notes-v${version}.md" <<EOF
-## 变更摘要
-
-- 发布 AgentPhilosophy CLI v${version}。
-- 默认内容源 \`content_version\` 升级到 \`${content_version}\`。
-- 请补充本次 CLI、内容源、模块或文档的具体变更。
-
-## 依赖项目影响
-
-- \`agentphilosophy_version\` 会写入依赖项目 \`.agents/agentphilosophy-state.yaml\`。
-- \`source_content_version\` 用于提示依赖项目是否需要同步新一轮中央内容。
-- 发版后运行 \`uv run sync.py status\` 查看 registry 中依赖项目是否 stale。
-
-## 验证
-
-- \`uv run ruff check .\`
-- \`uv run pytest -q\`
-- \`uv run sync.py validate\`
-- \`uv build\`
-- \`bash scripts/release-smoke.sh dist/agentphilosophy-${version}-py3-none-any.whl\`
-EOF
+uv run python scripts/generate-release-notes.py "$version" --content-version "$content_version"
 
 echo "Prepared AgentPhilosophy release v${version} with content_version ${content_version}."
 echo "Review dist/release-notes-v${version}.md before publishing."
