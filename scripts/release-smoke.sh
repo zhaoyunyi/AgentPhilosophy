@@ -58,6 +58,25 @@ target="$smoke_root/project"
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply >/dev/null
 
+optional_target="$smoke_root/project-with-philosophy-extraction"
+mkdir -p "$optional_target"
+cat >"$optional_target/.agentphilosophy.yaml" <<'YAML'
+project_name: PhilosophyExtractionSmoke
+project_type: orchestrator
+modules:
+  - aphilosophy
+  - skill-philosophy-extraction
+YAML
+"$smoke_root/venv/bin/agentphilosophy-sync" validate "$optional_target" >/dev/null
+"$smoke_root/venv/bin/agentphilosophy-sync" push "$optional_target" --dry-run >/dev/null
+"$smoke_root/venv/bin/agentphilosophy-sync" push "$optional_target" --apply >/dev/null
+test -f "$optional_target/skills/philosophy-extraction/SKILL.md"
+test -f "$optional_target/.codex/skills/philosophy-extraction/SKILL.md"
+cmp -s \
+  "$optional_target/skills/philosophy-extraction/SKILL.md" \
+  "$optional_target/.codex/skills/philosophy-extraction/SKILL.md"
+grep -q "不要直接改托管的 \`aphilosophy/\`" "$optional_target/skills/philosophy-extraction/SKILL.md"
+
 expected_content_version="$("$smoke_root/venv/bin/python" - <<'PY'
 from importlib.resources import files
 
