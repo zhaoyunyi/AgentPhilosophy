@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.4.4
+content_version: 0.4.5
 modules:
   - name: openspec-skills
     category: base
@@ -169,6 +169,14 @@ modules:
     outputs:
       - skills/repo-management/SKILL.md
       - .codex/skills/repo-management/SKILL.md
+    risk: low
+  - name: skill-philosophy-extraction
+    category: skill
+    description: 哲学文章脱水、操作性原则提取和 aphilosophy 冲突协议模板生成 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/philosophy-extraction/SKILL.md
+      - .codex/skills/philosophy-extraction/SKILL.md
     risk: low
   - name: skill-portless-local-dev
     category: skill
