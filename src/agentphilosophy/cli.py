@@ -79,6 +79,12 @@ def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
         default="full",
         help="Usage profile to print.",
     )
+    llm_usage.add_argument(
+        "--format",
+        choices=["markdown", "json"],
+        default="markdown",
+        help="Output format. JSON is currently available for --mode user-breakpoints.",
+    )
 
     status = subparsers.add_parser("status", help="Show registry or project status.")
     status.add_argument("--project")
@@ -91,7 +97,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     with resolve_source_root(args.source) as source_root:
         if args.command == "llm-usage":
-            path = llm_usage_path(source_root, args.mode)
+            path = llm_usage_path(source_root, args.mode, args.format)
+            if path is None:
+                report = Report()
+                report.error(f"LLM usage format not supported: mode={args.mode} format={args.format}")
+                print(report.format())
+                return 1
             if not path.is_file():
                 report = Report()
                 report.error(f"LLM usage document not found: {path}")

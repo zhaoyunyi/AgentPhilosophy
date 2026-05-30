@@ -9,6 +9,7 @@ def source_files(root: Path) -> list[Path]:
         root / "docs" / "cli-usage-for-llm.md",
         root / "docs" / "llm-usage-auto-config.md",
         root / "docs" / "llm-usage-user-breakpoints.md",
+        root / "docs" / "llm-usage-user-breakpoints.json",
     ]
     include_dirs = [
         root / "modules",

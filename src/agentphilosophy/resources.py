@@ -11,6 +11,13 @@ LLM_USAGE_MODE_REL_PATHS = {
     "auto-config": Path("docs/llm-usage-auto-config.md"),
     "user-breakpoints": Path("docs/llm-usage-user-breakpoints.md"),
 }
+LLM_USAGE_MODE_FORMAT_REL_PATHS = {
+    mode: {"markdown": path}
+    for mode, path in LLM_USAGE_MODE_REL_PATHS.items()
+}
+LLM_USAGE_MODE_FORMAT_REL_PATHS["user-breakpoints"]["json"] = Path(
+    "docs/llm-usage-user-breakpoints.json"
+)
 
 
 def is_central_source_root(path: Path) -> bool:
@@ -37,5 +44,8 @@ def resolve_source_root(source: str | None) -> Iterator[Path]:
         yield packaged_source
 
 
-def llm_usage_path(source_root: Path, mode: str = "full") -> Path:
-    return source_root / LLM_USAGE_MODE_REL_PATHS[mode]
+def llm_usage_path(source_root: Path, mode: str = "full", output_format: str = "markdown") -> Path | None:
+    rel_path = LLM_USAGE_MODE_FORMAT_REL_PATHS.get(mode, {}).get(output_format)
+    if rel_path is None:
+        return None
+    return source_root / rel_path

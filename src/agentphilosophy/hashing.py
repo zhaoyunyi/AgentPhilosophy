@@ -21,6 +21,10 @@ def source_tree_hash(source_root: Path) -> str:
     digest = hashlib.sha256()
     include_paths = [
         source_root / "catalog.yaml",
+        source_root / "docs" / "cli-usage-for-llm.md",
+        source_root / "docs" / "llm-usage-auto-config.md",
+        source_root / "docs" / "llm-usage-user-breakpoints.md",
+        source_root / "docs" / "llm-usage-user-breakpoints.json",
     ]
     include_dirs = [
         source_root / "modules",

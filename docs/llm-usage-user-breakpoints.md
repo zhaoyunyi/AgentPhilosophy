@@ -18,13 +18,17 @@ uv run sync.py llm-usage --mode auto-config
 
 ```bash
 uv run sync.py llm-usage --mode user-breakpoints
+uv run sync.py llm-usage --mode user-breakpoints --format json
 ```
 
 安装版 CLI 入口：
 
 ```bash
 agentphilosophy-sync llm-usage --mode user-breakpoints
+agentphilosophy-sync llm-usage --mode user-breakpoints --format json
 ```
+
+不传 `--format` 时默认输出 Markdown；`--format json` 输出机器可解析结构，供 agent 直接读取断点标题、推荐项、选项列表和 `reply_format`。
 
 ## 三、断点问题标准格式
 
@@ -45,7 +49,39 @@ agentphilosophy-sync llm-usage --mode user-breakpoints
 请回复选项编号或选项 id；如果要覆盖默认值，请同时给出具体值。
 ```
 
-当调用方需要机器可解析内容时，在 Markdown 后追加同义 YAML：
+当调用方需要机器可解析内容时，使用 `--format json`。JSON 结构与 Markdown 模板同义，完整数据由 CLI 输出：
+
+```json
+{
+  "mode": "user-breakpoints",
+  "format_version": 1,
+  "breakpoints": [
+    {
+      "id": "preset-selection",
+      "title": "选择 preset",
+      "recommended": {
+        "id": "fullstack",
+        "reason": "项目包含 Web、API、worker、部署或 OpenSpec 入口时默认选择更完整。"
+      },
+      "options": [
+        {
+          "id": "fullstack",
+          "label": "前后端、API、worker、部署或 OpenSpec 项目",
+          "impact": "写入 fullstack preset 默认 modules。"
+        },
+        {
+          "id": "frontend",
+          "label": "前端主导项目",
+          "impact": "写入 frontend preset 默认 modules。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    }
+  ]
+}
+```
+
+Markdown 中仍可追加同义 YAML，便于不调用 JSON 入口的 agent 读取：
 
 ```yaml
 breakpoint:

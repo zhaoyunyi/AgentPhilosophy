@@ -46,6 +46,12 @@ agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
 ```
 
+安装 `main` 最新内容后，还可以让 agent 直接读取用户断点结构化数据：
+
+```bash
+agentphilosophy-sync llm-usage --mode user-breakpoints --format json
+```
+
 如果目标项目已经有 `AGENTS.md`、`spec/` 或 `skills/` 等历史内容，先走迁移流程：
 
 ```bash
@@ -65,7 +71,7 @@ agentphilosophy-sync push /path/to/project --apply
 - [docs/release-process.md](docs/release-process.md)
 - [docs/guides/aphilosophy-methodology.md](docs/guides/aphilosophy-methodology.md)
 
-CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、可选 Portless 本地开发入口改造、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装。发版文档记录版本口径、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
+CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、可选 Portless 本地开发入口改造、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装；`llm-usage --mode user-breakpoints --format json` 用于 agent 直接读取断点标题、推荐项、选项列表和回复格式。发版文档记录版本口径、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
 
 ## 常用命令
 
@@ -76,6 +82,7 @@ uv run sync.py init /path/to/project --interactive
 uv run sync.py llm-usage
 uv run sync.py llm-usage --mode auto-config
 uv run sync.py llm-usage --mode user-breakpoints
+uv run sync.py llm-usage --mode user-breakpoints --format json
 uv run sync.py migrate /path/to/project
 uv run sync.py migrate /path/to/project --write-config
 uv run sync.py adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml

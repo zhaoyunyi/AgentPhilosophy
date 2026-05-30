@@ -22,6 +22,7 @@ agentphilosophy-sync validate
 agentphilosophy-sync llm-usage
 agentphilosophy-sync llm-usage --mode auto-config
 agentphilosophy-sync llm-usage --mode user-breakpoints
+agentphilosophy-sync llm-usage --mode user-breakpoints --format json
 agentphilosophy-sync init /path/to/project --preset fullstack
 agentphilosophy-sync push /path/to/project --dry-run
 ```
@@ -58,9 +59,10 @@ uv run sync.py validate /path/to/project
 uv run sync.py llm-usage
 uv run sync.py llm-usage --mode auto-config
 uv run sync.py llm-usage --mode user-breakpoints
+uv run sync.py llm-usage --mode user-breakpoints --format json
 ```
 
-`llm-usage` 默认输出完整 CLI 说明。`--mode auto-config` 输出“LLM 根据项目事实自动选择配置并安装”的精简协议；`--mode user-breakpoints` 输出“LLM 返回用户断点、由用户选择配置后再安装”的精简协议。用户没有明确授权自动选择配置时，优先使用 `user-breakpoints`，并让断点问题包含推荐项、选项影响和回复方式。
+`llm-usage` 默认输出完整 CLI 说明，输出格式默认为 Markdown。`--mode auto-config` 输出“LLM 根据项目事实自动选择配置并安装”的精简协议；`--mode user-breakpoints` 输出“LLM 返回用户断点、由用户选择配置后再安装”的精简协议。用户没有明确授权自动选择配置时，优先使用 `user-breakpoints`，并让断点问题包含推荐项、选项影响和回复方式。需要让 agent 直接读取断点标题、推荐项、选项列表和回复格式时，使用 `llm-usage --mode user-breakpoints --format json`。
 
 初始化新项目配置：
 

@@ -49,8 +49,23 @@ PY
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage >"$smoke_root/llm-usage.md"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode auto-config >"$smoke_root/llm-usage-auto-config.md"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode user-breakpoints >"$smoke_root/llm-usage-user-breakpoints.md"
+"$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode user-breakpoints --format json >"$smoke_root/llm-usage-user-breakpoints.json"
 grep -q "自动配置安装说明" "$smoke_root/llm-usage-auto-config.md"
 grep -q "用户断点配置说明" "$smoke_root/llm-usage-user-breakpoints.md"
+"$smoke_root/venv/bin/python" - "$smoke_root/llm-usage-user-breakpoints.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as handle:
+    payload = json.load(handle)
+
+assert payload["mode"] == "user-breakpoints"
+assert payload["format_version"] == 1
+assert payload["breakpoints"][0]["title"]
+assert payload["breakpoints"][0]["recommended"]["id"]
+assert payload["breakpoints"][0]["options"][0]["id"]
+assert payload["breakpoints"][0]["reply_format"]
+PY
 
 target="$smoke_root/project"
 "$smoke_root/venv/bin/agentphilosophy-sync" init "$target" --preset fullstack >/dev/null
