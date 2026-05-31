@@ -168,6 +168,16 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     assert "用户可见文案不得解释内部实现、上游供应商或产品内部边界" in agents_text
     assert "ExampleFullstackProject API key" in agents_text
 
+    claude_text = (target / "CLAUDE.md").read_text(encoding="utf-8")
+    assert "Codex CLI" not in claude_text
+    assert "主要工具" not in claude_text
+    assert "默认工具" not in claude_text
+    assert "项目类型" not in claude_text
+    assert "AgentPhilosophy 配置类型" in claude_text
+    assert "不代表项目没有 UI、前端、产品体验或用户流程" in claude_text
+    assert "遇到体验问题时，先定位相关代码、页面、截图、规格或用户流程" in claude_text
+    assert "以其中的项目协作规范为准" in claude_text
+
 
 def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:
     workdir = tmp_path / "workdir"
