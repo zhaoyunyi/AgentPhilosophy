@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:qltszsmyokwwqpmqsrzlrzmyvusuypwl
-source_tree_hash: sha256:36bcb63e3195937ca9fd7eb86765c69e7275163983d530eabfef5ccc26698500
+source_revision: jj:ronzxorymxmwqkovpxovlpoztrvvytpr
+source_tree_hash: sha256:bbb2f873024c679e265aaa7075eeeb4e46e43974c3a3c71b92c5ca5fb0d66e24
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -95,9 +95,9 @@ files:
   module: doc-templates
   output_id: claude-md
   strategy: layered
-  source_hash: sha256:3145ffb1fdabd52da36dd052b5f987c5e2c82a4549b1d12463fbbf5281ecc652
-  rendered_hash: sha256:8b03382989837597e39c38a29ce3b12553d5f557f1166a60ece43e55eefd9530
-  last_written_hash: sha256:8b03382989837597e39c38a29ce3b12553d5f557f1166a60ece43e55eefd9530
+  source_hash: sha256:a46a7123583bedc052b49fc826c0f1a92050cab805a293f9c97ba5972b9ec378
+  rendered_hash: sha256:51d1f19945585d945ed9b8497194d65012c6368929723295001ef608a543757b
+  last_written_hash: sha256:51d1f19945585d945ed9b8497194d65012c6368929723295001ef608a543757b
 - path: aphilosophy/architecture-conflict-resolution.md
   module: aphilosophy
   output_id: architecture-conflict-resolution
@@ -238,6 +238,6 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-05-30T23:40:39.451043+00:00'
+last_synced: '2026-05-31T14:49:50.053824+00:00'
 source_content_version: 0.4.6
 agentphilosophy_version: 0.4.4
