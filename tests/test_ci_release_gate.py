@@ -1,6 +1,19 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
+
+
+def _read_match(path: Path, pattern: str) -> str:
+    match = re.search(pattern, path.read_text(encoding="utf-8"), re.MULTILINE)
+    assert match is not None, f"{path} missing {pattern}"
+    return match.group(1)
+
+
+def _version_tuple(version: str) -> tuple[int, int, int]:
+    parts = version.split(".")
+    assert len(parts) == 3
+    return tuple(int(part) for part in parts)
 
 
 def test_ci_workflow_runs_release_gate_commands() -> None:
@@ -73,3 +86,40 @@ def test_release_scripts_have_prepare_and_publish_safety_gates() -> None:
     assert "gh release create" in publish
     assert "main is not synced to origin" in publish
     assert "dist/release-notes-v${version}.md" in publish
+
+
+def test_release_metadata_stays_in_a_publishable_state() -> None:
+    root = Path(__file__).resolve().parents[1]
+
+    cli_version = _read_match(root / "pyproject.toml", r'^version = "([0-9]+\.[0-9]+\.[0-9]+)"$')
+    package_version = _read_match(
+        root / "src" / "agentphilosophy" / "__init__.py",
+        r'^__version__ = "([0-9]+\.[0-9]+\.[0-9]+)"$',
+    )
+    readme_tag = _read_match(root / "README.md", r"AgentPhilosophy\.git@v([0-9]+\.[0-9]+\.[0-9]+)")
+    content_version = _read_match(root / "catalog.yaml", r"^content_version: ([0-9]+\.[0-9]+\.[0-9]+)$")
+    packaged_content_version = _read_match(
+        root / "src" / "agentphilosophy" / "default_source" / "catalog.yaml",
+        r"^content_version: ([0-9]+\.[0-9]+\.[0-9]+)$",
+    )
+    state_agentphilosophy_version = _read_match(
+        root / ".agents" / "agentphilosophy-state.yaml",
+        r"^agentphilosophy_version: ([0-9]+\.[0-9]+\.[0-9]+)$",
+    )
+    state_content_version = _read_match(
+        root / ".agents" / "agentphilosophy-state.yaml",
+        r"^source_content_version: ([0-9]+\.[0-9]+\.[0-9]+)$",
+    )
+    release_note_versions = [
+        _version_tuple(match.group(1))
+        for path in (root / "dist").glob("release-notes-v*.md")
+        if (match := re.fullmatch(r"release-notes-v([0-9]+\.[0-9]+\.[0-9]+)\.md", path.name))
+    ]
+
+    assert package_version == cli_version
+    assert readme_tag == cli_version
+    assert packaged_content_version == content_version
+    assert _version_tuple(content_version) <= _version_tuple(cli_version)
+    assert state_agentphilosophy_version == cli_version
+    assert state_content_version == content_version
+    assert max(release_note_versions) <= _version_tuple(cli_version)
