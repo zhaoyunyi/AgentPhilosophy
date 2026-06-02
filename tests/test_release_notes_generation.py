@@ -131,3 +131,86 @@ def test_generate_release_notes_reports_deleted_modules(tmp_path: Path) -> None:
 
     content = notes_path.read_text(encoding="utf-8")
     assert "`legacy`：删除模块，原 version `1.0.0`，旧模块。" in content
+
+
+def test_generate_release_notes_filters_state_managed_outputs_and_release_noise(tmp_path: Path) -> None:
+    generator = load_generator()
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git(repo, "init")
+    git(repo, "config", "user.email", "test@example.com")
+    git(repo, "config", "user.name", "Test User")
+
+    write(repo / "catalog.yaml", "schema_version: 1\ncontent_version: 0.4.4\nmodules:\n  - name: spec-bdd\n")
+    write(
+        repo / "modules" / "spec-bdd" / "module.yaml",
+        "name: spec-bdd\ndescription: BDD 协作规范\nversion: 1.0.0\n",
+    )
+    write(repo / "AGENTS.md", "# Agent 协作规范\n")
+    write(repo / "skills" / "repo-management" / "SKILL.md", "# repo-management\n")
+    write(repo / "spec" / "BDDSpec.md", "# BDD\n")
+    write(
+        repo / ".agents" / "agentphilosophy-state.yaml",
+        """schema_version: 1
+files:
+- path: AGENTS.md
+  module: doc-templates
+  strategy: layered
+- path: skills/repo-management/SKILL.md
+  module: skill-repo-management
+  strategy: managed_replace
+- path: spec/BDDSpec.md
+  module: spec-bdd
+  strategy: managed_replace
+""",
+    )
+    git(repo, "add", ".")
+    git(repo, "commit", "-m", "发布：准备 0.4.4")
+    git(repo, "tag", "v0.4.4")
+
+    write(repo / "scripts" / "generate-release-notes.py", "# release notes generator\n")
+    write(repo / "modules" / "spec-bdd" / "templates" / "BDDSpec.md.j2", "# BDD\n\n补充行为断言。\n")
+    write(repo / "docs" / "release-process.md", "# 发版流程\n\n聚焦可审阅摘要。\n")
+    write(repo / "tests" / "test_release_notes.py", "def test_notes():\n    assert True\n")
+    write(repo / "AGENTS.md", "# Agent 协作规范\n\n托管输出刷新。\n")
+    write(repo / "skills" / "repo-management" / "SKILL.md", "# repo-management\n\n托管输出刷新。\n")
+    write(repo / "spec" / "BDDSpec.md", "# BDD\n\n托管输出刷新。\n")
+    write(
+        repo / ".agents" / "agentphilosophy-state.yaml",
+        """schema_version: 1
+source_tree_hash: sha256:new
+files:
+- path: AGENTS.md
+  module: doc-templates
+  strategy: layered
+- path: skills/repo-management/SKILL.md
+  module: skill-repo-management
+  strategy: managed_replace
+- path: spec/BDDSpec.md
+  module: spec-bdd
+  strategy: managed_replace
+""",
+    )
+    write(repo / "docs" / ".DS_Store", "noise")
+    write(repo / "scripts" / "__pycache__" / "generate-release-notes.cpython-314.pyc", "noise")
+    write(repo / "src" / "agentphilosophy.egg-info" / "PKG-INFO", "noise")
+    write(repo / ".ruff_cache" / "CACHEDIR.TAG", "noise")
+    write(repo / ".omc" / "state" / "ralph-state.json", "{}")
+
+    notes_path = generator.generate_release_notes(repo, "0.4.5", "0.4.5")
+
+    content = notes_path.read_text(encoding="utf-8")
+    assert "本次版本相关 diff 涉及 `4` 个文件" in content
+    assert "scripts/generate-release-notes.py" in content
+    assert "modules/spec-bdd/templates/BDDSpec.md.j2" in content
+    assert "docs/release-process.md" in content
+    assert "tests/test_release_notes.py" in content
+    assert ".agents/agentphilosophy-state.yaml" not in content
+    assert "AGENTS.md" not in content
+    assert "skills/repo-management/SKILL.md" not in content
+    assert "spec/BDDSpec.md" not in content
+    assert ".DS_Store" not in content
+    assert "__pycache__" not in content
+    assert "agentphilosophy.egg-info" not in content
+    assert ".ruff_cache" not in content
+    assert ".omc/state/ralph-state.json" not in content

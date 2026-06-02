@@ -10,6 +10,22 @@ from typing import Any
 import yaml
 
 RELEASE_TAG_RE = re.compile(r"^v\d+\.\d+\.\d+$")
+RELEASE_NOISE_PATHS = {
+    ".agentphilosophy.yaml",
+    ".agents/agentphilosophy-state.yaml",
+}
+RELEASE_NOISE_PREFIXES = (
+    ".agents/",
+    ".omc/",
+    ".pytest_cache/",
+    ".ruff_cache/",
+    ".mypy_cache/",
+    ".venv/",
+    "dist/",
+)
+RELEASE_NOISE_PARTS = {"__pycache__"}
+RELEASE_NOISE_SUFFIXES = (".pyc", ".pyo")
+RELEASE_NOISE_BASENAMES = {".DS_Store"}
 
 
 def parse_version_tag(tag: str) -> tuple[int, int, int] | None:
@@ -34,6 +50,49 @@ def git_output(repo_root: Path, args: list[str]) -> str:
     if result.returncode != 0:
         return ""
     return result.stdout.strip()
+
+
+def normalize_change_path(path: str) -> str:
+    normalized = Path(path).as_posix()
+    while normalized.startswith("./"):
+        normalized = normalized[2:]
+    return normalized
+
+
+def managed_output_paths(repo_root: Path) -> set[str]:
+    state_path = repo_root / ".agents" / "agentphilosophy-state.yaml"
+    if not state_path.is_file():
+        return set()
+
+    state = read_yaml_text(state_path.read_text(encoding="utf-8"))
+    files = state.get("files") or []
+    managed_paths: set[str] = set()
+    for item in files:
+        if not isinstance(item, dict) or not item.get("path"):
+            continue
+        managed_paths.add(normalize_change_path(str(item["path"])))
+    return managed_paths
+
+
+def is_release_noise_path(path: str) -> bool:
+    normalized = normalize_change_path(path)
+    parts = normalized.split("/")
+    if normalized in RELEASE_NOISE_PATHS:
+        return True
+    if normalized.startswith(RELEASE_NOISE_PREFIXES):
+        return True
+    if any(part in RELEASE_NOISE_PARTS for part in parts):
+        return True
+    if any(part.endswith(".egg-info") for part in parts):
+        return True
+    if parts[-1] in RELEASE_NOISE_BASENAMES:
+        return True
+    return normalized.endswith(RELEASE_NOISE_SUFFIXES)
+
+
+def is_release_relevant_path(path: str, managed_paths: set[str]) -> bool:
+    normalized = normalize_change_path(path)
+    return normalized not in managed_paths and not is_release_noise_path(normalized)
 
 
 def is_ancestor(repo_root: Path, ancestor: str, descendant: str = "HEAD") -> bool:
@@ -67,13 +126,14 @@ def changed_files(repo_root: Path, base_ref: str | None) -> list[tuple[str, str]
     args.append("--")
 
     output = git_output(repo_root, args)
+    managed_paths = managed_output_paths(repo_root)
     changes: list[tuple[str, str]] = []
     for line in output.splitlines():
         parts = line.split("\t")
         if len(parts) < 2:
             continue
-        status, path = parts[0], parts[-1]
-        if path.startswith("dist/"):
+        status, path = parts[0], normalize_change_path(parts[-1])
+        if not is_release_relevant_path(path, managed_paths):
             continue
         changes.append((status, path))
 
@@ -82,8 +142,8 @@ def changed_files(repo_root: Path, base_ref: str | None) -> list[tuple[str, str]
     for line in status_output.splitlines():
         if not line.startswith("?? "):
             continue
-        path = line[3:]
-        if path.startswith("dist/") or path in tracked_paths:
+        path = normalize_change_path(line[3:])
+        if path in tracked_paths or not is_release_relevant_path(path, managed_paths):
             continue
         changes.append(("??", path))
     return changes
@@ -248,7 +308,7 @@ def dependency_impact_lines(
     changes: list[tuple[str, str]],
 ) -> list[str]:
     lines = [
-        "- `agentphilosophy_version` 会写入依赖项目 `.agents/agentphilosophy-state.yaml`。",
+        "- `agentphilosophy_version` 会写入依赖项目的同步状态。",
         "- `source_content_version` 用于提示依赖项目是否需要同步新一轮中央内容。",
     ]
     if version != content_version:
