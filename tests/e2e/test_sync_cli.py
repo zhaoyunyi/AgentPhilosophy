@@ -89,6 +89,7 @@ def test_cli_defaults_to_packaged_source_outside_central_repo(tmp_path: Path) ->
     assert result.returncode == 0, result.stderr + result.stdout
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     assert "- aphilosophy" in project_config
+    assert "- skill-improve-codebase-architecture" in project_config
 
 
 def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: Path) -> None:
@@ -200,6 +201,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "# AgentPhilosophy CLI 使用说明（给 LLM）" in result.stdout
     assert "skill-portless-local-dev" in result.stdout
     assert "skill-philosophy-extraction" in result.stdout
+    assert "skill-improve-codebase-architecture" in result.stdout
     assert "最低有效接入深度" in result.stdout
     assert "aphilosophy" in result.stdout
     assert "aphilosophy/cognitive-conflict-resolution.md" in result.stdout
@@ -216,6 +218,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "# AgentPhilosophy 自动配置安装说明（给 LLM）" in auto_result.stdout
     assert "停止自动写入，返回用户断点" in auto_result.stdout
     assert "skill-philosophy-extraction" in auto_result.stdout
+    assert "skill-improve-codebase-architecture" in auto_result.stdout
 
     breakpoint_result = subprocess.run(
         [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints"],
@@ -228,6 +231,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "# AgentPhilosophy 用户断点配置说明（给 LLM）" in breakpoint_result.stdout
     assert "reply_format: 回复选项编号或 id" in breakpoint_result.stdout
     assert "skill-philosophy-extraction" in breakpoint_result.stdout
+    assert "skill-improve-codebase-architecture" in breakpoint_result.stdout
 
     breakpoint_json_result = subprocess.run(
         [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints", "--format", "json"],
@@ -341,3 +345,48 @@ modules:
     assert "脱水" in repo_skill_text
     assert "不要直接改托管的 `aphilosophy/`" in repo_skill_text
     assert "modules/aphilosophy/templates/{domain}-conflict-resolution.md.j2" in repo_skill_text
+
+
+def test_optional_improve_codebase_architecture_skill_renders_from_default_source(tmp_path: Path) -> None:
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+    target = tmp_path / "target"
+    write(
+        target / ".agentphilosophy.yaml",
+        """
+project_name: DemoProject
+project_type: fullstack
+modules:
+  - skill-improve-codebase-architecture
+""".lstrip(),
+    )
+
+    commands = [
+        ["validate", str(target)],
+        ["push", str(target), "--dry-run"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    repo_skill = target / "skills" / "improve-codebase-architecture" / "SKILL.md"
+    codex_skill = target / ".codex" / "skills" / "improve-codebase-architecture" / "SKILL.md"
+    assert repo_skill.is_file()
+    assert codex_skill.is_file()
+    assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+    repo_skill_text = repo_skill.read_text(encoding="utf-8")
+    assert "Improve Codebase Architecture" in repo_skill_text
+    assert "AgentPhilosophy ArchitectureSpec" in repo_skill_text
+    assert "architecture-review-" in repo_skill_text
+    assert "你想先深入哪一个候选？" in repo_skill_text
