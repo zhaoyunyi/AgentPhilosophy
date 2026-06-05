@@ -121,6 +121,8 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
         "governance-conflict-resolution.md",
         "cognitive-conflict-resolution.md",
         "authority-conflict-resolution.md",
+        "operational-conflict-resolution.md",
+        "security-conflict-resolution.md",
     }
     generated_docs = {
         path.name
@@ -131,6 +133,14 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
     state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
     for doc_name in expected_docs:
         assert f"aphilosophy/{doc_name}" in state
+
+    operational_text = (target / "aphilosophy" / "operational-conflict-resolution.md").read_text(encoding="utf-8")
+    assert "运行态冲突解决协议" in operational_text
+    assert "架构层独立性" in operational_text
+
+    security_text = (target / "aphilosophy" / "security-conflict-resolution.md").read_text(encoding="utf-8")
+    assert "安全对抗冲突解决协议" in security_text
+    assert "欺骗性对齐检测" in security_text
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
