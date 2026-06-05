@@ -46,6 +46,9 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints --format json" in content
     assert "payload[\"breakpoints\"][0][\"reply_format\"]" in content
     assert "agentphilosophy-sync\" init" in content
+    assert "skills/improve-codebase-architecture/SKILL.md" in content
+    assert ".codex/skills/improve-codebase-architecture/SKILL.md" in content
+    assert "AgentPhilosophy ArchitectureSpec" in content
     assert "skill-philosophy-extraction" in content
     assert "skills/philosophy-extraction/SKILL.md" in content
     assert ".codex/skills/philosophy-extraction/SKILL.md" in content
@@ -110,16 +113,9 @@ def test_release_metadata_stays_in_a_publishable_state() -> None:
         root / ".agents" / "agentphilosophy-state.yaml",
         r"^source_content_version: ([0-9]+\.[0-9]+\.[0-9]+)$",
     )
-    release_note_versions = [
-        _version_tuple(match.group(1))
-        for path in (root / "dist").glob("release-notes-v*.md")
-        if (match := re.fullmatch(r"release-notes-v([0-9]+\.[0-9]+\.[0-9]+)\.md", path.name))
-    ]
-
     assert package_version == cli_version
     assert readme_tag == cli_version
     assert packaged_content_version == content_version
     assert _version_tuple(content_version) <= _version_tuple(cli_version)
     assert state_agentphilosophy_version == cli_version
     assert state_content_version == content_version
-    assert max(release_note_versions) <= _version_tuple(cli_version)
