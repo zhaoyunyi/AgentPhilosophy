@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:ppklynqooqmqoptnlppwxnsmtnqxywun
-source_tree_hash: sha256:bbb2f873024c679e265aaa7075eeeb4e46e43974c3a3c71b92c5ca5fb0d66e24
+source_revision: jj:lsroqpqykvvzsvrtstnmqqnpmluuklss
+source_tree_hash: sha256:46a1eadc6732838d3a31c08e418bd0db0e6b27a9423525580e149a19e92cca59
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -19,6 +19,7 @@ modules:
   skill-target-jj: 1.1.0
   skill-coding-standards: 1.1.0
   skill-repo-management: 1.1.0
+  skill-improve-codebase-architecture: 1.0.0
   aphilosophy: 1.4.0
 files:
 - path: .codex/skills/agentphilosophy-sync/SKILL.md
@@ -35,6 +36,13 @@ files:
   source_hash: sha256:8295c770c8bd0c4edf3b5cb6e04d3118b67ed5c5ae94fe84513baa6e17520627
   rendered_hash: sha256:488d8aa0c6f683d27ac8505ecc05ef698d3dbd843c533df52db8f1d61e42a264
   last_written_hash: sha256:488d8aa0c6f683d27ac8505ecc05ef698d3dbd843c533df52db8f1d61e42a264
+- path: .codex/skills/improve-codebase-architecture/SKILL.md
+  module: skill-improve-codebase-architecture
+  output_id: improve-codebase-architecture-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:44c2d535bedcf5233aefad5f86b02947874d78b80b89bc4a266ec3a9229cb1d6
+  rendered_hash: sha256:4fd9464fee640dcc47b63d93a8a233a5d126eda6d4403933182758378172a114
+  last_written_hash: sha256:4fd9464fee640dcc47b63d93a8a233a5d126eda6d4403933182758378172a114
 - path: .codex/skills/jj-management/SKILL.md
   module: skill-jj-management
   output_id: jj-management-codex-skill
@@ -147,6 +155,13 @@ files:
   source_hash: sha256:8295c770c8bd0c4edf3b5cb6e04d3118b67ed5c5ae94fe84513baa6e17520627
   rendered_hash: sha256:488d8aa0c6f683d27ac8505ecc05ef698d3dbd843c533df52db8f1d61e42a264
   last_written_hash: sha256:488d8aa0c6f683d27ac8505ecc05ef698d3dbd843c533df52db8f1d61e42a264
+- path: skills/improve-codebase-architecture/SKILL.md
+  module: skill-improve-codebase-architecture
+  output_id: improve-codebase-architecture-skill
+  strategy: managed_replace
+  source_hash: sha256:44c2d535bedcf5233aefad5f86b02947874d78b80b89bc4a266ec3a9229cb1d6
+  rendered_hash: sha256:4fd9464fee640dcc47b63d93a8a233a5d126eda6d4403933182758378172a114
+  last_written_hash: sha256:4fd9464fee640dcc47b63d93a8a233a5d126eda6d4403933182758378172a114
 - path: skills/jj-management/SKILL.md
   module: skill-jj-management
   output_id: jj-management-skill
@@ -238,6 +253,6 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-06-02T10:37:59.585174+00:00'
-source_content_version: 0.4.6
-agentphilosophy_version: 0.4.6
+last_synced: '2026-06-05T14:47:58.444105+00:00'
+source_content_version: 0.4.7
+agentphilosophy_version: 0.4.7
