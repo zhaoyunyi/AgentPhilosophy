@@ -1,6 +1,6 @@
 name: aphilosophy
-description: Agent 哲学决策框架——元决策原则、架构设计、治理、认知与权限对齐冲突解决协议
-version: 1.4.0
+description: Agent 哲学决策框架——元决策原则、架构、治理、认知、权限对齐、运行态与安全对抗冲突解决协议
+version: 1.6.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
@@ -10,6 +10,8 @@ provides:
   - philosophy:governance-conflicts
   - philosophy:cognitive-conflicts
   - philosophy:authority-conflicts
+  - philosophy:operational-conflicts
+  - philosophy:security-conflicts
 outputs:
   - id: meta-decision-principles
     type: rendered_file
@@ -39,5 +41,17 @@ outputs:
     type: rendered_file
     template: templates/authority-conflict-resolution.md.j2
     target: "{{ paths.philosophy_dir | default('aphilosophy') }}/authority-conflict-resolution.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: operational-conflict-resolution
+    type: rendered_file
+    template: templates/operational-conflict-resolution.md.j2
+    target: "{{ paths.philosophy_dir | default('aphilosophy') }}/operational-conflict-resolution.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: security-conflict-resolution
+    type: rendered_file
+    template: templates/security-conflict-resolution.md.j2
+    target: "{{ paths.philosophy_dir | default('aphilosophy') }}/security-conflict-resolution.md"
     strategy: managed_replace
     on_existing_unmanaged: report_only
