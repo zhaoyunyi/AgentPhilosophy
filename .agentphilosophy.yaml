@@ -25,6 +25,7 @@ modules:
 - skill-target-jj
 - skill-coding-standards
 - skill-repo-management
+- skill-improve-codebase-architecture
 - aphilosophy
 vars:
   primary_tool: Codex CLI

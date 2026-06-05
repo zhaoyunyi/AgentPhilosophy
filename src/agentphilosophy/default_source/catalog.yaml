@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.4.6
+content_version: 0.4.7
 modules:
   - name: openspec-skills
     category: base
@@ -185,6 +185,14 @@ modules:
     outputs:
       - skills/portless-local-dev/SKILL.md
       - .codex/skills/portless-local-dev/SKILL.md
+    risk: low
+  - name: skill-improve-codebase-architecture
+    category: skill
+    description: 代码库架构加深评审、浅模块识别和重构候选报告 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/improve-codebase-architecture/SKILL.md
+      - .codex/skills/improve-codebase-architecture/SKILL.md
     risk: low
   - name: aphilosophy
     category: philosophy
