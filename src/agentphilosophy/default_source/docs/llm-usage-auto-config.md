@@ -54,6 +54,9 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 需要 OpenSpec、proposal、tasks 或 spec-first 交付 | 保留或加入 `openspec-skills` |
 | Git 仓库尚未使用 jj，且项目规则要求 jj | 先确认 `jj` 可用，再初始化 colocated jj |
 | 目标项目需要 Codex 原生 skill discovery | 保持 `skill_targets.codex_project: .codex/skills` |
+| 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-improve-codebase-architecture`，同步生成架构评审项目级 skill |
+| 旧项目需要长期复用架构评审、重构候选或可测试性改造流程 | 追加 `skill-improve-codebase-architecture`，再同步生成 repo skills 和 Codex 项目级 skill |
+| 旧项目只是执行已经明确的局部改动，不需要沉淀架构评审流程 | 不主动追加 `skill-improve-codebase-architecture` |
 | 只有一次性本地浏览器验收或临时端口冲突 | 不修改 `.agentphilosophy.yaml`，只记录一次性 Portless 使用 |
 | 团队需要长期复用 Portless 规则 | 追加 `skill-portless-local-dev`，再同步生成项目级 skill |
 | 没有本地 Web/API/移动调试服务 | 不加入 Portless 相关模块 |

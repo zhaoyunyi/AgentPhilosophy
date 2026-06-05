@@ -23,7 +23,7 @@ uv run sync.py push /path/to/project --apply
 安装后的 CLI 默认使用包内规范源；只有需要指定自定义中央源时才传 `--source`。
 
 ```bash
-uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git@v0.4.6
+uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git@v0.4.7
 ```
 
 需要跟随 `main` 最新内容时再使用：
@@ -32,7 +32,7 @@ uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git@v0.4.6
 uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git
 ```
 
-未发布到稳定 tag 的内容源更新（例如新增可选模块 `skill-philosophy-extraction`）需要安装 `main` 最新内容；固定 tag 只代表对应 release 已包含的内容源。
+后续未发布到稳定 tag 的内容源更新需要安装 `main` 最新内容；固定 tag 只代表对应 release 已包含的内容源。
 
 安装后：
 
@@ -71,7 +71,7 @@ agentphilosophy-sync push /path/to/project --apply
 - [docs/release-process.md](docs/release-process.md)
 - [docs/guides/aphilosophy-methodology.md](docs/guides/aphilosophy-methodology.md)
 
-CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、可选 Portless 本地开发入口改造、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装；`llm-usage --mode user-breakpoints --format json` 用于 agent 直接读取断点标题、推荐项、选项列表和回复格式。发版文档记录版本口径、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
+CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、`skill-improve-codebase-architecture` 架构评审 skill、可选 Portless 本地开发入口改造、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装；`llm-usage --mode user-breakpoints --format json` 用于 agent 直接读取断点标题、推荐项、选项列表和回复格式。发版文档记录版本口径、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
 
 ## 常用命令
 
