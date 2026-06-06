@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:lsroqpqykvvzsvrtstnmqqnpmluuklss
-source_tree_hash: sha256:46a1eadc6732838d3a31c08e418bd0db0e6b27a9423525580e149a19e92cca59
+source_revision: jj:pywpzwzmpwvvtsryyvzyozznmquwoxsw
+source_tree_hash: sha256:8c5d741305bd3bbb6579303cf4177de4e0185edba7e990fe63ae7357202282a5
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -20,7 +20,7 @@ modules:
   skill-coding-standards: 1.1.0
   skill-repo-management: 1.1.0
   skill-improve-codebase-architecture: 1.0.0
-  aphilosophy: 1.4.0
+  aphilosophy: 1.6.0
 files:
 - path: .codex/skills/agentphilosophy-sync/SKILL.md
   module: skill-agentphilosophy-sync
@@ -117,30 +117,44 @@ files:
   module: aphilosophy
   output_id: authority-conflict-resolution
   strategy: managed_replace
-  source_hash: sha256:cc7682a1b25a71d3b58949af6f583d6e071a93b070b5c8c784aafe9fab786261
-  rendered_hash: sha256:cc7682a1b25a71d3b58949af6f583d6e071a93b070b5c8c784aafe9fab786261
-  last_written_hash: sha256:cc7682a1b25a71d3b58949af6f583d6e071a93b070b5c8c784aafe9fab786261
+  source_hash: sha256:6056a45f71be17d9e1a2c8d6f89200c69b8c1c0c849ffd4a270a165ab61017bd
+  rendered_hash: sha256:6056a45f71be17d9e1a2c8d6f89200c69b8c1c0c849ffd4a270a165ab61017bd
+  last_written_hash: sha256:6056a45f71be17d9e1a2c8d6f89200c69b8c1c0c849ffd4a270a165ab61017bd
 - path: aphilosophy/cognitive-conflict-resolution.md
   module: aphilosophy
   output_id: cognitive-conflict-resolution
   strategy: managed_replace
-  source_hash: sha256:61402b168308ca5a6110aa466b18d18fd6e2513c0bf441f6360c055bc441525c
-  rendered_hash: sha256:61402b168308ca5a6110aa466b18d18fd6e2513c0bf441f6360c055bc441525c
-  last_written_hash: sha256:61402b168308ca5a6110aa466b18d18fd6e2513c0bf441f6360c055bc441525c
+  source_hash: sha256:07d8694ba4b89de6d227ab5bab2347a01a2b83f9f51754d0d65630701620e2f1
+  rendered_hash: sha256:07d8694ba4b89de6d227ab5bab2347a01a2b83f9f51754d0d65630701620e2f1
+  last_written_hash: sha256:07d8694ba4b89de6d227ab5bab2347a01a2b83f9f51754d0d65630701620e2f1
 - path: aphilosophy/governance-conflict-resolution.md
   module: aphilosophy
   output_id: governance-conflict-resolution
   strategy: managed_replace
-  source_hash: sha256:f0fa68202edd52b0261209f77b8a1fceccd28d840a89f3b17f27d5d8fd0eb51f
-  rendered_hash: sha256:f0fa68202edd52b0261209f77b8a1fceccd28d840a89f3b17f27d5d8fd0eb51f
-  last_written_hash: sha256:f0fa68202edd52b0261209f77b8a1fceccd28d840a89f3b17f27d5d8fd0eb51f
+  source_hash: sha256:e93cbb12b12f2e0c3b6f6add971ae2cabeb655ce779e543e0903a11c51a2d89e
+  rendered_hash: sha256:e93cbb12b12f2e0c3b6f6add971ae2cabeb655ce779e543e0903a11c51a2d89e
+  last_written_hash: sha256:e93cbb12b12f2e0c3b6f6add971ae2cabeb655ce779e543e0903a11c51a2d89e
 - path: aphilosophy/meta-decision-principles.md
   module: aphilosophy
   output_id: meta-decision-principles
   strategy: managed_replace
-  source_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
-  rendered_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
-  last_written_hash: sha256:79ed59f6d9827f69b6e3ca60ac258103b876e499aa76a3169b2e266840c56aab
+  source_hash: sha256:27189c265ed80ad12761ba3f091dd0fd201dae9147485efec4a44acc110a621c
+  rendered_hash: sha256:27189c265ed80ad12761ba3f091dd0fd201dae9147485efec4a44acc110a621c
+  last_written_hash: sha256:27189c265ed80ad12761ba3f091dd0fd201dae9147485efec4a44acc110a621c
+- path: aphilosophy/operational-conflict-resolution.md
+  module: aphilosophy
+  output_id: operational-conflict-resolution
+  strategy: managed_replace
+  source_hash: sha256:c56a01bacba0259af8396917c7cbdb0bb74631171e321e24a9104aa7b25016eb
+  rendered_hash: sha256:c56a01bacba0259af8396917c7cbdb0bb74631171e321e24a9104aa7b25016eb
+  last_written_hash: sha256:c56a01bacba0259af8396917c7cbdb0bb74631171e321e24a9104aa7b25016eb
+- path: aphilosophy/security-conflict-resolution.md
+  module: aphilosophy
+  output_id: security-conflict-resolution
+  strategy: managed_replace
+  source_hash: sha256:f46acc67e79a85a99e6c1da64f8e5389e8a9393acb4d66ba83c1e60085499cc8
+  rendered_hash: sha256:f46acc67e79a85a99e6c1da64f8e5389e8a9393acb4d66ba83c1e60085499cc8
+  last_written_hash: sha256:f46acc67e79a85a99e6c1da64f8e5389e8a9393acb4d66ba83c1e60085499cc8
 - path: skills/agentphilosophy-sync/SKILL.md
   module: skill-agentphilosophy-sync
   output_id: agentphilosophy-sync-skill
@@ -253,6 +267,6 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-06-05T14:47:58.444105+00:00'
-source_content_version: 0.4.7
-agentphilosophy_version: 0.4.7
+last_synced: '2026-06-06T03:21:28.772021+00:00'
+source_content_version: 0.4.8
+agentphilosophy_version: 0.4.8
