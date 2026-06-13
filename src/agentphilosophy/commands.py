@@ -303,10 +303,10 @@ def build_push_plan(source_root: Path, project_root: Path) -> tuple[Report, list
                 plan.append(PlannedAction(output, "conflict", "managed file is not a regular file"))
             else:
                 current_hash = sha256_file(target)
-                if current_hash != record.get("last_written_hash"):
-                    plan.append(PlannedAction(output, "conflict", "managed file was changed manually"))
-                elif current_hash == output.rendered_hash:
+                if current_hash == output.rendered_hash:
                     plan.append(PlannedAction(output, "skip", "already up to date"))
+                elif current_hash != record.get("last_written_hash"):
+                    plan.append(PlannedAction(output, "conflict", "managed file was changed manually"))
                 else:
                     plan.append(PlannedAction(output, "update"))
         elif output.strategy == "init_only":
