@@ -1,0 +1,23 @@
+# AgentPhilosophy 文档索引
+
+本索引用于定位 `docs/` 下长期有效的项目文档。新增、迁移或沉淀长期文档时，必须在同一轮改动中更新本文件；测试会检查每个 `docs/**/*.md` 是否出现在这里，避免正文有变更但没有入口。
+
+## CLI 与同步说明
+
+- [docs/cli-usage-for-llm.md](cli-usage-for-llm.md)：给 LLM 或自动化 agent 的完整 CLI 操作说明，覆盖接入、迁移、同步、可选模块和写入前校验。
+- [docs/llm-usage-auto-config.md](llm-usage-auto-config.md)：用户授权 agent 自动判断接入方案时使用的精简协议。
+- [docs/llm-usage-user-breakpoints.md](llm-usage-user-breakpoints.md)：需要用户选择 preset、模块或路径时使用的断点协议。
+- [docs/llm-usage-user-breakpoints.json](llm-usage-user-breakpoints.json)：用户断点协议的机器可读结构，供 agent 直接解析选项和回复格式。
+
+## 发布与运维
+
+- [docs/release-process.md](release-process.md)：AgentPhilosophy CLI 和中央内容源的发版、版本口径、发布校验和依赖项目更新判断。
+
+## 指南
+
+- [docs/guides/aphilosophy-methodology.md](guides/aphilosophy-methodology.md)：维护或扩展 `aphilosophy/` 决策框架时使用的方法论和成果索引。
+- [docs/guides/value-specification-audit.md](guides/value-specification-audit.md)：面向开发者的价值规约审计指南，用于检查规则本身是否可信。
+
+## 设计与计划
+
+- [docs/plans/2026-05-10-agent-philosophy-design.md](plans/2026-05-10-agent-philosophy-design.md)：AgentPhilosophy 统一 Agent 规范管理系统的设计文档。

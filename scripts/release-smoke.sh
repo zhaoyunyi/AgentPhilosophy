@@ -72,6 +72,13 @@ target="$smoke_root/project"
 "$smoke_root/venv/bin/agentphilosophy-sync" validate "$target" >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply >/dev/null
+grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"
+test -f "$target/skills/ponytail/SKILL.md"
+test -f "$target/.codex/skills/ponytail/SKILL.md"
+cmp -s \
+  "$target/skills/ponytail/SKILL.md" \
+  "$target/.codex/skills/ponytail/SKILL.md"
+grep -q "DietrichGebert/ponytail" "$target/skills/ponytail/SKILL.md"
 test -f "$target/skills/improve-codebase-architecture/SKILL.md"
 test -f "$target/.codex/skills/improve-codebase-architecture/SKILL.md"
 cmp -s \

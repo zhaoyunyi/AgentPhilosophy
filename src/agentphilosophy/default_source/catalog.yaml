@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.4.8
+content_version: 0.4.9
 modules:
   - name: openspec-skills
     category: base
@@ -185,6 +185,14 @@ modules:
     outputs:
       - skills/portless-local-dev/SKILL.md
       - .codex/skills/portless-local-dev/SKILL.md
+    risk: low
+  - name: skill-ponytail
+    category: skill
+    description: Ponytail 精简编码阶梯、复用优先和不过度工程项目级 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/ponytail/SKILL.md
+      - .codex/skills/ponytail/SKILL.md
     risk: low
   - name: skill-improve-codebase-architecture
     category: skill

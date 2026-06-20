@@ -193,6 +193,7 @@ modules:
   - skill-target-jj
   - skill-coding-standards
   - skill-repo-management
+  - skill-ponytail
   - skill-improve-codebase-architecture
   - aphilosophy
 
@@ -324,7 +325,50 @@ portless alias api.myapp 8080
 portless alias --remove api.myapp
 ```
 
-## 六、架构加深评审 skill
+## 六、Ponytail 精简编码 skill
+
+Ponytail 上游仓库：https://github.com/DietrichGebert/ponytail
+
+当前中央源默认 preset 会包含 `skill-ponytail`。该模块会同步生成 `skills/ponytail/SKILL.md` 和 `.codex/skills/ponytail/SKILL.md`，用于让 agent 在新增功能、修 bug、重构或改配置前先判断是否真的需要写代码、能否复用标准库/平台能力/既有依赖，并避免过度工程。
+
+该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装上游 Codex 插件或全局 hook。目标项目只要通过 AgentPhilosophy 同步拿到 `skills/ponytail` 和 `.codex/skills/ponytail`，Codex 原生 skill discovery 就能在项目内触发；如果用户明确要求使用上游插件能力，再按上游仓库说明单独安装。
+
+Ponytail 的默认判断顺序：
+
+1. 能不写就不写。
+2. 能用语言标准库、框架原生能力、CLI 内置参数或系统工具，就不新增项目代码。
+3. 能用项目已有依赖、脚本或 helper，就不新增依赖。
+4. 能小改就小改，把变更限制在最接近需求的模块里。
+5. 只有重复行为真实出现时才抽象。
+6. 只有边界清楚且能隐藏复杂度时才新增模块。
+
+Ponytail 不能用来削减验证、错误处理、安全、可访问性、用户可见流程、BDD/TDD 或项目已有架构边界；它约束的是“少写不必要代码”，不是降低工程标准。
+
+已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到该 skill 时，把模块追加到现有 `modules`，不要替换已有模块：
+
+```yaml
+modules:
+  - existing-module
+  - skill-ponytail
+```
+
+随后执行标准同步流程：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
+同步后验证：
+
+```bash
+find -L /path/to/project/.codex/skills/ponytail -name SKILL.md -print
+find -L /path/to/project/skills/ponytail -name SKILL.md -print
+```
+
+## 七、架构加深评审 skill
 
 当前中央源默认 preset 会包含 `skill-improve-codebase-architecture`。该模块会同步生成 `skills/improve-codebase-architecture/SKILL.md` 和 `.codex/skills/improve-codebase-architecture/SKILL.md`，用于让 agent 在用户要求改进架构、寻找重构机会、合并紧耦合模块、提高可测试性或让代码库更容易被 agent 导航时，先做只读架构评审报告。
 
@@ -359,7 +403,7 @@ find -L /path/to/project/.codex/skills/improve-codebase-architecture -name SKILL
 find -L /path/to/project/skills/improve-codebase-architecture -name SKILL.md -print
 ```
 
-## 七、Agent 哲学决策框架
+## 八、Agent 哲学决策框架
 
 `aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
 
@@ -388,7 +432,7 @@ agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
 ```
 
-## 八、Registry 文件
+## 九、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
@@ -409,7 +453,7 @@ projects:
     path: /absolute/path/to/ExampleProject
 ```
 
-## 九、新项目接入流程
+## 十、新项目接入流程
 
 1. 选择 preset。
 2. 生成 `.agentphilosophy.yaml`。
@@ -432,7 +476,7 @@ uv run sync.py status --project /path/to/project
 uv run sync.py init /path/to/project --interactive
 ```
 
-## 九、老项目迁移流程
+## 十一、老项目迁移流程
 
 `migrate` 只做盘点，不会生成正式 `.agentphilosophy.yaml`，也不会覆盖项目已有文件。
 
@@ -458,7 +502,7 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
-## 十、安全边界
+## 十二、安全边界
 
 - `push` 不带 `--apply` 时不写目标项目文件；`--dry-run` 是推荐显式写法。
 - `push --apply` 也不会覆盖未托管的既有文件；遇到冲突会写候选文件到迁移目录。
@@ -469,10 +513,11 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 十一、LLM 执行规则
+## 十三、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。
+- 在目标项目新增、迁移或沉淀长期有效文档时，必须同时检查主 `AGENTS.md` 或其 layered custom 源是否索引该文档或目录；`docs/` 下的指南、运维记录、问题复盘和部署说明还应更新项目文档索引，例如 `docs/README.md`。若 `AGENTS.md` 是 AgentPhilosophy layered 输出，优先写 `.agents/custom/AGENTS.custom.md` 后再 `push --apply`，不要直接手工改托管结果。
 - 读取 `aphilosophy/` 文档应按场景触发，不要把它们当成每次任务的必读上下文。
 - 执行可选参数前先看对应 `--help`；帮助里没有的参数不要执行。
 - 如果 CLI 输出 `[error]`，停止写入并回报具体错误。

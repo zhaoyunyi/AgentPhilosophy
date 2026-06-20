@@ -61,3 +61,24 @@ def test_default_source_has_no_known_content_merge_artifacts() -> None:
                 offenders.append(f"{path.relative_to(root)} contains {fragment}")
 
     assert offenders == []
+
+
+def test_long_lived_docs_are_listed_in_docs_index() -> None:
+    root = Path(__file__).resolve().parents[1]
+    index = root / "docs" / "README.md"
+
+    assert index.is_file()
+    index_text = index.read_text(encoding="utf-8")
+
+    docs = sorted(
+        path
+        for path in (root / "docs").rglob("*.md")
+        if path.name != "README.md"
+    )
+    missing = [
+        path.relative_to(root).as_posix()
+        for path in docs
+        if path.relative_to(root).as_posix() not in index_text
+    ]
+
+    assert missing == []

@@ -46,6 +46,10 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints --format json" in content
     assert "payload[\"breakpoints\"][0][\"reply_format\"]" in content
     assert "agentphilosophy-sync\" init" in content
+    assert "skill-ponytail" in content
+    assert "skills/ponytail/SKILL.md" in content
+    assert ".codex/skills/ponytail/SKILL.md" in content
+    assert "DietrichGebert/ponytail" in content
     assert "skills/improve-codebase-architecture/SKILL.md" in content
     assert ".codex/skills/improve-codebase-architecture/SKILL.md" in content
     assert "AgentPhilosophy ArchitectureSpec" in content
