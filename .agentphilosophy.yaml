@@ -25,6 +25,7 @@ modules:
 - skill-target-jj
 - skill-coding-standards
 - skill-repo-management
+- skill-ponytail
 - skill-improve-codebase-architecture
 - aphilosophy
 vars:
