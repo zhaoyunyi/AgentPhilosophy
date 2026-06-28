@@ -12,6 +12,7 @@ KNOWN_OUTPUT_TYPES = {"rendered_file", "fragment", "copy_file", "copy_tree"}
 KNOWN_STRATEGIES = {"managed_replace", "layered", "init_only", "report_only"}
 KNOWN_UNMANAGED_POLICIES = {"fail", "warn", "report_only"}
 CONTENT_VERSION_PATTERN = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
+UPSTREAM_REVISION_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 
 
 @dataclass(frozen=True)
@@ -84,6 +85,7 @@ def validate_module_shape(module: Module, all_modules: set[str], report: Report)
     data = module.data
     if not data.get("name"):
         report.error(f"{module.root}/module.yaml missing name")
+    validate_module_upstream(module, report)
 
     outputs = data.get("outputs")
     if outputs is None:
@@ -146,6 +148,39 @@ def validate_module_shape(module: Module, all_modules: set[str], report: Report)
     for conflict in data.get("conflicts") or []:
         if conflict not in all_modules:
             report.warn(f"module {module.name} conflict references unknown module: {conflict}")
+
+
+def validate_module_upstream(module: Module, report: Report) -> None:
+    upstream = module.data.get("upstream")
+    if upstream is None:
+        return
+    if not isinstance(upstream, dict):
+        report.error(f"module {module.name} upstream must be a mapping")
+        return
+
+    repository = upstream.get("repository")
+    if not repository:
+        report.error(f"module {module.name} upstream missing repository")
+    elif not isinstance(repository, str):
+        report.error(f"module {module.name} upstream repository must be a string")
+
+    ref = upstream.get("ref")
+    if not ref:
+        report.error(f"module {module.name} upstream missing ref")
+    elif not isinstance(ref, str):
+        report.error(f"module {module.name} upstream ref must be a string")
+
+    revision = upstream.get("revision")
+    if not revision:
+        report.error(f"module {module.name} upstream missing revision")
+    elif not isinstance(revision, str) or not UPSTREAM_REVISION_PATTERN.fullmatch(revision):
+        report.error(f"module {module.name} upstream revision must be a 40 character git SHA")
+
+    tracked_paths = upstream.get("tracked_paths")
+    if not isinstance(tracked_paths, list) or not tracked_paths:
+        report.error(f"module {module.name} upstream tracked_paths must be a non-empty list")
+    elif any(not isinstance(path, str) or not path for path in tracked_paths):
+        report.error(f"module {module.name} upstream tracked_paths entries must be non-empty strings")
 
 
 def validate_catalog(source_root: Path, modules: dict[str, Module], report: Report) -> None:

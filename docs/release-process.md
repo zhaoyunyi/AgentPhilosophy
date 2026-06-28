@@ -9,6 +9,7 @@ AgentPhilosophy 发版同时关注三类版本：
 - `agentphilosophy_version`：CLI release 版本，来自 `pyproject.toml` 与 `src/agentphilosophy/__init__.py`。
 - `source_content_version`：中央内容源版本，来自仓库根目录 `catalog.yaml` 与包内 `src/agentphilosophy/default_source/catalog.yaml`。
 - module `version`：单个模块版本，来自各 `modules/*/module.yaml`。
+- module `upstream.revision`：外部来源 skill 的上游 Git revision，来自各 `modules/*/module.yaml` 的 `upstream` 区块。
 
 默认规则：
 
@@ -24,6 +25,14 @@ AgentPhilosophy 发版同时关注三类版本：
 jj status
 jj bookmark list --all
 ```
+
+检查外部来源 skill 是否有上游更新：
+
+```bash
+uv run python scripts/check-skill-upstreams.py
+```
+
+如果出现 `[stale]`，先审查对应模块的 `upstream.tracked_paths`，再更新 skill 模板、模块版本、`upstream.revision`、文档和测试。没有计划跟进的上游变化，需要在 release notes 或 change 描述里说明暂不更新的原因。
 
 准备下一个版本，例如 `0.3.2`：
 

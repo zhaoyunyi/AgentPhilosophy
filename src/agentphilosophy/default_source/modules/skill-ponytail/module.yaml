@@ -1,9 +1,16 @@
 name: skill-ponytail
 description: Ponytail 精简编码阶梯、复用优先和不过度工程项目级 skill
-version: 1.0.0
+version: 1.0.1
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
+upstream:
+  repository: https://github.com/DietrichGebert/ponytail
+  ref: main
+  revision: c4d1925ae9b76a1b641877328209ad25cfeb5ef2
+  tracked_paths:
+    - README.md
+    - skills/ponytail/SKILL.md
 provides:
   - skill:ponytail
 outputs:

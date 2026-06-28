@@ -1,9 +1,16 @@
 name: skill-portless-local-dev
 description: Portless 稳定本地 URL、按需安装、项目脚本改造和本地验收入口 skill
-version: 1.1.0
+version: 1.1.1
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
+upstream:
+  repository: https://github.com/vercel-labs/portless
+  ref: main
+  revision: 8404575c301b6b845a868d76609f79a0077cbe59
+  tracked_paths:
+    - README.md
+    - package.json
 provides:
   - skill:portless-local-dev
 outputs:

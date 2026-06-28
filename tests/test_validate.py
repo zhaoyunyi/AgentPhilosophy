@@ -120,6 +120,28 @@ def test_validate_central_source_fails_for_duplicate_output_ids(tmp_path: Path) 
     assert exit_code == 1
 
 
+def test_validate_central_source_rejects_malformed_module_upstream_metadata(tmp_path: Path, capsys) -> None:
+    create_minimal_source(tmp_path)
+    module_path = tmp_path / "modules" / "doc-templates" / "module.yaml"
+    module_path.write_text(
+        module_path.read_text(encoding="utf-8")
+        + """
+upstream:
+  repository: https://github.com/example/docs
+  ref: main
+  tracked_paths: []
+""",
+        encoding="utf-8",
+    )
+
+    exit_code = main(["--source", str(tmp_path), "validate"])
+
+    assert exit_code == 1
+    output = capsys.readouterr().out
+    assert "module doc-templates upstream missing revision" in output
+    assert "module doc-templates upstream tracked_paths must be a non-empty list" in output
+
+
 def test_validate_target_rejects_output_path_escape_after_template_render(tmp_path: Path) -> None:
     create_minimal_source(tmp_path)
     module_path = tmp_path / "modules" / "doc-templates" / "module.yaml"

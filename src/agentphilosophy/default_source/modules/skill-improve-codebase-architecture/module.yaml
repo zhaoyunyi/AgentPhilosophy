@@ -1,9 +1,15 @@
 name: skill-improve-codebase-architecture
 description: 代码库架构加深评审、浅模块识别和重构候选报告 skill
-version: 1.0.0
+version: 1.0.1
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
+upstream:
+  repository: https://github.com/mattpocock/skills
+  ref: main
+  revision: 5d78bd0903420f97c791f834201e550c765699f8
+  tracked_paths:
+    - skills/engineering/improve-codebase-architecture/SKILL.md
 provides:
   - skill:improve-codebase-architecture
 outputs:
