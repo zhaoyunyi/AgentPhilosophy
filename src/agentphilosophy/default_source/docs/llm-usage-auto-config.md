@@ -57,6 +57,9 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-ponytail`，同步生成 Ponytail 精简编码项目级 skill |
 | 旧项目需要长期复用“能不写就不写、复用优先、避免过度工程”的编码判断 | 追加 `skill-ponytail`，再同步生成 repo skills 和 Codex 项目级 skill |
 | 旧项目只是做一次明确的窄范围改动，且用户要求不增加新 skill | 不主动追加 `skill-ponytail` |
+| 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-reverse-skill`，同步生成 reverse-skill 授权逆向路由项目级 skill |
+| 旧项目需要长期复用授权逆向、安全研究、CTF、APK/JS/二进制/固件分析路由 | 追加 `skill-reverse-skill`，再同步生成 repo skills 和 Codex 项目级 skill |
+| 项目没有逆向、安全研究、CTF 或自有资产分析需求，且用户要求极简配置 | 不主动追加 `skill-reverse-skill` |
 | 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-improve-codebase-architecture`，同步生成架构评审项目级 skill |
 | 旧项目需要长期复用架构评审、重构候选或可测试性改造流程 | 追加 `skill-improve-codebase-architecture`，再同步生成 repo skills 和 Codex 项目级 skill |
 | 旧项目只是执行已经明确的局部改动，不需要沉淀架构评审流程 | 不主动追加 `skill-improve-codebase-architecture` |

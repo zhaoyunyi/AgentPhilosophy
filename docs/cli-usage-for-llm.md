@@ -149,6 +149,7 @@ AgentPhilosophy 使用三层版本判断目标项目是否需要更新：
 - CLI 工具版本来自 `pyproject.toml` 和 `agentphilosophy.__version__`，只表示同步程序自身版本。
 - 中央规范内容源版本来自 `catalog.yaml` 的 `content_version`，用于判断依赖项目是否需要同步新一轮中央内容。
 - 单个模块版本来自各 `module.yaml` 的 `version`，用于判断具体模块是否 stale。
+- 外部来源 skill 的上游锁定版本来自各 `module.yaml` 的 `upstream.repository`、`upstream.ref`、`upstream.revision` 和 `upstream.tracked_paths`，用于维护者判断是否需要跟进上游变化。
 
 `agentphilosophy-sync --version` 用于确认当前安装的 CLI release 版本。`push --apply` 和 `adopt` 会把当前 `agentphilosophy_version` 与 `source_content_version` 写入目标项目 `.agents/agentphilosophy-state.yaml`；`status --project` 如果发现 state 中 CLI 版本落后于当前安装包，会输出 `agentphilosophy_version stale: <old> -> <new>`，如果发现内容源版本落后于当前中央源，会输出 `source_content_version stale: <old> -> <new>`。看到 stale 提示时，先运行 `push /path/to/project --dry-run` 审查计划，再决定是否 `--apply`。
 
@@ -368,7 +369,54 @@ find -L /path/to/project/.codex/skills/ponytail -name SKILL.md -print
 find -L /path/to/project/skills/ponytail -name SKILL.md -print
 ```
 
-## 七、架构加深评审 skill
+## 七、Reverse Skill 授权逆向路由 skill
+
+reverse-skill 上游仓库：https://github.com/zhaoxuya520/reverse-skill
+
+当前中央源默认 preset 会包含 `skill-reverse-skill`。该模块会同步生成 `skills/reverse-skill/SKILL.md` 和 `.codex/skills/reverse-skill/SKILL.md`，用于让 agent 在 APK/IPA、二进制、前端 JS 签名、固件、恶意样本、PCAP、CTF 或自有资产安全分析前，先确认授权边界、目标类型、用户意图和可用工具链，再路由到合适的方法论。
+
+该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装或复制上游完整 `reverse-skill` 仓库，也不会把 IDA、radare2、Frida、jadx、apktool、jshookmcp、anything-analyzer 等工具强制引入目标项目。需要上游完整工具链时，先确认用户已有安装路径或单独 clone 上游仓库，再读取上游 `README_AI.md`、`skills/SKILL.md` 和路由矩阵。
+
+默认使用边界：
+
+1. 只处理授权逆向、安全研究、CTF、测试环境、自有资产或明确授权范围内的材料。
+2. 范围不清时先确认目标、权限和允许动作。
+3. 不执行凭证窃取、未授权横向移动、持久化、隐蔽投递、反取证或真实环境破坏性利用。
+4. 涉及攻击验证时优先给出复现条件、影响判断、检测建议和最小安全 PoC，不扩大到武器化交付。
+
+已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到该 skill 时，把模块追加到现有 `modules`，不要替换已有模块：
+
+```yaml
+modules:
+  - existing-module
+  - skill-reverse-skill
+```
+
+随后执行标准同步流程：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
+同步后验证：
+
+```bash
+find -L /path/to/project/.codex/skills/reverse-skill -name SKILL.md -print
+find -L /path/to/project/skills/reverse-skill -name SKILL.md -print
+```
+
+维护中央源时，先用以下命令检查所有带外部来源的 skill 是否有上游更新：
+
+```bash
+uv run python scripts/check-skill-upstreams.py
+```
+
+如果出现 `[stale] skill-reverse-skill`，先阅读上游 `README.md`、`README_AI.md`、`skills/SKILL.md`、路由矩阵和本轮相关子 skill，再更新 `modules/skill-reverse-skill/templates/SKILL.md.j2`、`module.yaml` 的 `version` / `upstream.revision`、packaged mirror、文档和测试。
+
+## 八、架构加深评审 skill
 
 当前中央源默认 preset 会包含 `skill-improve-codebase-architecture`。该模块会同步生成 `skills/improve-codebase-architecture/SKILL.md` 和 `.codex/skills/improve-codebase-architecture/SKILL.md`，用于让 agent 在用户要求改进架构、寻找重构机会、合并紧耦合模块、提高可测试性或让代码库更容易被 agent 导航时，先做只读架构评审报告。
 
@@ -403,7 +451,7 @@ find -L /path/to/project/.codex/skills/improve-codebase-architecture -name SKILL
 find -L /path/to/project/skills/improve-codebase-architecture -name SKILL.md -print
 ```
 
-## 八、Agent 哲学决策框架
+## 九、Agent 哲学决策框架
 
 `aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
 

@@ -185,6 +185,34 @@
       "reply_format": "回复选项编号或 id"
     },
     {
+      "id": "reverse-skill",
+      "title": "是否安装 reverse-skill 授权逆向路由 skill",
+      "question": "我需要确认是否把 reverse-skill 的授权逆向、安全研究、CTF 和本机工具链路由写成项目级 skill。",
+      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-reverse-skill`。",
+      "recommended": {
+        "id": "add-module",
+        "reason": "默认 preset 会把它作为通用 skill 集合的一部分，便于后续 APK/JS/二进制/固件/CTF 或自有资产安全分析任务先确认授权边界并正确分流。"
+      },
+      "options": [
+        {
+          "id": "add-module",
+          "label": "追加 `skill-reverse-skill`",
+          "impact": "后续 `push --apply` 会同步 repo skills 和 Codex 项目级 skill。"
+        },
+        {
+          "id": "skip-module",
+          "label": "不修改旧项目配置",
+          "impact": "本次升级不会新增 reverse-skill 路由 skill。"
+        },
+        {
+          "id": "minimal-config",
+          "label": "保持极简配置",
+          "impact": "只保留项目当前显式模块，后续需要时再单独追加。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
       "id": "improve-codebase-architecture",
       "title": "是否安装架构加深评审 skill",
       "question": "我需要确认是否把架构评审和重构候选流程写成项目级 skill。",

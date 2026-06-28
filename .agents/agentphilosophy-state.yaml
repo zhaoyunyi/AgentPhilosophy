@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:mynvmnqmuxwprqltpunmrnwxutwlryqx
-source_tree_hash: sha256:36cc380283934c8dbc9b320ff98ba781798f9220be0794ec8dad9458e92f68cb
+source_revision: jj:wzkuomnsnuvzutvqwzrutokmlqqttmqk
+source_tree_hash: sha256:1afbb4553c399502c3b5b9084b78e7b2d6716c8645cbf42368b959e535a711da
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -19,8 +19,9 @@ modules:
   skill-target-jj: 1.1.0
   skill-coding-standards: 1.1.0
   skill-repo-management: 1.1.0
-  skill-ponytail: 1.0.0
-  skill-improve-codebase-architecture: 1.0.0
+  skill-ponytail: 1.0.1
+  skill-reverse-skill: 1.0.0
+  skill-improve-codebase-architecture: 1.0.1
   aphilosophy: 1.6.0
 files:
 - path: .codex/skills/agentphilosophy-sync/SKILL.md
@@ -93,6 +94,13 @@ files:
   source_hash: sha256:4305361e9f94beb3dad1c6d93e804711f25043f40aae15054538439265fd0063
   rendered_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
   last_written_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
+- path: .codex/skills/reverse-skill/SKILL.md
+  module: skill-reverse-skill
+  output_id: reverse-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:d27b759dced474f3895fcb74ae6f7c8e1a87c9ed9c5f281ee3b3d2a6e04ab28e
+  rendered_hash: sha256:05eb8042e37dfba014120983f3b455eb2baec590b78e85d705f0fa81a3666bee
+  last_written_hash: sha256:05eb8042e37dfba014120983f3b455eb2baec590b78e85d705f0fa81a3666bee
 - path: .codex/skills/target-jj/SKILL.md
   module: skill-target-jj
   output_id: target-jj-codex-skill
@@ -233,6 +241,13 @@ files:
   source_hash: sha256:4305361e9f94beb3dad1c6d93e804711f25043f40aae15054538439265fd0063
   rendered_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
   last_written_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
+- path: skills/reverse-skill/SKILL.md
+  module: skill-reverse-skill
+  output_id: reverse-skill
+  strategy: managed_replace
+  source_hash: sha256:d27b759dced474f3895fcb74ae6f7c8e1a87c9ed9c5f281ee3b3d2a6e04ab28e
+  rendered_hash: sha256:05eb8042e37dfba014120983f3b455eb2baec590b78e85d705f0fa81a3666bee
+  last_written_hash: sha256:05eb8042e37dfba014120983f3b455eb2baec590b78e85d705f0fa81a3666bee
 - path: skills/target-jj/SKILL.md
   module: skill-target-jj
   output_id: target-jj-skill
@@ -282,6 +297,6 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-06-20T15:14:38.316662+00:00'
-source_content_version: 0.4.9
-agentphilosophy_version: 0.4.9
+last_synced: '2026-06-28T14:51:03.316589+00:00'
+source_content_version: 0.5.0
+agentphilosophy_version: 0.5.0
