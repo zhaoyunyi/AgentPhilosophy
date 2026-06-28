@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
+
+from agentphilosophy.yamlio import read_yaml
 
 
 def source_files(root: Path) -> list[Path]:
@@ -61,6 +64,26 @@ def test_default_source_has_no_known_content_merge_artifacts() -> None:
                 offenders.append(f"{path.relative_to(root)} contains {fragment}")
 
     assert offenders == []
+
+
+def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
+    root = Path(__file__).resolve().parents[1]
+    external_skill_modules = {
+        "skill-ponytail",
+        "skill-portless-local-dev",
+        "skill-improve-codebase-architecture",
+        "skill-reverse-skill",
+    }
+
+    for module_name in sorted(external_skill_modules):
+        module_yaml = root / "modules" / module_name / "module.yaml"
+        data = read_yaml(module_yaml)
+        upstream = data.get("upstream")
+        assert isinstance(upstream, dict), f"{module_name} missing upstream metadata"
+        assert str(upstream.get("repository", "")).startswith("https://github.com/")
+        assert upstream.get("ref")
+        assert re.fullmatch(r"[0-9a-f]{40}", str(upstream.get("revision", "")))
+        assert upstream.get("tracked_paths")
 
 
 def test_long_lived_docs_are_listed_in_docs_index() -> None:
