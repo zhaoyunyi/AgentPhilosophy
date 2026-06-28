@@ -89,6 +89,7 @@ def test_cli_defaults_to_packaged_source_outside_central_repo(tmp_path: Path) ->
     assert result.returncode == 0, result.stderr + result.stdout
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     assert "- aphilosophy" in project_config
+    assert "- skill-reverse-skill" in project_config
     assert "- skill-improve-codebase-architecture" in project_config
 
 
@@ -229,6 +230,45 @@ def test_packaged_preset_installs_ponytail_skill_by_default(tmp_path: Path, pres
     assert "不要削减验证、错误处理、安全或可访问性" in repo_skill_text
 
 
+@pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_installs_reverse_skill_by_default(tmp_path: Path, preset: str) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    commands = [
+        ["init", str(target), "--preset", preset],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    repo_skill = target / "skills" / "reverse-skill" / "SKILL.md"
+    codex_skill = target / ".codex" / "skills" / "reverse-skill" / "SKILL.md"
+
+    assert "- skill-reverse-skill" in project_config
+    assert repo_skill.is_file()
+    assert codex_skill.is_file()
+    assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+    repo_skill_text = repo_skill.read_text(encoding="utf-8")
+    assert "reverse-skill" in repo_skill_text
+    assert "zhaoxuya520/reverse-skill" in repo_skill_text
+    assert "授权逆向、安全研究、CTF 或自有资产分析" in repo_skill_text
+    assert "不要把上游仓库整包复制进目标项目" in repo_skill_text
+
+
 def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:
     workdir = tmp_path / "workdir"
     workdir.mkdir()
@@ -249,6 +289,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert result.returncode == 0, result.stderr + result.stdout
     assert "# AgentPhilosophy CLI 使用说明（给 LLM）" in result.stdout
     assert "skill-ponytail" in result.stdout
+    assert "skill-reverse-skill" in result.stdout
     assert "skill-portless-local-dev" in result.stdout
     assert "skill-philosophy-extraction" in result.stdout
     assert "skill-improve-codebase-architecture" in result.stdout
@@ -268,6 +309,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "# AgentPhilosophy 自动配置安装说明（给 LLM）" in auto_result.stdout
     assert "停止自动写入，返回用户断点" in auto_result.stdout
     assert "skill-ponytail" in auto_result.stdout
+    assert "skill-reverse-skill" in auto_result.stdout
     assert "skill-philosophy-extraction" in auto_result.stdout
     assert "skill-improve-codebase-architecture" in auto_result.stdout
 
@@ -282,6 +324,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "# AgentPhilosophy 用户断点配置说明（给 LLM）" in breakpoint_result.stdout
     assert "reply_format: 回复选项编号或 id" in breakpoint_result.stdout
     assert "skill-ponytail" in breakpoint_result.stdout
+    assert "skill-reverse-skill" in breakpoint_result.stdout
     assert "skill-philosophy-extraction" in breakpoint_result.stdout
     assert "skill-improve-codebase-architecture" in breakpoint_result.stdout
 

@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.4.9
+content_version: 0.5.0
 modules:
   - name: openspec-skills
     category: base
@@ -194,6 +194,14 @@ modules:
       - skills/ponytail/SKILL.md
       - .codex/skills/ponytail/SKILL.md
     risk: low
+  - name: skill-reverse-skill
+    category: skill
+    description: reverse-skill 授权逆向、安全研究、CTF 和本机工具链路由项目级 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/reverse-skill/SKILL.md
+      - .codex/skills/reverse-skill/SKILL.md
+    risk: medium
   - name: skill-improve-codebase-architecture
     category: skill
     description: 代码库架构加深评审、浅模块识别和重构候选报告 skill

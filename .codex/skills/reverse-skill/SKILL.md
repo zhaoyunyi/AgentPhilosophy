@@ -1,0 +1,65 @@
+---
+name: reverse-skill
+description: 为 AgentPhilosophy 使用 zhaoxuya520/reverse-skill 的授权逆向、安全研究、CTF 和本机工具链路由；适用于 APK/IPA、二进制、前端 JS 签名、固件、恶意样本、PCAP、CTF 或自有资产安全分析前的任务分流与证据化执行。
+---
+
+# Reverse Skill
+
+来源：https://github.com/zhaoxuya520/reverse-skill
+
+本 skill 是 AgentPhilosophy 对 `reverse-skill` 的项目级封装：沉淀“先确认授权与目标类型，再路由到合适方法论和工具链”的工作方式。它不是上游仓库的整包镜像，不会自动安装 IDA、radare2、Frida、jadx、apktool、jshookmcp、anything-analyzer 或其他安全工具。
+
+## 何时使用
+
+当任务属于以下场景时使用：
+
+- 授权逆向、安全研究、CTF 或自有资产分析。
+- APK / IPA / 移动端应用逆向。
+- ELF / PE / Mach-O / so / dll / exe 等二进制理解。
+- 前端 JS 签名、加密参数、运行时采样或本地补环境复现。
+- 固件、IoT、PCAP、协议、内存转储或恶意样本分析。
+- 用户明确点名 `reverse-skill`、`js-reverse`、`apk-reverse`、`radare2`、`IDA`、`Frida`、`CTF`、`patch diff` 或安全研究工具链。
+
+如果任务只是普通代码阅读、业务 bug 修复、日志排查或非安全场景的浏览器自动化，不需要触发本 skill。
+
+## 授权边界
+
+- 只处理用户有权分析的目标、靶场、CTF、测试环境、自有资产或明确授权范围内的材料。
+- 不把未知公网目标默认视作授权目标；范围不清时先问清目标、权限和允许动作。
+- 不执行凭证窃取、未授权横向移动、持久化、隐蔽投递、反取证或真实环境破坏性利用。
+- 涉及攻击验证时优先给出复现条件、影响判断、检测建议和最小安全 PoC；不要扩大到武器化交付。
+
+## 路由方式
+
+1. 先确认目标类型、用户意图和可用工具链，不直接猜命令。
+2. 根据目标分流：
+   - APK / Android / iOS：参考上游 `mobile-reverse` 或 `apk-reverse`。
+   - 前端 JS、接口签名、加密参数：参考上游 `js-reverse`，按 Observe -> Capture -> Rebuild -> Patch -> DeepDive 执行。
+   - ELF / PE / Mach-O / so / dll / exe：参考上游 `reverse-engineering`，必要时选择 IDA、radare2、Ghidra、Frida、angr 或 Qiling。
+   - 固件 / IoT：参考上游 `firmware-pentest` 的提取、仿真、fuzz 和验证链路。
+   - 恶意样本：参考上游 `malware-analysis`，优先静态和隔离沙箱，不在普通工作区直接运行样本。
+   - CTF：参考上游 `CTF-Sandbox-Orchestrator` 总控入口，再按证据面进入子技能。
+   - 报告或图表：参考上游 `docs-generator` 或 `diagram-generator`。
+3. 如果当前机器已安装完整 `reverse-skill` 仓库，先读取其 `README_AI.md`、`skills/SKILL.md` 和路由矩阵，再进入具体子 skill。
+4. 如果未安装完整上游仓库，不要把上游仓库整包复制进目标项目；先用当前项目已有工具和最小方法论完成可验证步骤，需要完整工具链时再说明安装路径和影响。
+5. 每一步都保留证据：输入样本、文件哈希、工具版本、关键命令、观察结果、失败原因和下一步判断。
+
+## 上游更新
+
+AgentPhilosophy 中央源会在 `modules/skill-reverse-skill/module.yaml` 记录 `reverse-skill` 上游仓库、ref、revision 和重点跟踪路径。维护本 skill 时，在 AgentPhilosophy 仓根运行：
+
+```bash
+uv run python scripts/check-skill-upstreams.py
+```
+
+如果输出 `[stale] skill-reverse-skill`，先阅读上游 `README.md`、`README_AI.md`、`skills/SKILL.md`、路由矩阵和本轮相关子 skill，再更新本模板、模块版本、`upstream.revision`、文档和测试。目标项目里的 `skills/reverse-skill/SKILL.md` 与 `.codex/skills/reverse-skill/SKILL.md` 是托管输出，不在目标项目中手改。
+
+## 输出要求
+
+执行 reverse-skill 相关任务时，用中文汇报：
+
+- 授权范围或未确认边界。
+- 路由依据：目标类型、用户意图、工具链。
+- 使用了哪些上游方法论或本机工具。
+- 关键证据和可复现命令。
+- 已验证、未验证和被安全边界排除的范围。
