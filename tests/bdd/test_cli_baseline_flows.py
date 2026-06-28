@@ -71,6 +71,7 @@ def test_bdd_llm_usage_modes_explain_auto_and_user_breakpoint_flows(capsys) -> N
     assert "停止自动写入，返回用户断点" in auto_output
     assert "push --dry-run" in auto_output
     assert "skill-portless-local-dev" in auto_output
+    assert "skill-reverse-skill" in auto_output
 
     assert main(["--source", str(source), "llm-usage", "--mode", "user-breakpoints"]) == 0
     breakpoint_output = capsys.readouterr().out
@@ -79,6 +80,7 @@ def test_bdd_llm_usage_modes_explain_auto_and_user_breakpoint_flows(capsys) -> N
     assert "推荐选择：" in breakpoint_output
     assert "可选项：" in breakpoint_output
     assert "reply_format: 回复选项编号或 id" in breakpoint_output
+    assert "skill-reverse-skill" in breakpoint_output
 
     assert main(["--source", str(source), "llm-usage", "--mode", "user-breakpoints", "--format", "json"]) == 0
     structured_output = json.loads(capsys.readouterr().out)
