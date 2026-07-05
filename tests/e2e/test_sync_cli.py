@@ -580,3 +580,48 @@ modules:
     assert "AgentPhilosophy ArchitectureSpec" in repo_skill_text
     assert "architecture-review-" in repo_skill_text
     assert "你想先深入哪一个候选？" in repo_skill_text
+
+
+def test_optional_code_review_skill_renders_from_default_source(tmp_path: Path) -> None:
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+    target = tmp_path / "target"
+    write(
+        target / ".agentphilosophy.yaml",
+        """
+project_name: DemoProject
+project_type: fullstack
+modules:
+  - skill-code-review
+""".lstrip(),
+    )
+
+    commands = [
+        ["validate", str(target)],
+        ["push", str(target), "--dry-run"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    repo_skill = target / "skills" / "code-review" / "SKILL.md"
+    codex_skill = target / ".codex" / "skills" / "code-review" / "SKILL.md"
+    assert repo_skill.is_file()
+    assert codex_skill.is_file()
+    assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+    repo_skill_text = repo_skill.read_text(encoding="utf-8")
+    assert "name: code-review" in repo_skill_text
+    assert "/code-review" in repo_skill_text
+    assert "Standards" in repo_skill_text
+    assert "Spec" in repo_skill_text

@@ -107,7 +107,7 @@ breakpoint:
 3. 项目基础信息：`project_name`、`project_type`、`description`。
 4. 目录路径：`paths.docs_guide_dir`、`paths.spec_dir`、`paths.philosophy_dir`。
 5. skill 输出位置：`skill_targets.repo_skills`、`skill_targets.codex_project`、`skill_targets.claude_project`。
-6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-mattpocock-engineering`、`skill-portless-local-dev` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
+6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-code-review`、`skill-mattpocock-engineering`、`skill-portless-local-dev` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
 7. 验证命令：`vars.test_command`。
 8. 老文件接管：是否按 `adopt-plan.yaml` 接管已有文件。
 9. dry-run 结果确认：是否允许执行 `push --apply`。
@@ -217,7 +217,24 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 7. Matt Pocock 产品工程主线 skill
+### 7. 独立 code-review 审查 skill
+
+```markdown
+## 配置断点：是否安装独立 code-review 审查 skill
+
+我需要确认是否只把 `/code-review` 双轴审查流程写成项目级 skill。这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-code-review`。
+
+推荐选择：`add-module`，因为当前只需要快速载入审查入口，不需要同步 `/grill-with-docs`、`/to-prd`、`/to-issues`、`/implement` 和 `/tdd` 整条产品工程主线。
+
+可选项：
+1. `add-module`：追加 `skill-code-review`。影响：后续 `push --apply` 会同步 `code-review` 的 repo skill 和 Codex 项目级 skill。
+2. `use-mattpocock`：改用或保留 `skill-mattpocock-engineering`。影响：同时同步 Matt Pocock 产品工程主线和 `code-review`，不要再追加 `skill-code-review`。
+3. `skip-module`：不修改旧项目配置。影响：本次升级不会新增独立 code-review skill。
+
+请回复选项编号或 id。
+```
+
+### 8. Matt Pocock 产品工程主线 skill
 
 ```markdown
 ## 配置断点：是否安装 Matt Pocock 产品工程主线 skill
@@ -234,7 +251,7 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 8. Portless 可选模块
+### 9. Portless 可选模块
 
 ```markdown
 ## 配置断点：是否沉淀 Portless 本地开发规则
@@ -251,7 +268,7 @@ breakpoint:
 请回复选项编号或 id；如果选择 `add-module`，请说明是否已有团队约定的稳定本地域名。
 ```
 
-### 9. 哲学脱水可选模块
+### 10. 哲学脱水可选模块
 
 ```markdown
 ## 配置断点：是否安装哲学脱水 skill
@@ -268,7 +285,7 @@ breakpoint:
 请回复选项编号或 id；`add-module` 会同时启用 `aphilosophy`，因为哲学脱水 skill 依赖这组决策文档。
 ```
 
-### 10. 验证命令
+### 11. 验证命令
 
 ```markdown
 ## 配置断点：确认测试命令
@@ -285,7 +302,7 @@ breakpoint:
 请回复选项编号或 id；如果选择 `custom`，请直接给出命令。
 ```
 
-### 11. apply 确认
+### 12. apply 确认
 
 ```markdown
 ## 配置断点：是否应用 dry-run 计划
