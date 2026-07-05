@@ -149,7 +149,24 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 3. Ponytail 精简编码 skill
+### 3. Superpowers 原生 discovery 版本约束
+
+```markdown
+## 配置断点：是否同步 Superpowers 6.0 约束
+
+我需要确认是否把 Superpowers 的 Codex 原生 discovery 固定路径、版本和排障规则写入 `AGENTS.md`。这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `superpowers-system`。
+
+推荐选择：`add-module`，因为默认 preset 会把它作为通用协作规则的一部分，便于后续统一 Superpowers 6.0 的安装位置、symlink 和重启排障方式。
+
+可选项：
+1. `add-module`：追加 `superpowers-system`。影响：后续 `push --apply` 会刷新 `AGENTS.md` 中的 Superpowers 6.0 约束。
+2. `skip-module`：不修改旧项目配置。影响：本次升级不会新增 Superpowers 约束。
+3. `minimal-config`：保持极简配置。影响：只保留项目当前显式模块，后续需要时再单独追加。
+
+请回复选项编号或 id。
+```
+
+### 4. Ponytail 精简编码 skill
 
 ```markdown
 ## 配置断点：是否安装 Ponytail 精简编码 skill
@@ -166,7 +183,7 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 4. reverse-skill 授权逆向路由 skill
+### 5. reverse-skill 授权逆向路由 skill
 
 ```markdown
 ## 配置断点：是否安装 reverse-skill 授权逆向路由 skill
@@ -183,7 +200,7 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 5. 架构加深评审 skill
+### 6. 架构加深评审 skill
 
 ```markdown
 ## 配置断点：是否安装架构加深评审 skill
@@ -200,7 +217,7 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 6. Portless 可选模块
+### 7. Portless 可选模块
 
 ```markdown
 ## 配置断点：是否沉淀 Portless 本地开发规则
@@ -217,7 +234,7 @@ breakpoint:
 请回复选项编号或 id；如果选择 `add-module`，请说明是否已有团队约定的稳定本地域名。
 ```
 
-### 7. 哲学脱水可选模块
+### 8. 哲学脱水可选模块
 
 ```markdown
 ## 配置断点：是否安装哲学脱水 skill
@@ -234,7 +251,7 @@ breakpoint:
 请回复选项编号或 id；`add-module` 会同时启用 `aphilosophy`，因为哲学脱水 skill 依赖这组决策文档。
 ```
 
-### 8. 验证命令
+### 9. 验证命令
 
 ```markdown
 ## 配置断点：确认测试命令

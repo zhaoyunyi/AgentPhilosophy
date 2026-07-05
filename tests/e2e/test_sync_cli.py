@@ -192,6 +192,41 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_declares_superpowers_version_by_default(tmp_path: Path, preset: str) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    commands = [
+        ["init", str(target), "--preset", preset],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+
+    assert "- superpowers-system" in project_config
+    assert "Superpowers System" in agents_text
+    assert "Superpowers skill 版本为 `6.0`" in agents_text
+    assert "~/.codex/superpowers" in agents_text
+    assert "~/.agents/skills/superpowers" in agents_text
+    assert "superpowers-codex bootstrap" in agents_text
+
+
+@pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
 def test_packaged_preset_installs_ponytail_skill_by_default(tmp_path: Path, preset: str) -> None:
     target = tmp_path / "target"
     workdir = tmp_path / "workdir"

@@ -180,6 +180,7 @@ modules:
   - openspec-skills
   - jj-conventions
   - model-constraints
+  - superpowers-system
   - doc-templates
   - multi-module-layout
   - spec-program
@@ -222,7 +223,40 @@ vars:
 - `skill_targets.codex_project`：Codex 原生项目级 skill discovery 目录，默认 `.codex/skills`。需要让 Codex 自动发现项目级 skill 时保持该默认值，并在 `push --apply` 后验证 `.codex/skills/**/SKILL.md` 存在。
 - `skill_targets.claude_project`：Claude 项目级 skills 目录，默认 `.claude/skills`。
 
-## 五、Portless 本地开发入口
+## 五、Superpowers 原生 discovery 版本约束
+
+当前中央源默认 preset 会包含 `superpowers-system`。该模块不会复制上游 Superpowers 仓库，也不会生成项目级 `SKILL.md`；它只把 Codex 原生 skill discovery 的固定路径、排障方式和当前项目要求的 Superpowers skill 版本 `6.0` 写入 `AGENTS.md`。
+
+目标项目同步后应能在 `AGENTS.md` 看到：
+
+- Superpowers 仓库：`~/.codex/superpowers`
+- Skills 入口（symlink）：`~/.agents/skills/superpowers` -> `~/.codex/superpowers/skills`
+- 当前项目要求的 Superpowers skill 版本：`6.0`
+
+已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到这段约束时，把模块追加到现有 `modules`，不要替换已有模块：
+
+```yaml
+modules:
+  - existing-module
+  - superpowers-system
+```
+
+随后执行标准同步流程：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
+同步后验证：
+
+```bash
+rg -n "Superpowers skill 版本为 `6.0`|~/.agents/skills/superpowers" /path/to/project/AGENTS.md
+```
+
+## 六、Portless 本地开发入口
 
 Portless 官方仓库：https://github.com/vercel-labs/portless
 
@@ -326,7 +360,7 @@ portless alias api.myapp 8080
 portless alias --remove api.myapp
 ```
 
-## 六、Ponytail 精简编码 skill
+## 七、Ponytail 精简编码 skill
 
 Ponytail 上游仓库：https://github.com/DietrichGebert/ponytail
 
@@ -369,7 +403,7 @@ find -L /path/to/project/.codex/skills/ponytail -name SKILL.md -print
 find -L /path/to/project/skills/ponytail -name SKILL.md -print
 ```
 
-## 七、Reverse Skill 授权逆向路由 skill
+## 八、Reverse Skill 授权逆向路由 skill
 
 reverse-skill 上游仓库：https://github.com/zhaoxuya520/reverse-skill
 
@@ -416,7 +450,7 @@ uv run python scripts/check-skill-upstreams.py
 
 如果出现 `[stale] skill-reverse-skill`，先阅读上游 `README.md`、`README_AI.md`、`skills/SKILL.md`、路由矩阵和本轮相关子 skill，再更新 `modules/skill-reverse-skill/templates/SKILL.md.j2`、`module.yaml` 的 `version` / `upstream.revision`、packaged mirror、文档和测试。
 
-## 八、架构加深评审 skill
+## 九、架构加深评审 skill
 
 当前中央源默认 preset 会包含 `skill-improve-codebase-architecture`。该模块会同步生成 `skills/improve-codebase-architecture/SKILL.md` 和 `.codex/skills/improve-codebase-architecture/SKILL.md`，用于让 agent 在用户要求改进架构、寻找重构机会、合并紧耦合模块、提高可测试性或让代码库更容易被 agent 导航时，先做只读架构评审报告。
 
@@ -451,7 +485,7 @@ find -L /path/to/project/.codex/skills/improve-codebase-architecture -name SKILL
 find -L /path/to/project/skills/improve-codebase-architecture -name SKILL.md -print
 ```
 
-## 九、Agent 哲学决策框架
+## 十、Agent 哲学决策框架
 
 `aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
 
@@ -480,7 +514,7 @@ agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
 ```
 
-## 九、Registry 文件
+## 十一、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
@@ -501,7 +535,7 @@ projects:
     path: /absolute/path/to/ExampleProject
 ```
 
-## 十、新项目接入流程
+## 十二、新项目接入流程
 
 1. 选择 preset。
 2. 生成 `.agentphilosophy.yaml`。
@@ -524,7 +558,7 @@ uv run sync.py status --project /path/to/project
 uv run sync.py init /path/to/project --interactive
 ```
 
-## 十一、老项目迁移流程
+## 十三、老项目迁移流程
 
 `migrate` 只做盘点，不会生成正式 `.agentphilosophy.yaml`，也不会覆盖项目已有文件。
 
@@ -550,7 +584,7 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
-## 十二、安全边界
+## 十四、安全边界
 
 - `push` 不带 `--apply` 时不写目标项目文件；`--dry-run` 是推荐显式写法。
 - `push --apply` 也不会覆盖未托管的既有文件；遇到冲突会写候选文件到迁移目录。
@@ -561,7 +595,7 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 十三、LLM 执行规则
+## 十五、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。
