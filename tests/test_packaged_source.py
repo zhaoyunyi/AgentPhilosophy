@@ -69,6 +69,7 @@ def test_default_source_has_no_known_content_merge_artifacts() -> None:
 def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
     root = Path(__file__).resolve().parents[1]
     external_skill_modules = {
+        "skill-code-review",
         "skill-ponytail",
         "skill-portless-local-dev",
         "skill-improve-codebase-architecture",

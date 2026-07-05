@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.7.0
+content_version: 0.7.1
 modules:
   - name: openspec-skills
     category: base
@@ -216,6 +216,14 @@ modules:
     outputs:
       - skills/improve-codebase-architecture/SKILL.md
       - .codex/skills/improve-codebase-architecture/SKILL.md
+    risk: low
+  - name: skill-code-review
+    category: skill
+    description: 独立 code-review 双轴审查项目级 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/code-review/SKILL.md
+      - .codex/skills/code-review/SKILL.md
     risk: low
   - name: skill-mattpocock-engineering
     category: skill

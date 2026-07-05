@@ -470,7 +470,51 @@ modules:
   - skill-improve-codebase-architecture
 ```
 
-## 十、Matt Pocock 产品工程主线 skill
+随后执行标准同步流程：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
+同步后验证：
+
+```bash
+find -L /path/to/project/.codex/skills/improve-codebase-architecture -name SKILL.md -print
+find -L /path/to/project/skills/improve-codebase-architecture -name SKILL.md -print
+```
+
+## 十、独立 code-review 审查 skill
+
+当前中央源提供可选模块 `skill-code-review`。该模块会同步生成 `skills/code-review/SKILL.md` 和 `.codex/skills/code-review/SKILL.md`，用于让依赖项目快速载入 `/code-review` 双轴审查流程，而不必同步完整 Matt Pocock 产品工程主线。
+
+`skill-code-review` 与 `skill-mattpocock-engineering` 写入同一个 `code-review` skill 路径，不能同时启用。已有项目如果已经启用 `skill-mattpocock-engineering`，说明它已经拥有 `code-review`；只有当项目只需要审查入口、不需要 `/grill-with-docs`、`/to-prd`、`/to-issues`、`/implement` 和 `/tdd` 时，才追加 `skill-code-review`。
+
+```yaml
+modules:
+  - existing-module
+  - skill-code-review
+```
+
+随后执行标准同步流程：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+```
+
+同步后验证：
+
+```bash
+find -L /path/to/project/.codex/skills/code-review -name SKILL.md -print
+find -L /path/to/project/skills/code-review -name SKILL.md -print
+```
+
+## 十一、Matt Pocock 产品工程主线 skill
 
 当前中央源默认 preset 会包含 `skill-mattpocock-engineering`。该模块改编自 Matt Pocock 的 `mattpocock/skills`（MIT License），同步生成以下 repo skills 和 Codex 项目级 skills：
 
@@ -509,12 +553,6 @@ modules:
   - skill-mattpocock-engineering
 ```
 
-同步后验证：
-
-```bash
-find -L /path/to/project/.codex/skills -maxdepth 2 -name SKILL.md | sort | rg 'grill-with-docs|to-prd|to-issues|implement|tdd|code-review'
-```
-
 随后执行标准同步流程：
 
 ```bash
@@ -527,11 +565,10 @@ agentphilosophy-sync push /path/to/project --apply
 同步后验证：
 
 ```bash
-find -L /path/to/project/.codex/skills/improve-codebase-architecture -name SKILL.md -print
-find -L /path/to/project/skills/improve-codebase-architecture -name SKILL.md -print
+find -L /path/to/project/.codex/skills -maxdepth 2 -name SKILL.md | sort | rg 'grill-with-docs|to-prd|to-issues|implement|tdd|code-review'
 ```
 
-## 十、Agent 哲学决策框架
+## 十二、Agent 哲学决策框架
 
 `aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
 

@@ -269,6 +269,34 @@
       "reply_format": "回复选项编号或 id"
     },
     {
+      "id": "code-review",
+      "title": "是否安装独立 code-review 审查 skill",
+      "question": "我需要确认是否只把 `/code-review` 双轴审查流程写成项目级 skill。",
+      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-code-review`。",
+      "recommended": {
+        "id": "add-module",
+        "reason": "当前只需要快速载入审查入口时，不需要同步整条 Matt Pocock 产品工程主线。"
+      },
+      "options": [
+        {
+          "id": "add-module",
+          "label": "追加 `skill-code-review`",
+          "impact": "后续 `push --apply` 会同步 `code-review` 的 repo skill 和 Codex 项目级 skill。"
+        },
+        {
+          "id": "use-mattpocock",
+          "label": "使用 Matt Pocock 主线",
+          "impact": "同时同步 Matt Pocock 产品工程主线和 `code-review`，不要再追加 `skill-code-review`。"
+        },
+        {
+          "id": "skip-module",
+          "label": "不修改旧项目配置",
+          "impact": "本次升级不会新增独立 code-review skill。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
       "id": "mattpocock-engineering",
       "title": "是否安装 Matt Pocock 产品工程主线 skill",
       "question": "我需要确认是否把 Matt Pocock 的 `/grill-with-docs -> /to-prd -> /to-issues -> /implement` 主线写成项目级 skill。",
