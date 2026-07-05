@@ -91,6 +91,7 @@ def test_cli_defaults_to_packaged_source_outside_central_repo(tmp_path: Path) ->
     assert "- aphilosophy" in project_config
     assert "- skill-reverse-skill" in project_config
     assert "- skill-improve-codebase-architecture" in project_config
+    assert "- skill-mattpocock-engineering" in project_config
 
 
 def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: Path) -> None:
@@ -142,6 +143,65 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
     security_text = (target / "aphilosophy" / "security-conflict-resolution.md").read_text(encoding="utf-8")
     assert "安全对抗冲突解决协议" in security_text
     assert "欺骗性对齐检测" in security_text
+
+
+def test_packaged_fullstack_preset_renders_mattpocock_engineering_flow(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    commands = [
+        ["init", str(target), "--preset", "fullstack"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    expected_skills = [
+        "grill-with-docs",
+        "grilling",
+        "domain-modeling",
+        "to-prd",
+        "to-issues",
+        "implement",
+        "tdd",
+        "code-review",
+    ]
+    for skill_name in expected_skills:
+        repo_skill = target / "skills" / skill_name / "SKILL.md"
+        codex_skill = target / ".codex" / "skills" / skill_name / "SKILL.md"
+        assert repo_skill.is_file()
+        assert codex_skill.is_file()
+        assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+
+    grill_text = (target / "skills" / "grill-with-docs" / "SKILL.md").read_text(encoding="utf-8")
+    assert "/grill-with-docs" in grill_text
+    assert "CONTEXT.md" in grill_text
+    assert "ADR" in grill_text
+
+    to_prd_text = (target / "skills" / "to-prd" / "SKILL.md").read_text(encoding="utf-8")
+    assert "/to-prd" in to_prd_text
+    assert "PRD" in to_prd_text
+
+    to_issues_text = (target / "skills" / "to-issues" / "SKILL.md").read_text(encoding="utf-8")
+    assert "/to-issues" in to_issues_text
+    assert "vertical slice" in to_issues_text
+
+    implement_text = (target / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+    assert "/implement" in implement_text
+    assert "/tdd" in implement_text
+    assert "/code-review" in implement_text
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])

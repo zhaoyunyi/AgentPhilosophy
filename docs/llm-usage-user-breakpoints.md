@@ -107,7 +107,7 @@ breakpoint:
 3. 项目基础信息：`project_name`、`project_type`、`description`。
 4. 目录路径：`paths.docs_guide_dir`、`paths.spec_dir`、`paths.philosophy_dir`。
 5. skill 输出位置：`skill_targets.repo_skills`、`skill_targets.codex_project`、`skill_targets.claude_project`。
-6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-portless-local-dev` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
+6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-mattpocock-engineering`、`skill-portless-local-dev` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
 7. 验证命令：`vars.test_command`。
 8. 老文件接管：是否按 `adopt-plan.yaml` 接管已有文件。
 9. dry-run 结果确认：是否允许执行 `push --apply`。
@@ -217,7 +217,24 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 7. Portless 可选模块
+### 7. Matt Pocock 产品工程主线 skill
+
+```markdown
+## 配置断点：是否安装 Matt Pocock 产品工程主线 skill
+
+我需要确认是否把 Matt Pocock 的 `/grill-with-docs -> /to-prd -> /to-issues -> /implement` 主线写成项目级 skill。这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-mattpocock-engineering`。
+
+推荐选择：`add-module`，因为默认 preset 会把它作为通用 skill 集合的一部分，便于后续先澄清需求，再沉淀 PRD、拆 issue，并逐个 issue 新开会话实现。
+
+可选项：
+1. `add-module`：追加 `skill-mattpocock-engineering`。影响：后续 `push --apply` 会同步 `grill-with-docs`、`to-prd`、`to-issues`、`implement`、`tdd`、`code-review` 等 repo skills 和 Codex 项目级 skill。
+2. `skip-module`：不修改旧项目配置。影响：本次升级不会新增 Matt Pocock 产品工程主线 skill。
+3. `minimal-config`：保持极简配置。影响：只保留项目当前显式模块，后续需要时再单独追加。
+
+请回复选项编号或 id。
+```
+
+### 8. Portless 可选模块
 
 ```markdown
 ## 配置断点：是否沉淀 Portless 本地开发规则
@@ -234,7 +251,7 @@ breakpoint:
 请回复选项编号或 id；如果选择 `add-module`，请说明是否已有团队约定的稳定本地域名。
 ```
 
-### 8. 哲学脱水可选模块
+### 9. 哲学脱水可选模块
 
 ```markdown
 ## 配置断点：是否安装哲学脱水 skill
@@ -251,7 +268,7 @@ breakpoint:
 请回复选项编号或 id；`add-module` 会同时启用 `aphilosophy`，因为哲学脱水 skill 依赖这组决策文档。
 ```
 
-### 9. 验证命令
+### 10. 验证命令
 
 ```markdown
 ## 配置断点：确认测试命令
@@ -268,7 +285,7 @@ breakpoint:
 请回复选项编号或 id；如果选择 `custom`，请直接给出命令。
 ```
 
-### 9. apply 确认
+### 11. apply 确认
 
 ```markdown
 ## 配置断点：是否应用 dry-run 计划

@@ -72,6 +72,7 @@ def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
         "skill-ponytail",
         "skill-portless-local-dev",
         "skill-improve-codebase-architecture",
+        "skill-mattpocock-engineering",
         "skill-reverse-skill",
     }
 

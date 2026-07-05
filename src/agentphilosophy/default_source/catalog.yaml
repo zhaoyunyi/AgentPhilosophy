@@ -217,6 +217,28 @@ modules:
       - skills/improve-codebase-architecture/SKILL.md
       - .codex/skills/improve-codebase-architecture/SKILL.md
     risk: low
+  - name: skill-mattpocock-engineering
+    category: skill
+    description: Matt Pocock 产品工程主链路 skill：grill-with-docs、to-prd、to-issues、implement、tdd 和 code-review
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/grill-with-docs/SKILL.md
+      - skills/grilling/SKILL.md
+      - skills/domain-modeling/SKILL.md
+      - skills/to-prd/SKILL.md
+      - skills/to-issues/SKILL.md
+      - skills/implement/SKILL.md
+      - skills/tdd/SKILL.md
+      - skills/code-review/SKILL.md
+      - .codex/skills/grill-with-docs/SKILL.md
+      - .codex/skills/grilling/SKILL.md
+      - .codex/skills/domain-modeling/SKILL.md
+      - .codex/skills/to-prd/SKILL.md
+      - .codex/skills/to-issues/SKILL.md
+      - .codex/skills/implement/SKILL.md
+      - .codex/skills/tdd/SKILL.md
+      - .codex/skills/code-review/SKILL.md
+    risk: low
   - name: aphilosophy
     category: philosophy
     description: Agent 哲学决策框架——元决策原则、架构、治理、认知、权限对齐、运行态与安全对抗冲突解决协议

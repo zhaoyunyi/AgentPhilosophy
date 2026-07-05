@@ -24,6 +24,7 @@ modules:
   - skill-ponytail
   - skill-reverse-skill
   - skill-improve-codebase-architecture
+  - skill-mattpocock-engineering
   - aphilosophy
 paths:
   docs_guide_dir: docs/guides

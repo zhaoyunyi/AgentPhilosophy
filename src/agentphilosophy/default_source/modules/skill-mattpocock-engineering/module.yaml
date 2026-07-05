@@ -1,0 +1,130 @@
+name: skill-mattpocock-engineering
+description: Matt Pocock 产品工程主链路 skill：grill-with-docs -> to-prd -> to-issues -> implement
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: []
+conflicts: []
+upstream:
+  repository: https://github.com/mattpocock/skills
+  ref: main
+  revision: 272f99b22574f50e4266791c86b9302682970e23
+  tracked_paths:
+    - README.md
+    - skills/engineering/ask-matt/SKILL.md
+    - skills/engineering/grill-with-docs/SKILL.md
+    - skills/productivity/grilling/SKILL.md
+    - skills/engineering/domain-modeling/SKILL.md
+    - skills/engineering/domain-modeling/CONTEXT-FORMAT.md
+    - skills/engineering/domain-modeling/ADR-FORMAT.md
+    - skills/engineering/to-prd/SKILL.md
+    - skills/engineering/to-issues/SKILL.md
+    - skills/engineering/implement/SKILL.md
+    - skills/engineering/tdd/SKILL.md
+    - skills/engineering/code-review/SKILL.md
+    - skills/engineering/setup-matt-pocock-skills/domain.md
+provides:
+  - skill:grill-with-docs
+  - skill:grilling
+  - skill:domain-modeling
+  - skill:to-prd
+  - skill:to-issues
+  - skill:implement
+  - skill:tdd
+  - skill:code-review
+outputs:
+  - id: grill-with-docs-skill
+    type: rendered_file
+    template: templates/grill-with-docs.md.j2
+    target: "{{ skill_targets.repo_skills }}/grill-with-docs/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: grill-with-docs-codex-skill
+    type: rendered_file
+    template: templates/grill-with-docs.md.j2
+    target: "{{ skill_targets.codex_project }}/grill-with-docs/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: grilling-skill
+    type: rendered_file
+    template: templates/grilling.md.j2
+    target: "{{ skill_targets.repo_skills }}/grilling/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: grilling-codex-skill
+    type: rendered_file
+    template: templates/grilling.md.j2
+    target: "{{ skill_targets.codex_project }}/grilling/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: domain-modeling-skill
+    type: rendered_file
+    template: templates/domain-modeling.md.j2
+    target: "{{ skill_targets.repo_skills }}/domain-modeling/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: domain-modeling-codex-skill
+    type: rendered_file
+    template: templates/domain-modeling.md.j2
+    target: "{{ skill_targets.codex_project }}/domain-modeling/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-prd-skill
+    type: rendered_file
+    template: templates/to-prd.md.j2
+    target: "{{ skill_targets.repo_skills }}/to-prd/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-prd-codex-skill
+    type: rendered_file
+    template: templates/to-prd.md.j2
+    target: "{{ skill_targets.codex_project }}/to-prd/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-issues-skill
+    type: rendered_file
+    template: templates/to-issues.md.j2
+    target: "{{ skill_targets.repo_skills }}/to-issues/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-issues-codex-skill
+    type: rendered_file
+    template: templates/to-issues.md.j2
+    target: "{{ skill_targets.codex_project }}/to-issues/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: implement-skill
+    type: rendered_file
+    template: templates/implement.md.j2
+    target: "{{ skill_targets.repo_skills }}/implement/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: implement-codex-skill
+    type: rendered_file
+    template: templates/implement.md.j2
+    target: "{{ skill_targets.codex_project }}/implement/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: tdd-skill
+    type: rendered_file
+    template: templates/tdd.md.j2
+    target: "{{ skill_targets.repo_skills }}/tdd/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: tdd-codex-skill
+    type: rendered_file
+    template: templates/tdd.md.j2
+    target: "{{ skill_targets.codex_project }}/tdd/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: code-review-skill
+    type: rendered_file
+    template: templates/code-review.md.j2
+    target: "{{ skill_targets.repo_skills }}/code-review/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: code-review-codex-skill
+    type: rendered_file
+    template: templates/code-review.md.j2
+    target: "{{ skill_targets.codex_project }}/code-review/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
