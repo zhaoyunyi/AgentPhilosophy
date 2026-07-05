@@ -46,6 +46,8 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints --format json" in content
     assert "payload[\"breakpoints\"][0][\"reply_format\"]" in content
     assert "agentphilosophy-sync\" init" in content
+    assert "superpowers-system" in content
+    assert "Superpowers skill 版本为 \\`6.0\\`" in content
     assert "skill-ponytail" in content
     assert "skills/ponytail/SKILL.md" in content
     assert ".codex/skills/ponytail/SKILL.md" in content

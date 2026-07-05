@@ -4,6 +4,7 @@ modules:
   - openspec-skills
   - jj-conventions
   - model-constraints
+  - superpowers-system
   - doc-templates
   - multi-module-layout
   - spec-program

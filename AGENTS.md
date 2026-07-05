@@ -17,6 +17,20 @@
 - 进入子目录前先读取该目录内的 `AGENTS.md`、`CLAUDE.md` 或 README。
 - 跨仓搜索默认只读；除非任务明确要求，不修改兄弟仓或外部项目文件。
 
+## Superpowers System
+
+<EXTREMELY_IMPORTANT>
+Superpowers 已通过 **Codex 原生 skill discovery** 安装；当前项目要求的 Superpowers skill 版本为 `6.0`，无需再使用旧版 `superpowers-codex bootstrap`。
+
+固定安装位置：
+
+- Superpowers 仓库：`~/.codex/superpowers`
+- Skills 入口（symlink）：`~/.agents/skills/superpowers` -> `~/.codex/superpowers/skills`
+
+如果需要升级或校准 Superpowers，先确认上述 symlink 指向正确，再把 `~/.codex/superpowers` 更新到项目要求的 `6.0` 对应版本，并重启 Codex CLI 让原生 skill discovery 重新扫描。
+
+如果某次会话中技能未出现：先确认上述 symlink 存在，再重启 Codex CLI。
+</EXTREMELY_IMPORTANT>
 
 ## 工程规范
 
@@ -36,16 +50,3 @@
 ## 项目扩展
 
 项目特有内容应放在 `.agents/custom`，避免中央同步覆盖手写规则。
-
-## Superpowers System
-
-<EXTREMELY_IMPORTANT>
-Superpowers 已通过 **Codex 原生 skill discovery** 安装，无需再使用旧版 `superpowers-codex bootstrap`。
-
-固定安装位置：
-
-- Superpowers 仓库：`~/.codex/superpowers`
-- Skills 入口（symlink）：`~/.agents/skills/superpowers` -> `~/.codex/superpowers/skills`
-
-如果某次会话中技能未出现：先确认上述 symlink 存在，再重启 Codex CLI。
-</EXTREMELY_IMPORTANT>

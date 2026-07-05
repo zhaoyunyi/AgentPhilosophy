@@ -185,6 +185,34 @@
       "reply_format": "回复选项编号或 id"
     },
     {
+      "id": "superpowers-system",
+      "title": "是否同步 Superpowers 6.0 约束",
+      "question": "我需要确认是否把 Superpowers 的 Codex 原生 discovery 固定路径、版本和排障规则写入 `AGENTS.md`。",
+      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `superpowers-system`。",
+      "recommended": {
+        "id": "add-module",
+        "reason": "默认 preset 会把它作为通用协作规则的一部分，便于后续统一 Superpowers 6.0 的安装位置、symlink 和重启排障方式。"
+      },
+      "options": [
+        {
+          "id": "add-module",
+          "label": "追加 `superpowers-system`",
+          "impact": "后续 `push --apply` 会刷新 `AGENTS.md` 中的 Superpowers 6.0 约束。"
+        },
+        {
+          "id": "skip-module",
+          "label": "不修改旧项目配置",
+          "impact": "本次升级不会新增 Superpowers 约束。"
+        },
+        {
+          "id": "minimal-config",
+          "label": "保持极简配置",
+          "impact": "只保留项目当前显式模块，后续需要时再单独追加。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
       "id": "reverse-skill",
       "title": "是否安装 reverse-skill 授权逆向路由 skill",
       "question": "我需要确认是否把 reverse-skill 的授权逆向、安全研究、CTF 和本机工具链路由写成项目级 skill。",

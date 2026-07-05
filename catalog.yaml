@@ -23,6 +23,13 @@ modules:
     outputs:
       - AGENTS.md
     risk: low
+  - name: superpowers-system
+    category: base
+    description: Superpowers Codex 原生 skill discovery 安装、版本和排障规范
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - AGENTS.md
+    risk: low
   - name: doc-templates
     category: base
     description: AGENTS.md 和 CLAUDE.md 主文档骨架

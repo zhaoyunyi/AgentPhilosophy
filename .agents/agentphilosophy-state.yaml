@@ -1,11 +1,12 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:wzkuomnsnuvzutvqwzrutokmlqqttmqk
-source_tree_hash: sha256:1afbb4553c399502c3b5b9084b78e7b2d6716c8645cbf42368b959e535a711da
+source_revision: jj:nmoqotrnyrynxppkqqzvxsnzvrtpsxol
+source_tree_hash: sha256:5120a6ffbd9e870931c1eee9c6af3f7f7d79dc244f3a71ea01714759d1b8f798
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
   model-constraints: 1.0.0
+  superpowers-system: 6.0.0
   doc-templates: 1.0.0
   multi-module-layout: 1.0.0
   spec-program: 1.0.0
@@ -112,9 +113,9 @@ files:
   module: doc-templates
   output_id: agents-md
   strategy: layered
-  source_hash: sha256:415ac29dfd05f9d3bd581ad38b53c55f9f2004142e2df36d7294cd11ce999268
-  rendered_hash: sha256:d31ab09908b5ff98c2a76c62408e52533f081194220e01b2a0128aa5bfa803bc
-  last_written_hash: sha256:d31ab09908b5ff98c2a76c62408e52533f081194220e01b2a0128aa5bfa803bc
+  source_hash: sha256:831beec22f98f7172aca1081d710bb927b503747278454201e8f62b35e31928d
+  rendered_hash: sha256:9d93cc8423ca612820aa7b2f87c6c1e16ebb6399783c9fc35bb0f3abe08b6586
+  last_written_hash: sha256:9d93cc8423ca612820aa7b2f87c6c1e16ebb6399783c9fc35bb0f3abe08b6586
 - path: CLAUDE.md
   module: doc-templates
   output_id: claude-md
@@ -297,6 +298,6 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-06-28T14:51:03.316589+00:00'
+last_synced: '2026-07-05T11:53:00.510397+00:00'
 source_content_version: 0.5.0
 agentphilosophy_version: 0.5.0
