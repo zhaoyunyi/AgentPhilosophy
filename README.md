@@ -23,7 +23,7 @@ uv run sync.py push /path/to/project --apply
 安装后的 CLI 默认使用包内规范源；只有需要指定自定义中央源时才传 `--source`。
 
 ```bash
-uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git@v0.6.0
+uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git@v0.7.0
 ```
 
 需要跟随 `main` 最新内容时再使用：
