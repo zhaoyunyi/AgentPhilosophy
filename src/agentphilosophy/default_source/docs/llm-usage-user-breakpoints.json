@@ -269,6 +269,34 @@
       "reply_format": "回复选项编号或 id"
     },
     {
+      "id": "mattpocock-engineering",
+      "title": "是否安装 Matt Pocock 产品工程主线 skill",
+      "question": "我需要确认是否把 Matt Pocock 的 `/grill-with-docs -> /to-prd -> /to-issues -> /implement` 主线写成项目级 skill。",
+      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-mattpocock-engineering`。",
+      "recommended": {
+        "id": "add-module",
+        "reason": "默认 preset 会把它作为通用 skill 集合的一部分，便于后续先澄清需求，再沉淀 PRD、拆 issue，并逐个 issue 新开会话实现。"
+      },
+      "options": [
+        {
+          "id": "add-module",
+          "label": "追加 `skill-mattpocock-engineering`",
+          "impact": "后续 `push --apply` 会同步 `grill-with-docs`、`to-prd`、`to-issues`、`implement`、`tdd`、`code-review` 等 repo skills 和 Codex 项目级 skill。"
+        },
+        {
+          "id": "skip-module",
+          "label": "不修改旧项目配置",
+          "impact": "本次升级不会新增 Matt Pocock 产品工程主线 skill。"
+        },
+        {
+          "id": "minimal-config",
+          "label": "保持极简配置",
+          "impact": "只保留项目当前显式模块，后续需要时再单独追加。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
       "id": "portless-local-dev",
       "title": "是否沉淀 Portless 本地开发规则",
       "question": "我需要确认是否把 Portless 规则写成项目级 skill。",

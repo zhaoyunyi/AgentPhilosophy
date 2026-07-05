@@ -197,6 +197,7 @@ modules:
   - skill-repo-management
   - skill-ponytail
   - skill-improve-codebase-architecture
+  - skill-mattpocock-engineering
   - aphilosophy
 
 vars:
@@ -467,6 +468,51 @@ uv run python scripts/check-skill-upstreams.py
 modules:
   - existing-module
   - skill-improve-codebase-architecture
+```
+
+## 十、Matt Pocock 产品工程主线 skill
+
+当前中央源默认 preset 会包含 `skill-mattpocock-engineering`。该模块改编自 Matt Pocock 的 `mattpocock/skills`（MIT License），同步生成以下 repo skills 和 Codex 项目级 skills：
+
+- `grill-with-docs`
+- `grilling`
+- `domain-modeling`
+- `to-prd`
+- `to-issues`
+- `implement`
+- `tdd`
+- `code-review`
+
+推荐主线：
+
+```text
+/grill-with-docs
+-> /to-prd
+-> /to-issues
+-> 新开会话逐个 issue 用 /implement
+```
+
+使用含义：
+
+- `/grill-with-docs`：先拷问需求和设计，同时沉淀 `CONTEXT.md`、ADR 和领域语言。
+- `/to-prd`：把已经讨论清楚的内容整理成 PRD，不重新访谈。
+- `/to-issues`：把 PRD 拆成独立、可验证、适合新会话认领的 vertical slice issue。
+- `/implement`：按单个 PRD/issue 实现，内部倾向走 `/tdd`，最后跑 `/code-review`。
+
+更多最佳实践见 [docs/guides/mattpocock-engineering-flow.md](guides/mattpocock-engineering-flow.md)。
+
+已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到该主线时，把模块追加到现有 `modules`，不要替换已有模块：
+
+```yaml
+modules:
+  - existing-module
+  - skill-mattpocock-engineering
+```
+
+同步后验证：
+
+```bash
+find -L /path/to/project/.codex/skills -maxdepth 2 -name SKILL.md | sort | rg 'grill-with-docs|to-prd|to-issues|implement|tdd|code-review'
 ```
 
 随后执行标准同步流程：

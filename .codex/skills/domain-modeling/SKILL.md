@@ -1,0 +1,43 @@
+---
+name: domain-modeling
+description: 为 AgentPhilosophy 主动构建和修正领域语言；适用于澄清术语、维护 CONTEXT.md、记录 ADR、处理领域概念冲突，或 /grill-with-docs 需要沉淀 glossary 与决策时。
+---
+
+# Domain Modeling
+
+改编自 Matt Pocock 的 `domain-modeling` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/domain-modeling
+
+目标：让 agent、开发者和领域专家使用同一套词，减少实现和沟通漂移。
+
+## 文件约定
+
+- 单上下文项目：根目录 `CONTEXT.md`，决策在 `docs/adr/`。
+- 多上下文项目：根目录 `CONTEXT-MAP.md` 指向各上下文自己的 `CONTEXT.md`；系统级 ADR 仍在 `docs/adr/`。
+- 文件按需创建；没有新词或决策时不要预建空文件。
+
+## 更新 `CONTEXT.md`
+
+`CONTEXT.md` 是 glossary，不是 spec、PRD、TODO 或实现笔记。每个词条应包含：
+
+- canonical term：项目统一使用的词。
+- meaning：它在本项目里的业务含义。
+- avoid：容易混用但不该替代的词。
+- examples：必要时给 1-2 个领域例子。
+
+当用户使用的词和现有 glossary 冲突时，立即指出冲突并确认。不要悄悄换词。
+
+## 写 ADR 的门槛
+
+只有同时满足三点才询问是否写 ADR：
+
+1. 难反转：未来改主意成本不低。
+2. 没上下文会奇怪：后来的维护者会问“为什么这样做”。
+3. 有真实权衡：不是显而易见或纯偏好的选择。
+
+ADR 内容应记录背景、选择、替代方案、后果和状态。不要用 ADR 记录普通任务进展。
+
+## 使用方式
+
+- 在 `/grill-with-docs` 过程中实时沉淀词汇和 ADR。
+- 在 `/to-prd`、`/to-issues`、`/implement` 中读取 glossary，使用项目已有领域词。
+- 如果实现时发现术语不够精确，暂停并回到词汇澄清，不用临时代称继续扩散。

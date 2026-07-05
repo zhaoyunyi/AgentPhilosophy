@@ -1,0 +1,41 @@
+---
+name: tdd
+description: 在 AgentPhilosophy 中按 red-green-refactor 实现功能或修 bug；适用于用户输入 /tdd、/implement 需要测试先行、或需要围绕已确认 seam 做行为测试。
+---
+
+# TDD
+
+改编自 Matt Pocock 的 `tdd` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/tdd
+
+目标：用能长期保留的行为测试驱动实现，而不是用实现细节测试锁死结构。
+
+## 执行前
+
+1. 读取 `CONTEXT.md` 和相关 ADR，让测试名、fixture 和断言使用项目领域词。
+2. 明确测试 seam：公共接口、用户流程、CLI、API、service boundary 或其他稳定入口。
+3. 和用户或 PRD 确认 seam；不在未确认 seam 上写测试。
+
+## 循环
+
+每次只做一个 vertical slice：
+
+1. Red：写一个会失败的行为测试，运行并确认它因为目标行为缺失而失败。
+2. Green：写最小实现让它通过，不提前实现未来 slice。
+3. Verify：运行相关最小验证。
+4. Repeat：根据上一步学到的事实进入下一个测试。
+
+重构放在 review 阶段处理；不要在红绿循环里趁机做无关清理。
+
+## 好测试
+
+- 穿过公共 seam 验证外部行为。
+- 断言来自 PRD、用户例子、协议或已知正确样例，不复刻实现逻辑。
+- 测试名读起来像行为规格。
+- 内部实现重构时测试不需要改。
+
+## 反模式
+
+- mock 私有协作者、测试私有函数或绕过公共接口查内部状态。
+- 断言里重新计算实现逻辑，导致 tautological test。
+- 一口气写完所有测试，再批量实现。
+- 只测 happy path，漏掉 PRD 指定失败路径。
