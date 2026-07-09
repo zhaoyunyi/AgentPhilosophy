@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.7.3
+content_version: 0.7.4
 modules:
   - name: openspec-skills
     category: base
@@ -187,7 +187,7 @@ modules:
     risk: low
   - name: skill-portless-local-dev
     category: skill
-    description: Portless 稳定本地 URL、安装、项目脚本改造和本地验收入口 skill
+    description: Portless 稳定本地 URL、按需安装、项目脚本改造和本地验收入口 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/portless-local-dev/SKILL.md

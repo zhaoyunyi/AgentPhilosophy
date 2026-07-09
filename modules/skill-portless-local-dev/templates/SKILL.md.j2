@@ -119,6 +119,8 @@ portless hosts sync
 portless proxy start
 portless proxy start --no-tls
 portless proxy start --lan
+portless proxy start --tld localhost --tld test
+PORTLESS_TLD=localhost,test portless proxy start
 PORTLESS_LAN=0 portless proxy start
 portless myapp --tailscale pnpm dev
 portless myapp --funnel pnpm dev
@@ -149,6 +151,7 @@ PORTLESS=0 pnpm dev
 - 多服务场景中，前端、API、WebSocket、OAuth callback、CORS 和 cookie origin 都指向稳定 hostname。
 - worktree 场景中不同工作区不会互相抢端口；必要时检查生成的子域名前缀。
 - Safari 或系统 DNS 无法解析 `.localhost` 子域名时，运行 `portless hosts sync` 并记录清理方式 `portless hosts clean`。
+- 如果需要同一组 app 同时支持多个本地域名后缀，可重复传 `--tld`，或用逗号分隔的 `PORTLESS_TLD`；记录主 URL 仍以第一个 TLD 为准。
 
 ## 安全边界
 
