@@ -7,6 +7,9 @@ from agentphilosophy.yamlio import read_yaml
 
 
 def source_files(root: Path) -> list[Path]:
+    def is_source_file(path: Path) -> bool:
+        return path.is_file() and path.name != ".DS_Store"
+
     include_files = [
         root / "catalog.yaml",
         root / "docs" / "cli-usage-for-llm.md",
@@ -20,9 +23,9 @@ def source_files(root: Path) -> list[Path]:
         root / "templates",
     ]
 
-    files = [path for path in include_files if path.is_file()]
+    files = [path for path in include_files if is_source_file(path)]
     for directory in include_dirs:
-        files.extend(path for path in directory.rglob("*") if path.is_file())
+        files.extend(path for path in directory.rglob("*") if is_source_file(path))
     return sorted(files, key=lambda path: path.relative_to(root).as_posix())
 
 
