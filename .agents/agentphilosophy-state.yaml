@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:ntrrqswmpwyorwttorqprryqwupqpluu
-source_tree_hash: sha256:8b55b5400d541f9d2867b4470b30c472d9e9d292d12dc5b57362632b49242ac9
+source_revision: jj:unrrrqxrollpzyyvvumuqooymxvroyzk
+source_tree_hash: sha256:ac198fd632603691e34f0a84ec3011fd0813769f249344583fa147822adc0cb9
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -24,6 +24,7 @@ modules:
   skill-reverse-skill: 1.0.0
   skill-improve-codebase-architecture: 1.0.3
   skill-mattpocock-engineering: 1.1.0
+  skill-portless-local-dev: 1.2.0
   aphilosophy: 1.6.0
 files:
 - path: .codex/skills/agentphilosophy-sync/SKILL.md
@@ -124,6 +125,13 @@ files:
   source_hash: sha256:95ab7fd33eab0ba427771759ebf7101c90a977a4b4c1586a70e57762f389f144
   rendered_hash: sha256:e3b25bad4973254b82e393f76990ab356eed3a1c6ca209012487f3dff3d4bf58
   last_written_hash: sha256:e3b25bad4973254b82e393f76990ab356eed3a1c6ca209012487f3dff3d4bf58
+- path: .codex/skills/portless-local-dev/SKILL.md
+  module: skill-portless-local-dev
+  output_id: portless-local-dev-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:93267b1d8fc89d7b9c57e02948f410e99e6cefc7c86321411bc7695b8390f632
+  rendered_hash: sha256:a72609d6a48b9ec54404b040f24ba39f437dbc303ee2b3e2bcb967c71db22c77
+  last_written_hash: sha256:a72609d6a48b9ec54404b040f24ba39f437dbc303ee2b3e2bcb967c71db22c77
 - path: .codex/skills/repo-management/SKILL.md
   module: skill-repo-management
   output_id: repo-management-codex-skill
@@ -341,6 +349,13 @@ files:
   source_hash: sha256:95ab7fd33eab0ba427771759ebf7101c90a977a4b4c1586a70e57762f389f144
   rendered_hash: sha256:e3b25bad4973254b82e393f76990ab356eed3a1c6ca209012487f3dff3d4bf58
   last_written_hash: sha256:e3b25bad4973254b82e393f76990ab356eed3a1c6ca209012487f3dff3d4bf58
+- path: skills/portless-local-dev/SKILL.md
+  module: skill-portless-local-dev
+  output_id: portless-local-dev-skill
+  strategy: managed_replace
+  source_hash: sha256:93267b1d8fc89d7b9c57e02948f410e99e6cefc7c86321411bc7695b8390f632
+  rendered_hash: sha256:a72609d6a48b9ec54404b040f24ba39f437dbc303ee2b3e2bcb967c71db22c77
+  last_written_hash: sha256:a72609d6a48b9ec54404b040f24ba39f437dbc303ee2b3e2bcb967c71db22c77
 - path: skills/repo-management/SKILL.md
   module: skill-repo-management
   output_id: repo-management-skill
@@ -439,6 +454,6 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-09T06:43:26.688481+00:00'
-source_content_version: 0.7.3
-agentphilosophy_version: 0.7.3
+last_synced: '2026-07-09T07:02:10.375424+00:00'
+source_content_version: 0.7.4
+agentphilosophy_version: 0.7.4
