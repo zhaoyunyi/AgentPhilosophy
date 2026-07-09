@@ -326,9 +326,9 @@
     },
     {
       "id": "portless-local-dev",
-      "title": "是否沉淀 Portless 本地开发规则",
-      "question": "我需要确认是否把 Portless 规则写成项目级 skill。",
-      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-portless-local-dev`。",
+      "title": "旧项目是否补上 Portless 本地开发判断 skill",
+      "question": "我需要确认是否把 Portless 判断规则写成项目级 skill。",
+      "why": "新项目默认 preset 已包含该模块；旧项目的模块列表是显式冻结的，这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-portless-local-dev`。",
       "recommended": {
         "id": "skip-module",
         "reason": "当前只需要一次性本地验收时，不需要团队长期复用。"

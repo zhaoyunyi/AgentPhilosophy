@@ -251,12 +251,12 @@ breakpoint:
 请回复选项编号或 id。
 ```
 
-### 9. Portless 可选模块
+### 9. Portless 本地开发判断 skill
 
 ```markdown
-## 配置断点：是否沉淀 Portless 本地开发规则
+## 配置断点：旧项目是否补上 Portless 本地开发判断 skill
 
-我需要确认是否把 Portless 规则写成项目级 skill。这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-portless-local-dev`。
+我需要确认是否把 Portless 判断规则写成项目级 skill。新项目默认 preset 已包含该模块；旧项目的模块列表是显式冻结的，这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-portless-local-dev`。
 
 推荐选择：`skip-module`，因为当前只需要一次性本地验收，不需要团队长期复用。
 
