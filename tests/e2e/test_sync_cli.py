@@ -280,7 +280,7 @@ def test_packaged_preset_declares_superpowers_version_by_default(tmp_path: Path,
 
     assert "- superpowers-system" in project_config
     assert "Superpowers System" in agents_text
-    assert "Superpowers skill 版本为 `6.0`" in agents_text
+    assert "Superpowers skill 版本为 `6.1.1`" in agents_text
     assert "~/.codex/superpowers" in agents_text
     assert "~/.agents/skills/superpowers" in agents_text
     assert "superpowers-codex bootstrap" in agents_text

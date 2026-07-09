@@ -73,7 +73,7 @@ target="$smoke_root/project"
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply >/dev/null
 grep -q "superpowers-system" "$target/.agentphilosophy.yaml"
-grep -q "Superpowers skill 版本为 \`6.0\`" "$target/AGENTS.md"
+grep -q "Superpowers skill 版本为 \`6.1.1\`" "$target/AGENTS.md"
 grep -q "~/.agents/skills/superpowers" "$target/AGENTS.md"
 grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"
 test -f "$target/skills/ponytail/SKILL.md"

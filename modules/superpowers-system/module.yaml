@@ -1,11 +1,11 @@
 name: superpowers-system
 description: Superpowers Codex 原生 skill discovery 安装、版本和排障规范
-version: 6.0.0
+version: 6.1.1
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: [doc-templates]
 conflicts: []
 default_vars:
-  superpowers_version: "6.0"
+  superpowers_version: "6.1.1"
   superpowers_repository_path: "~/.codex/superpowers"
   superpowers_skills_symlink: "~/.agents/skills/superpowers"
   superpowers_skills_target: "~/.codex/superpowers/skills"
