@@ -25,6 +25,7 @@ modules:
   - skill-reverse-skill
   - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
+  - skill-portless-local-dev
   - aphilosophy
 paths:
   docs_guide_dir: docs/guides
