@@ -30,6 +30,7 @@ modules:
 - skill-reverse-skill
 - skill-improve-codebase-architecture
 - skill-mattpocock-engineering
+- skill-portless-local-dev
 - aphilosophy
 vars:
   primary_tool: Codex CLI
