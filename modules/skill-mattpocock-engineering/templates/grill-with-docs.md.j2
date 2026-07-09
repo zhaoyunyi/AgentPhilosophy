@@ -15,9 +15,9 @@ description: 为 {{ project_name }} 在需求或设计仍模糊时发起 /grill-
 
 ```text
 /grill-with-docs
--> /to-prd
--> /to-issues
--> 新开会话逐个 issue 用 /implement
+-> /to-spec
+-> /to-tickets
+-> 新开会话逐个 ticket 用 /implement
 ```
 
 ## 执行规则
@@ -27,7 +27,7 @@ description: 为 {{ project_name }} 在需求或设计仍模糊时发起 /grill-
 3. 能从代码库回答的问题先查代码，不把可验证事实丢给用户猜。
 4. 运行 `/domain-modeling` 的沉淀规则：领域词汇在确认后立即写入 `CONTEXT.md`；难反转、出乎意料且有真实权衡的决策才询问是否写 ADR。
 5. 不把 `CONTEXT.md` 当 PRD、计划或实现记录；它只保存领域语言。
-6. 不写实现代码，不生成 issue，不直接提交。共享理解达成后，建议下一步运行 `/to-prd`。
+6. 不写实现代码，不生成 ticket，不直接提交。共享理解达成后，建议下一步运行 `/to-spec`。
 
 ## 完成信号
 

@@ -1,13 +1,13 @@
 name: skill-mattpocock-engineering
-description: Matt Pocock 产品工程主链路 skill：grill-with-docs -> to-prd -> to-issues -> implement
-version: 1.0.0
+description: Matt Pocock 产品工程主链路 skill：grill-with-docs -> to-spec -> to-tickets -> implement
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
 upstream:
   repository: https://github.com/mattpocock/skills
   ref: main
-  revision: 272f99b22574f50e4266791c86b9302682970e23
+  revision: d574778f94cf620fcc8ce741584093bc650a61d3
   tracked_paths:
     - README.md
     - skills/engineering/ask-matt/SKILL.md
@@ -16,16 +16,19 @@ upstream:
     - skills/engineering/domain-modeling/SKILL.md
     - skills/engineering/domain-modeling/CONTEXT-FORMAT.md
     - skills/engineering/domain-modeling/ADR-FORMAT.md
-    - skills/engineering/to-prd/SKILL.md
-    - skills/engineering/to-issues/SKILL.md
+    - skills/engineering/to-spec/SKILL.md
+    - skills/engineering/to-tickets/SKILL.md
     - skills/engineering/implement/SKILL.md
     - skills/engineering/tdd/SKILL.md
     - skills/engineering/code-review/SKILL.md
+    - skills/engineering/setup-matt-pocock-skills/SKILL.md
     - skills/engineering/setup-matt-pocock-skills/domain.md
 provides:
   - skill:grill-with-docs
   - skill:grilling
   - skill:domain-modeling
+  - skill:to-spec
+  - skill:to-tickets
   - skill:to-prd
   - skill:to-issues
   - skill:implement
@@ -66,6 +69,30 @@ outputs:
     type: rendered_file
     template: templates/domain-modeling.md.j2
     target: "{{ skill_targets.codex_project }}/domain-modeling/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-spec-skill
+    type: rendered_file
+    template: templates/to-spec.md.j2
+    target: "{{ skill_targets.repo_skills }}/to-spec/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-spec-codex-skill
+    type: rendered_file
+    template: templates/to-spec.md.j2
+    target: "{{ skill_targets.codex_project }}/to-spec/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-tickets-skill
+    type: rendered_file
+    template: templates/to-tickets.md.j2
+    target: "{{ skill_targets.repo_skills }}/to-tickets/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-tickets-codex-skill
+    type: rendered_file
+    template: templates/to-tickets.md.j2
+    target: "{{ skill_targets.codex_project }}/to-tickets/SKILL.md"
     strategy: managed_replace
     on_existing_unmanaged: report_only
   - id: to-prd-skill

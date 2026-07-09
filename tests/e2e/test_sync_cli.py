@@ -145,13 +145,14 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
     assert "欺骗性对齐检测" in security_text
 
 
-def test_packaged_fullstack_preset_renders_mattpocock_engineering_flow(tmp_path: Path) -> None:
+@pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, preset: str) -> None:
     target = tmp_path / "target"
     workdir = tmp_path / "workdir"
     workdir.mkdir()
 
     commands = [
-        ["init", str(target), "--preset", "fullstack"],
+        ["init", str(target), "--preset", preset],
         ["push", str(target), "--apply"],
     ]
     for args in commands:
@@ -172,6 +173,8 @@ def test_packaged_fullstack_preset_renders_mattpocock_engineering_flow(tmp_path:
         "grill-with-docs",
         "grilling",
         "domain-modeling",
+        "to-spec",
+        "to-tickets",
         "to-prd",
         "to-issues",
         "implement",
@@ -197,6 +200,14 @@ def test_packaged_fullstack_preset_renders_mattpocock_engineering_flow(tmp_path:
     to_issues_text = (target / "skills" / "to-issues" / "SKILL.md").read_text(encoding="utf-8")
     assert "/to-issues" in to_issues_text
     assert "vertical slice" in to_issues_text
+
+    to_spec_text = (target / "skills" / "to-spec" / "SKILL.md").read_text(encoding="utf-8")
+    assert "/to-spec" in to_spec_text
+    assert "spec" in to_spec_text
+
+    to_tickets_text = (target / "skills" / "to-tickets" / "SKILL.md").read_text(encoding="utf-8")
+    assert "/to-tickets" in to_tickets_text
+    assert "tracer-bullet" in to_tickets_text
 
     implement_text = (target / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
     assert "/implement" in implement_text
