@@ -375,6 +375,44 @@ def test_packaged_preset_installs_reverse_skill_by_default(tmp_path: Path, prese
     assert "不要把上游仓库整包复制进目标项目" in repo_skill_text
 
 
+@pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_installs_portless_skill_by_default(tmp_path: Path, preset: str) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    commands = [
+        ["init", str(target), "--preset", preset],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    repo_skill = target / "skills" / "portless-local-dev" / "SKILL.md"
+    codex_skill = target / ".codex" / "skills" / "portless-local-dev" / "SKILL.md"
+
+    assert "- skill-portless-local-dev" in project_config
+    assert repo_skill.is_file()
+    assert codex_skill.is_file()
+    assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+    repo_skill_text = repo_skill.read_text(encoding="utf-8")
+    assert "Portless 官方仓库" in repo_skill_text
+    assert "接入深度决策" in repo_skill_text
+    assert "不要把 Portless 改造成唯一启动方式" in repo_skill_text
+
+
 def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:
     workdir = tmp_path / "workdir"
     workdir.mkdir()
