@@ -198,6 +198,7 @@ modules:
   - skill-ponytail
   - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
+  - skill-portless-local-dev
   - aphilosophy
 
 vars:
@@ -274,7 +275,9 @@ Portless 接入必须按“最低有效接入深度”选择：
 | Docker Compose、数据库、Mock server 或固定端口服务 | 优先用 `portless alias <name> <port>`，不强行改服务启动脚本 |
 | 需要手机、同网段设备或 Tailscale 分享 | 先确认 LAN/Tailscale/Funnel 权限和暴露面，再按需开启，不作为默认路径 |
 
-当前中央源提供可选模块 `skill-portless-local-dev`。该模块不会默认出现在 preset 中；只有当目标项目需要把 Portless 判断、按需安装和改造规则沉淀成项目级 skill 时，才把它加入目标项目 `.agentphilosophy.yaml`。如果只是一次性本地调试或临时验收，不需要修改 `.agentphilosophy.yaml`。加入模块时必须追加到现有 `modules`，不要替换或删除 preset 已有模块；如果目标项目还没有正式 `.agentphilosophy.yaml`，先走新项目 `init` 或老项目 `migrate` 流程。
+当前中央源默认 preset 会包含 `skill-portless-local-dev`。该模块会同步生成 `skills/portless-local-dev/SKILL.md` 和 `.codex/skills/portless-local-dev/SKILL.md`，用于让 agent 在本地启动、浏览器验收、端口冲突、多服务、worktree、移动设备联调或 Tailscale 分享任务前先判断是否需要 Portless，以及选择最低有效接入深度。它不会默认安装 Portless、不会默认改项目脚本，也不会把 Portless 当成 QA、线上或 port-forward 入口。
+
+已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动追加新模块。需要让旧项目长期复用 Portless 判断规则时，把模块追加到现有 `modules`，不要替换已有模块。如果只是一次性本地调试或临时验收，不需要修改 `.agentphilosophy.yaml`。如果目标项目还没有正式 `.agentphilosophy.yaml`，先走新项目 `init` 或老项目 `migrate` 流程。
 
 ```yaml
 modules:
