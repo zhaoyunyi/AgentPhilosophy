@@ -20,14 +20,14 @@
 ## Superpowers System
 
 <EXTREMELY_IMPORTANT>
-Superpowers 已通过 **Codex 原生 skill discovery** 安装；当前项目要求的 Superpowers skill 版本为 `6.0`，无需再使用旧版 `superpowers-codex bootstrap`。
+Superpowers 已通过 **Codex 原生 skill discovery** 安装；当前项目要求的 Superpowers skill 版本为 `6.1.1`，无需再使用旧版 `superpowers-codex bootstrap`。
 
 固定安装位置：
 
 - Superpowers 仓库：`~/.codex/superpowers`
 - Skills 入口（symlink）：`~/.agents/skills/superpowers` -> `~/.codex/superpowers/skills`
 
-如果需要升级或校准 Superpowers，先确认上述 symlink 指向正确，再把 `~/.codex/superpowers` 更新到项目要求的 `6.0` 对应版本，并重启 Codex CLI 让原生 skill discovery 重新扫描。
+如果需要升级或校准 Superpowers，先确认上述 symlink 指向正确，再把 `~/.codex/superpowers` 更新到项目要求的 `6.1.1` 对应版本，并重启 Codex CLI 让原生 skill discovery 重新扫描。
 
 如果某次会话中技能未出现：先确认上述 symlink 存在，再重启 Codex CLI。
 </EXTREMELY_IMPORTANT>

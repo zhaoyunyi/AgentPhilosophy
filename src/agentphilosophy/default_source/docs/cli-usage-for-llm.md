@@ -226,13 +226,13 @@ vars:
 
 ## 五、Superpowers 原生 discovery 版本约束
 
-当前中央源默认 preset 会包含 `superpowers-system`。该模块不会复制上游 Superpowers 仓库，也不会生成项目级 `SKILL.md`；它只把 Codex 原生 skill discovery 的固定路径、排障方式和当前项目要求的 Superpowers skill 版本 `6.0` 写入 `AGENTS.md`。
+当前中央源默认 preset 会包含 `superpowers-system`。该模块不会复制上游 Superpowers 仓库，也不会生成项目级 `SKILL.md`；它只把 Codex 原生 skill discovery 的固定路径、排障方式和当前项目要求的 Superpowers skill 版本 `6.1.1` 写入 `AGENTS.md`。
 
 目标项目同步后应能在 `AGENTS.md` 看到：
 
 - Superpowers 仓库：`~/.codex/superpowers`
 - Skills 入口（symlink）：`~/.agents/skills/superpowers` -> `~/.codex/superpowers/skills`
-- 当前项目要求的 Superpowers skill 版本：`6.0`
+- 当前项目要求的 Superpowers skill 版本：`6.1.1`
 
 已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到这段约束时，把模块追加到现有 `modules`，不要替换已有模块：
 
@@ -254,7 +254,7 @@ agentphilosophy-sync push /path/to/project --apply
 同步后验证：
 
 ```bash
-rg -n "Superpowers skill 版本为 `6.0`|~/.agents/skills/superpowers" /path/to/project/AGENTS.md
+rg -n "Superpowers skill 版本为 `6.1.1`|~/.agents/skills/superpowers" /path/to/project/AGENTS.md
 ```
 
 ## 六、Portless 本地开发入口
