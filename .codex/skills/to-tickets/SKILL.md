@@ -1,0 +1,48 @@
+---
+name: to-tickets
+description: 把 AgentPhilosophy 的 spec、计划或当前对话拆成可独立认领的 tracer-bullet tickets；适用于用户输入 /to-tickets、要求按 vertical slice 拆分 spec，或需要为多个 agent/会话准备实现任务。
+---
+
+# To Tickets
+
+改编自 Matt Pocock 的 `to-tickets` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/to-tickets
+
+目标：把 spec 拆成独立、可验证、可交给新会话的 tracer-bullet vertical slice tickets。
+
+## 流程
+
+1. 读取 spec、当前对话、相关代码和项目领域词。若用户给了 issue、URL 或路径，先读取完整内容。
+2. 必要时快速探索代码，寻找能让实现更容易的 prefactoring 机会。
+3. 按 vertical slice 拆分：每个 ticket 都贯穿数据、API、UI、测试或对应集成层，交付一个可演示或可验证的窄行为。
+4. 为每个 ticket 标出 blocking edges：哪些 ticket 必须先完成，没有则写 `None - can start immediately`。
+5. 先展示拆分草案，等待用户确认粒度、依赖和覆盖范围。
+6. 用户确认后再发布 tickets。按依赖顺序发布，阻塞项先发。
+
+## 草案格式
+
+每个候选 ticket 展示：
+
+- **Title**：短标题。
+- **Blocked by**：依赖哪些 ticket，没有则写 `None`。
+- **What it delivers**：这个 ticket 交付的端到端行为。
+- **Verification**：完成后如何证明。
+
+## Ticket 模板
+
+```markdown
+## <Ticket title>
+
+**What to build:** 描述端到端行为，不按层分配任务。
+
+**Blocked by:** None - can start immediately
+
+- [ ] 用户可见成功路径。
+- [ ] 关键失败路径。
+- [ ] 验证命令或证据。
+```
+
+## 注意
+
+- 不要把 “先写 schema”“再写 API”“最后写 UI” 拆成水平层 ticket，除非其中某个 slice 本身就是可验收行为。
+- 不关闭或修改父 issue/spec。
+- 每个 ticket 都应足够独立，后续新会话可以只拿 spec + 单个 ticket 运行 `/implement`。

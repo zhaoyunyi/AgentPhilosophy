@@ -89,15 +89,18 @@ cmp -s \
   "$target/.codex/skills/improve-codebase-architecture/SKILL.md"
 grep -q "AgentPhilosophy ArchitectureSpec" "$target/skills/improve-codebase-architecture/SKILL.md"
 grep -q "skill-mattpocock-engineering" "$target/.agentphilosophy.yaml"
-for skill_name in grill-with-docs grilling domain-modeling to-prd to-issues implement tdd code-review; do
+for skill_name in grill-with-docs grilling domain-modeling to-spec to-tickets to-prd to-issues implement tdd code-review; do
   test -f "$target/skills/${skill_name}/SKILL.md"
   test -f "$target/.codex/skills/${skill_name}/SKILL.md"
   cmp -s \
     "$target/skills/${skill_name}/SKILL.md" \
     "$target/.codex/skills/${skill_name}/SKILL.md"
 done
+test -f "$target/.codex/skills/to-spec/SKILL.md"
 test -f "$target/.codex/skills/to-prd/SKILL.md"
 grep -q "/grill-with-docs" "$target/skills/grill-with-docs/SKILL.md"
+grep -q "/to-spec" "$target/skills/to-spec/SKILL.md"
+grep -q "/to-tickets" "$target/skills/to-tickets/SKILL.md"
 grep -q "/to-prd" "$target/skills/to-prd/SKILL.md"
 grep -q "/to-issues" "$target/skills/to-issues/SKILL.md"
 grep -q "/tdd" "$target/skills/implement/SKILL.md"

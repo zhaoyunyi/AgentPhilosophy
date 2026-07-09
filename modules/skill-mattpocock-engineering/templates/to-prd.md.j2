@@ -5,7 +5,9 @@ description: 把 {{ project_name }} 当前已澄清的对话、方案或 /grill-
 
 # To PRD
 
-改编自 Matt Pocock 的 `to-prd` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/to-prd
+兼容别名：Matt Pocock 当前上游已把 `to-prd` 更新为 `to-spec`。新流程优先使用 `/to-spec`，本 skill 保留给已有项目、脚本或团队习惯继续调用。
+
+改编自 Matt Pocock 的 `to-spec` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/to-spec
 
 目标：把已经讨论清楚的内容整理成 PRD，不重新访谈用户。
 
@@ -14,7 +16,7 @@ description: 把 {{ project_name }} 当前已澄清的对话、方案或 /grill-
 1. 读取当前对话、相关代码和文档，使用 `CONTEXT.md` 的领域词，尊重相关 ADR。
 2. 明确测试 seam：优先选最高、最稳定、最接近用户行为的 seam。需要新增 seam 时先说明理由，并和用户确认。
 3. 生成 PRD。若项目已有 issue tracker 或 PRD 目录约定，按约定发布；如果没有约定，先给出建议路径并询问确认，不擅自创建公开 issue。
-4. PRD 完成后建议下一步运行 `/to-issues`。
+4. PRD 完成后建议下一步运行 `/to-tickets`；若团队仍使用旧命名，也可以运行 `/to-issues`。
 
 ## PRD 模板
 

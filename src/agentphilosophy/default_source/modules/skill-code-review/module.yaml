@@ -1,6 +1,6 @@
 name: skill-code-review
 description: 独立 code-review 双轴审查项目级 skill
-version: 1.0.0
+version: 1.0.1
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts:
@@ -8,7 +8,7 @@ conflicts:
 upstream:
   repository: https://github.com/mattpocock/skills
   ref: main
-  revision: 272f99b22574f50e4266791c86b9302682970e23
+  revision: d574778f94cf620fcc8ce741584093bc650a61d3
   tracked_paths:
     - README.md
     - skills/engineering/code-review/SKILL.md

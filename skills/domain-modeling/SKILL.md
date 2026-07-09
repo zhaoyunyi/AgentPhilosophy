@@ -39,5 +39,5 @@ ADR 内容应记录背景、选择、替代方案、后果和状态。不要用 
 ## 使用方式
 
 - 在 `/grill-with-docs` 过程中实时沉淀词汇和 ADR。
-- 在 `/to-prd`、`/to-issues`、`/implement` 中读取 glossary，使用项目已有领域词。
+- 在 `/to-spec`、`/to-tickets`、`/implement` 中读取 glossary，使用项目已有领域词。
 - 如果实现时发现术语不够精确，暂停并回到词汇澄清，不用临时代称继续扩散。
