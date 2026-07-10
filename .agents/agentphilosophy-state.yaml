@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:zxzrxpuxkllyxsxkwppwtzoywzztmolm
-source_tree_hash: sha256:e6d4d824b4681a3ff673b9e618a088fa49e0cd945d08c65142029b68440e428d
+source_revision: jj:nxyuwrypkmmrqxxlsoytupvsupxnzqqw
+source_tree_hash: sha256:5fd9ca9b5fa130c0707f2210937ff3c9863688c1b99815e8c5e88ba03289bb5a
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -10,7 +10,7 @@ modules:
   doc-templates: 1.1.0
   multi-module-layout: 1.0.0
   spec-program: 1.0.0
-  spec-ddd: 1.1.0
+  spec-ddd: 1.2.0
   spec-bdd: 1.0.0
   spec-test-general: 1.1.0
   spec-product-copy: 1.1.0
@@ -430,9 +430,9 @@ files:
   module: spec-ddd
   output_id: ddd-spec
   strategy: managed_replace
-  source_hash: sha256:46273d156d43f6fc503fd8e4ab5af56062460ed1ea51beda20dbc05082e1cb2b
-  rendered_hash: sha256:0b764009c924de320586118570d3f9d64d84d1d687e33cee8f6f3684d51deeef
-  last_written_hash: sha256:0b764009c924de320586118570d3f9d64d84d1d687e33cee8f6f3684d51deeef
+  source_hash: sha256:b585807dd0440016869a61cd0c6dff27fb9bdeaab1ac926c9a33528a1049cea2
+  rendered_hash: sha256:ac84ebc04947dae2ac0574c62d31336343b3dc4c09dbc7b94370fca231737cdd
+  last_written_hash: sha256:ac84ebc04947dae2ac0574c62d31336343b3dc4c09dbc7b94370fca231737cdd
 - path: spec/ProductCopySpec.md
   module: spec-product-copy
   output_id: product-copy-spec
@@ -454,6 +454,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-10T03:41:39.060037+00:00'
+last_synced: '2026-07-10T04:06:38.497340+00:00'
 source_content_version: 0.7.5
 agentphilosophy_version: 0.7.5

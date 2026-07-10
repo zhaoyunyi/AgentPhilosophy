@@ -1,42 +1,30 @@
-# Domain-Driven Design (DDD) Core Principles
+# DDD 领域驱动设计规范
 
-This project strictly adheres to Domain-Driven Design. All code contributions must align with the following three core principles.
+本规范用于承载领域知识、业务规则和模型边界。只有存在领域语义、业务不变量或一致性边界的代码才需要采用相应的 DDD 模式。
 
-## 1. Ubiquitous Language (通用语言)
-**Goal:** Eliminate the gap between domain experts and technical implementation. Code is documentation.
+## 1. 通用语言（Ubiquitous Language）
 
-*   **English Instruction:**
-    > **Principle: Strict Adherence to Ubiquitous Language**
-    > Naming in the codebase (classes, methods, variables, modules) must rigorously align with the consensus terminology used by domain experts. **Do not perform technical "translations" or abstractions.** If the business calls it a "Booking," the code must not call it a "Reservation" or "Order." Ubiquitous Language is not just about nouns; it dictates **domain behaviors**. Method names must express business intent (e.g., `issue_refund()`) rather than CRUD operations (e.g., `set_refund_status()`). When domain concepts evolve, the code must be refactored to reflect the new linguistic model.
+在同一限界上下文内，类、方法、变量和模块的命名必须与领域专家确认的业务术语保持一致，方法名应表达业务意图（例如 `issue_refund()`），而不是仅描述数据操作（例如 `set_refund_status()`）。
 
-*   **中文原则:**
-    > **严禁进行技术性的“翻译”或抽象**。代码中的命名必须严格通过与领域专家的共识术语保持一致。方法名应描述业务意图（如 `issue_refund()`），而非单纯的数据操作（如 `set_refund_status()`）。代码是领域知识的直接投影，阅读代码应能直接理解业务逻辑。
+- 禁止仅为技术偏好对领域术语做无意义改名或抽象；业务已达成共识的术语不得随意替换成近义词。
+- 领域概念演进时，应同步更新代码中的语言模型。
+- 跨边界适配器允许为对接外部模型或另一个限界上下文做必要的术语和模型转换，并明确记录映射关系。
 
-## 2. Bounded Context (限界上下文)
-**Goal:** Define explicit model boundaries to prevent conceptual confusion.
+## 2. 限界上下文（Bounded Context）
 
-*   **English Instruction:**
-    > **Principle: Model Isolation via Bounded Contexts**
-    > Distinctly define the semantic boundaries of models. The same term represents completely different concepts in different contexts (e.g., a "Product" in Sales vs. Logistics). **Strictly forbid the creation of "God Objects".**
-    > 1.  **Explicit Boundaries:** Each context must have clear physical code boundaries (modules/packages/services).
-    > 2.  **Context Mapping:** Cross-context interactions must utilize Anti-Corruption Layers (ACL) or Open Host Services (OHS). Never directly reference another context's database or internal objects.
-    > 3.  **Unambiguity:** Within a single context, the Ubiquitous Language must be unambiguous.
+每个限界上下文必须有清晰的语义边界和代码边界。同一个术语可以在不同上下文中表达不同概念，但在单一上下文内必须保持含义明确，避免创建覆盖所有场景的“上帝对象”。
 
-*   **中文原则:**
-    > **通过限界上下文隔离模型**。同一个术语在不同上下文中代表不同概念，严禁创建试图涵盖所有场景的“上帝对象”。跨上下文交互必须通过防腐层（ACL）或开放主机服务（OHS），严禁直接引用其他上下文的数据库或内部对象。
+- 跨上下文交互应通过明确契约和适合的 Context Map 模式隔离语义与模型。
+- 防腐层（Anti-Corruption Layer，ACL）、开放主机服务（Open Host Service，OHS）等是可选模式；`ACL、OHS` 不是所有跨上下文交互的唯一选择，应按协作关系、模型所有权和转换需要选择。
+- 不得直接依赖另一个上下文的数据库或内部对象。
 
-## 3. Aggregates & Rich Domain Model (聚合与充血模型)
-**Goal:** Enforce data consistency (Invariants) and encapsulate logic.
+## 3. 聚合与充血模型（Aggregates & Rich Domain Model）
 
-*   **English Instruction:**
-    > **Principle: Rich Domain Model with Aggregates**
-    > Reject the "Anemic Domain Model" (classes with only data and Getters/Setters). Entities and Value Objects must encapsulate business logic and validation.
-    > 1.  **Aggregate Root as Gateway:** The Aggregate is the atomic unit of data modification. External objects can only hold references to the Aggregate Root; direct access to internal entities is prohibited.
-    > 2.  **Enforce Invariants:** The Aggregate Root must ensure all business rules remain satisfied after any state change.
-    > 3.  **Transactional Boundaries:** A single transaction should modify only one Aggregate instance. Use Domain Events for eventual consistency.
+聚合和充血模型用于存在业务不变量与一致性边界的领域逻辑。实体和值对象应封装与其职责相关的业务规则，聚合根负责维护聚合内部不变量，并作为外部修改聚合状态的入口。
 
-*   **中文原则:**
-    > **拒绝贫血模型**。实体和值对象必须包含业务逻辑验证。聚合根是数据修改的最小原子单元，外部对象严禁直接访问聚合内部实体。聚合根必须确保在任何状态变更后，整体业务规则（不变量）依然成立。
+- 聚合边界按业务一致性需要划分，不按数据库表或技术分层机械划分。
+- 单次事务通常只修改一个聚合；跨聚合一致性可按业务需要使用领域事件或其他明确机制。
+- DTO、配置、脚本等非领域代码不强制套用聚合，也不要求为了形式完整引入实体、值对象或充血模型。
 
 ## 4. 项目聚合风格
 

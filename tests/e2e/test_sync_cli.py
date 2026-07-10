@@ -330,9 +330,18 @@ def test_packaged_preset_renders_complete_ddd_standard(tmp_path: Path, preset: s
         assert result.returncode == 0, result.stderr + result.stdout
 
     ddd_text = (target / "spec" / "DDDSpec.md").read_text(encoding="utf-8")
-    assert "Ubiquitous Language (通用语言)" in ddd_text
-    assert "Bounded Context (限界上下文)" in ddd_text
-    assert "Aggregates & Rich Domain Model (聚合与充血模型)" in ddd_text
+    assert "# DDD 领域驱动设计规范" in ddd_text
+    assert "通用语言（Ubiquitous Language）" in ddd_text
+    assert "限界上下文（Bounded Context）" in ddd_text
+    assert "聚合与充血模型（Aggregates & Rich Domain Model）" in ddd_text
+    assert "明确契约和适合的 Context Map 模式" in ddd_text
+    assert "ACL、OHS" in ddd_text
+    assert "可选模式" in ddd_text
+    assert "非领域代码不强制套用聚合" in ddd_text
+    assert "English Instruction" not in ddd_text
+    assert "This project strictly adheres to Domain-Driven Design" not in ddd_text
+    assert "严禁进行技术性的“翻译”或抽象" not in ddd_text
+    assert "必须通过防腐层（ACL）或开放主机服务（OHS）" not in ddd_text
 
 
 def test_packaged_fullstack_renders_custom_aggregate_style(tmp_path: Path) -> None:
