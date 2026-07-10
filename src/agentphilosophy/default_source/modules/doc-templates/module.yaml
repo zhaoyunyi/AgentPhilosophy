@@ -1,6 +1,6 @@
 name: doc-templates
 description: AGENTS.md 和 CLAUDE.md 主文档骨架
-version: 1.0.0
+version: 1.1.0
 default_strategy: layered
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []

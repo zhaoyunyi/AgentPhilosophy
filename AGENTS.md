@@ -42,7 +42,7 @@ Superpowers 已通过 **Codex 原生 skill discovery** 安装；当前项目要�
 - BDD 断言应面向行为结果，不绑定内部实现细节。
 
 - 用户可见文案不得解释内部实现、上游供应商或产品内部边界；只表达用户能理解的对象、状态、影响和下一步。
-- 不用文案区分产品 key 与上游或供应商 API key；例如 “Cadraq gateway key 用于客户服务端集成；它不是 SuperAgentAI API key。” 这类说明只能留在内部 spec、测试或运维文档，不进入页面、toast、空状态、按钮、客户可读错误或公开文档。
+- 不用文案区分产品 key 与上游或供应商 API key；例如 “组织访问密钥用于服务端集成；它不是上游 API key。” 这类说明只能留在内部 spec、测试或运维文档，不进入页面、toast、空状态、按钮、客户可读错误或公开文档。
 - 避免在 UI 中渲染 provider binding、allowlist、resource policy、runtime provider、adapter、raw refs、capability key、secret hash、trace、raw payload 等内部词和值；需要展示时先映射成产品化状态。
 - 涉及中英文文案时两种语言都按同一红线排查；不能只删中文或英文一边。
 - 用户流程变更或文案红线修复要补相应 unit、e2e 或 BDD 守卫，断言面向渲染结果而不是实现细节。

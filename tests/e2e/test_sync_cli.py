@@ -245,11 +245,17 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     spec_text = product_copy_spec.read_text(encoding="utf-8")
     assert "用户可见文案不得解释内部实现细节" in spec_text
     assert "不得用文案区分产品 key 与上游或供应商 API key" in spec_text
-    assert "客户服务端集成" in spec_text
+    assert "组织访问密钥用于服务端集成" in spec_text
+    assert "Cadraq gateway key" not in spec_text
+    assert "Customer gateway key" not in spec_text
+    assert "SuperAgentAI" not in spec_text
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "用户可见文案不得解释内部实现、上游供应商或产品内部边界" in agents_text
-    assert "SuperAgentAI API key" in agents_text
+    assert "组织访问密钥用于服务端集成" in agents_text
+    assert "Cadraq gateway key" not in agents_text
+    assert "Customer gateway key" not in agents_text
+    assert "SuperAgentAI" not in agents_text
 
     claude_text = (target / "CLAUDE.md").read_text(encoding="utf-8")
     assert "Codex CLI" not in claude_text
@@ -260,6 +266,123 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     assert "不代表项目没有 UI、前端、产品体验或用户流程" in claude_text
     assert "遇到体验问题时，先定位相关代码、页面、截图、规格或用户流程" in claude_text
     assert "以其中的项目协作规范为准" in claude_text
+
+
+def test_packaged_fullstack_without_optional_superpowers_has_no_blank_section(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    init_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "init",
+            str(target),
+            "--preset",
+            "fullstack",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert init_result.returncode == 0, init_result.stderr + init_result.stdout
+
+    config_path = target / ".agentphilosophy.yaml"
+    config_text = config_path.read_text(encoding="utf-8")
+    assert config_text.count("- superpowers-system\n") == 1
+    config_path.write_text(config_text.replace("- superpowers-system\n", ""), encoding="utf-8")
+
+    push_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "push",
+            str(target),
+            "--apply",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert push_result.returncode == 0, push_result.stderr + push_result.stdout
+
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "\n\n\n## 工程规范" not in agents_text
+
+
+@pytest.mark.parametrize("preset", ["fullstack", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_renders_complete_ddd_standard(tmp_path: Path, preset: str) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    for args in (["init", str(target), "--preset", preset], ["push", str(target), "--apply"]):
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve().parents[2] / "sync.py"), *args],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    ddd_text = (target / "spec" / "DDDSpec.md").read_text(encoding="utf-8")
+    assert "Ubiquitous Language (通用语言)" in ddd_text
+    assert "Bounded Context (限界上下文)" in ddd_text
+    assert "Aggregates & Rich Domain Model (聚合与充血模型)" in ddd_text
+
+
+def test_packaged_fullstack_renders_custom_aggregate_style(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    init_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "init",
+            str(target),
+            "--preset",
+            "fullstack",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert init_result.returncode == 0, init_result.stderr + init_result.stdout
+
+    config_path = target / ".agentphilosophy.yaml"
+    config_text = config_path.read_text(encoding="utf-8")
+    marker = "  primary_tool: Codex CLI\n"
+    assert config_text.count(marker) == 1
+    config_path.write_text(
+        config_text.replace(marker, marker + "  aggregate_style: 事件溯源\n"),
+        encoding="utf-8",
+    )
+
+    push_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "push",
+            str(target),
+            "--apply",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert push_result.returncode == 0, push_result.stderr + push_result.stdout
+
+    ddd_text = (target / "spec" / "DDDSpec.md").read_text(encoding="utf-8")
+    assert "项目聚合风格" in ddd_text
+    assert "事件溯源" in ddd_text
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
