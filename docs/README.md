@@ -22,3 +22,4 @@
 ## 设计与计划
 
 - [docs/plans/2026-05-10-agent-philosophy-design.md](plans/2026-05-10-agent-philosophy-design.md)：AgentPhilosophy 统一 Agent 规范管理系统的设计文档。
+- [docs/superpowers/specs/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-design.md](superpowers/specs/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-design.md)：AgentPhilosophy 0.7.5 模板发布、默认 preset skill 刷新与 dependent-project 无漂移同步设计。
