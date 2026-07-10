@@ -9,3 +9,10 @@
 ## 默认命令
 
 `{{ test_command | default("pytest -q") }}`
+{%- set verification_guide = verification_guide_path | default("", true) %}
+{%- if verification_guide %}
+
+## 验证边界
+
+具体到 change class 的必跑命令、smoke 选择、未覆盖边界记录和禁止事项见 `{{ verification_guide }}`。完成前必须使用当前命令输出作为证据，不能用旧日志或推测替代。
+{%- endif %}

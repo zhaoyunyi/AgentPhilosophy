@@ -797,3 +797,65 @@ modules:
     assert "/code-review" in repo_skill_text
     assert "Standards" in repo_skill_text
     assert "Spec" in repo_skill_text
+
+
+def test_packaged_orchestrator_adopts_matching_verification_guide_output(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+    sync_py = str(Path(__file__).resolve().parents[2] / "sync.py")
+
+    for args in (["init", str(target), "--preset", "orchestrator"], ["push", str(target), "--apply"]):
+        result = subprocess.run(
+            [sys.executable, sync_py, *args],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    strategy_path = target / "spec" / "TestStrategy.md"
+    baseline = strategy_path.read_text(encoding="utf-8")
+    assert "## 验证边界" not in baseline
+    strategy_path.write_text(
+        baseline
+        + "\n## 验证边界\n\n"
+        + "具体到 change class 的必跑命令、smoke 选择、未覆盖边界记录和禁止事项见 "
+        + "`docs/guides/verification-boundaries.md`。完成前必须使用当前命令输出作为证据，"
+        + "不能用旧日志或推测替代。\n",
+        encoding="utf-8",
+    )
+
+    config_path = target / ".agentphilosophy.yaml"
+    config_text = config_path.read_text(encoding="utf-8")
+    marker = "  primary_tool: Codex CLI\n"
+    assert config_text.count(marker) == 1
+    config_path.write_text(
+        config_text.replace(
+            marker,
+            marker + "  verification_guide_path: docs/guides/verification-boundaries.md\n",
+        ),
+        encoding="utf-8",
+    )
+
+    apply_result = subprocess.run(
+        [sys.executable, sync_py, "push", str(target), "--apply"],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert apply_result.returncode == 0, apply_result.stderr + apply_result.stdout
+    assert "skip: spec/TestStrategy.md (already up to date)" in apply_result.stdout
+    assert "conflict: spec/TestStrategy.md" not in apply_result.stdout
+
+    second_dry_run = subprocess.run(
+        [sys.executable, sync_py, "push", str(target), "--dry-run"],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert second_dry_run.returncode == 0, second_dry_run.stderr + second_dry_run.stdout
+    assert "conflict: spec/TestStrategy.md" not in second_dry_run.stdout
