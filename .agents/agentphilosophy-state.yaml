@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:nxyuwrypkmmrqxxlsoytupvsupxnzqqw
-source_tree_hash: sha256:5fd9ca9b5fa130c0707f2210937ff3c9863688c1b99815e8c5e88ba03289bb5a
+source_revision: jj:nxmwylzmxvtrtkqtquxokzkopynmtuqk
+source_tree_hash: sha256:d72f21fb9c53c5888bd8550cfce170a12eb17390661f116db4f37d57d46120c0
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -454,6 +454,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-10T04:06:38.497340+00:00'
-source_content_version: 0.7.5
-agentphilosophy_version: 0.7.5
+last_synced: '2026-07-10T04:11:03.211033+00:00'
+source_content_version: 0.7.6
+agentphilosophy_version: 0.7.6
