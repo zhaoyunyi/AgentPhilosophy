@@ -16,8 +16,8 @@
 
 | 禁止形态 | 原因 | 推荐方向 |
 | --- | --- | --- |
-| `dependent-project gateway key 用于客户服务端集成；它不是 ExampleFullstackProject API key。` | 用文案解释内部产品边界和上游 API key 差异 | `创建和轮换组织访问密钥；新密钥只显示一次。` |
-| `dependent-project gateway keys are for customer server integrations. They are not ExampleFullstackProject API keys.` | 英文同样暴露内部集成和上游命名 | `Create and rotate organization access keys. New keys are shown once.` |
+| `组织访问密钥用于服务端集成；它不是上游 API key。` | 用文案解释内部产品边界和上游 API key 差异 | `创建和轮换组织访问密钥；新密钥只显示一次。` |
+| `Organization access keys are for server integrations. They are not upstream API keys.` | 英文同样暴露内部集成和上游命名 | `Create and rotate organization access keys. New keys are shown once.` |
 | `需要配置 provider binding 后才能使用 runtime provider。` | 暴露运行时供应商和绑定实现 | `当前运行能力暂不可用，请联系管理员处理。` |
 | `resource_policy_ref 不存在`、`adapter_unavailable`、`runtime_provider_unavailable` | 暴露内部字段名或实现错误码 | `配置未完成`、`服务暂不可用`、`请稍后重试或联系管理员` |
 | 直接展示 token、secret hash、credential fingerprint、raw payload、trace id 以外的完整调试上下文 | 泄露敏感信息或内部拓扑 | 只展示安全的请求编号、时间、状态和可操作建议 |

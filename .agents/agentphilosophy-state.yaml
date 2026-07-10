@@ -1,19 +1,19 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:unrrrqxrollpzyyvvumuqooymxvroyzk
-source_tree_hash: sha256:ac198fd632603691e34f0a84ec3011fd0813769f249344583fa147822adc0cb9
+source_revision: jj:pvrsossusztlzxrqkvwxxzvmxnlyqmxy
+source_tree_hash: sha256:80f700ae7fbcbddf2ccea4fc81893fe69e522d6d324b10d2235e8d25e222ee33
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
   model-constraints: 1.0.0
   superpowers-system: 6.1.1
-  doc-templates: 1.0.0
+  doc-templates: 1.1.0
   multi-module-layout: 1.0.0
   spec-program: 1.0.0
-  spec-ddd: 1.0.0
+  spec-ddd: 1.1.0
   spec-bdd: 1.0.0
   spec-test-general: 1.0.0
-  spec-product-copy: 1.0.0
+  spec-product-copy: 1.1.0
   spec-architecture: 1.0.0
   skill-agentphilosophy-sync: 1.0.0
   skill-jj-management: 1.1.0
@@ -192,9 +192,9 @@ files:
   module: doc-templates
   output_id: agents-md
   strategy: layered
-  source_hash: sha256:831beec22f98f7172aca1081d710bb927b503747278454201e8f62b35e31928d
-  rendered_hash: sha256:49c6f60cde0ee383469d86178ee309a120f640ab34c31d29a5acf7bfa516d629
-  last_written_hash: sha256:49c6f60cde0ee383469d86178ee309a120f640ab34c31d29a5acf7bfa516d629
+  source_hash: sha256:f4b9f2023d4d3e034c1e7fca3f90604889ad1d803be90639757cf7e065e973bd
+  rendered_hash: sha256:0228ec373f5fbf1e9793791a28bd9f31590992fa7233c21a8a1b6e79284c00ae
+  last_written_hash: sha256:0228ec373f5fbf1e9793791a28bd9f31590992fa7233c21a8a1b6e79284c00ae
 - path: CLAUDE.md
   module: doc-templates
   output_id: claude-md
@@ -430,16 +430,16 @@ files:
   module: spec-ddd
   output_id: ddd-spec
   strategy: managed_replace
-  source_hash: sha256:07db28f3368f6c79db99b5a04ee0167597916d7020723f6a1d67673a0ceaae3f
-  rendered_hash: sha256:332790b7c566544d7d39ddc76426c78efd235dbecc931eabb2b093c85cd8dbaf
-  last_written_hash: sha256:332790b7c566544d7d39ddc76426c78efd235dbecc931eabb2b093c85cd8dbaf
+  source_hash: sha256:46273d156d43f6fc503fd8e4ab5af56062460ed1ea51beda20dbc05082e1cb2b
+  rendered_hash: sha256:0b764009c924de320586118570d3f9d64d84d1d687e33cee8f6f3684d51deeef
+  last_written_hash: sha256:0b764009c924de320586118570d3f9d64d84d1d687e33cee8f6f3684d51deeef
 - path: spec/ProductCopySpec.md
   module: spec-product-copy
   output_id: product-copy-spec
   strategy: managed_replace
-  source_hash: sha256:e794f934486de8b035e2891befceabc14f8a7858fd94c46e83e4292daa0e192b
-  rendered_hash: sha256:e794f934486de8b035e2891befceabc14f8a7858fd94c46e83e4292daa0e192b
-  last_written_hash: sha256:e794f934486de8b035e2891befceabc14f8a7858fd94c46e83e4292daa0e192b
+  source_hash: sha256:76d976ffadfdd764f78e552cc58547aae988056d192c48eafdb7bbcadbe5c799
+  rendered_hash: sha256:76d976ffadfdd764f78e552cc58547aae988056d192c48eafdb7bbcadbe5c799
+  last_written_hash: sha256:76d976ffadfdd764f78e552cc58547aae988056d192c48eafdb7bbcadbe5c799
 - path: spec/ProgramSpec.md
   module: spec-program
   output_id: program-spec
@@ -454,6 +454,6 @@ files:
   source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-09T07:02:10.375424+00:00'
+last_synced: '2026-07-10T02:47:55.235916+00:00'
 source_content_version: 0.7.4
 agentphilosophy_version: 0.7.4
