@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:pvrsossusztlzxrqkvwxxzvmxnlyqmxy
-source_tree_hash: sha256:80f700ae7fbcbddf2ccea4fc81893fe69e522d6d324b10d2235e8d25e222ee33
+source_revision: jj:zxzrxpuxkllyxsxkwppwtzoywzztmolm
+source_tree_hash: sha256:e6d4d824b4681a3ff673b9e618a088fa49e0cd945d08c65142029b68440e428d
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -12,7 +12,7 @@ modules:
   spec-program: 1.0.0
   spec-ddd: 1.1.0
   spec-bdd: 1.0.0
-  spec-test-general: 1.0.0
+  spec-test-general: 1.1.0
   spec-product-copy: 1.1.0
   spec-architecture: 1.0.0
   skill-agentphilosophy-sync: 1.0.0
@@ -451,9 +451,9 @@ files:
   module: spec-test-general
   output_id: test-strategy
   strategy: managed_replace
-  source_hash: sha256:78ad34ad3553fab3193880ff5d1f32530e9501855f397c6709f0d584152affde
+  source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-10T02:47:55.235916+00:00'
-source_content_version: 0.7.4
-agentphilosophy_version: 0.7.4
+last_synced: '2026-07-10T03:41:39.060037+00:00'
+source_content_version: 0.7.5
+agentphilosophy_version: 0.7.5
