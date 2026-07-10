@@ -1,6 +1,6 @@
 name: spec-ddd
 description: DDD 领域驱动设计规范
-version: 1.1.0
+version: 1.2.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: [doc-templates]
 conflicts: []
