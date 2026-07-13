@@ -146,6 +146,31 @@ def test_packaged_fullstack_preset_renders_all_aphilosophy_documents(tmp_path: P
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_uses_task_matched_model_and_reasoning(tmp_path: Path, preset: str) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    for args in (["init", str(target), "--preset", preset], ["push", str(target), "--apply"]):
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve().parents[2] / "sync.py"), *args],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "根据任务复杂度、风险、不确定性、时效和成本，选择合适的模型与推理强度" in agents_text
+    assert "高风险、跨模块、难验证或证据不足的任务" in agents_text
+    assert "机械、低风险、边界清晰且容易验证的任务" in agents_text
+    assert "为子 agent 明确目标、负责范围、输入、预期产物和验收标准" in agents_text
+    assert "默认继承当前会话模型和 reasoning" not in agents_text
+    assert "不为子任务随意指定更弱模型" not in agents_text
+
+
+@pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
 def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, preset: str) -> None:
     target = tmp_path / "target"
     workdir = tmp_path / "workdir"
