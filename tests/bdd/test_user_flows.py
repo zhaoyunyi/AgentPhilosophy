@@ -124,3 +124,36 @@ def test_bdd_push_apply_reconciles_state_when_manual_file_matches_candidate(tmp_
 
     write(target / "AGENTS.md", "# managed-project\n\n手动追加\n")
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
+
+
+def test_bdd_default_preset_excludes_superpowers_but_keeps_multi_agent_rules(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "default-project"
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    config_text = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "- model-constraints" in config_text
+    assert "- superpowers-system" not in config_text
+    assert "选择合适的模型与推理强度" in agents_text
+    assert "Superpowers System" not in agents_text
+
+
+def test_bdd_explicit_superpowers_selection_is_preserved(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "opt-in-project"
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    config_path = target / ".agentphilosophy.yaml"
+    config_text = config_path.read_text(encoding="utf-8")
+    config_path.write_text(
+        config_text.replace("- model-constraints\n", "- model-constraints\n- superpowers-system\n", 1),
+        encoding="utf-8",
+    )
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "Superpowers System" in agents_text
+    assert "Superpowers skill 版本为 `6.1.1`" in agents_text
