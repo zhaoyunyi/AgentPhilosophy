@@ -23,5 +23,6 @@
 
 - [docs/plans/2026-05-10-agent-philosophy-design.md](plans/2026-05-10-agent-philosophy-design.md)：AgentPhilosophy 统一 Agent 规范管理系统的设计文档。
 - [docs/superpowers/specs/2026-07-13-flexible-multi-agent-and-optional-superpowers-design.md](superpowers/specs/2026-07-13-flexible-multi-agent-and-optional-superpowers-design.md)：灵活选择多 Agent 模型与推理强度，并将 Superpowers 调整为项目显式可选模块的设计。
+- [docs/superpowers/plans/2026-07-13-flexible-multi-agent-and-optional-superpowers.md](superpowers/plans/2026-07-13-flexible-multi-agent-and-optional-superpowers.md)：按测试先行拆分多 Agent 规则、Superpowers 可选默认、LLM 合同和 0.7.7 本地 release 的实施步骤。
 - [docs/superpowers/specs/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-design.md](superpowers/specs/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-design.md)：AgentPhilosophy 0.7.5 模板发布、默认 preset skill 刷新与 dependent-project 无漂移同步设计。
 - [docs/superpowers/plans/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-implementation.md](superpowers/plans/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-implementation.md)：AgentPhilosophy 0.7.5 模板扩展、发布、dependent-project 同步与验证执行计划。
