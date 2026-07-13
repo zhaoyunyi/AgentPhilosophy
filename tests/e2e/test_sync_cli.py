@@ -646,6 +646,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "skill-reverse-skill" in auto_result.stdout
     assert "skill-philosophy-extraction" in auto_result.stdout
     assert "skill-improve-codebase-architecture" in auto_result.stdout
+    assert "默认不追加 `superpowers-system`" in auto_result.stdout
 
     breakpoint_result = subprocess.run(
         [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints"],
@@ -661,6 +662,7 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "skill-reverse-skill" in breakpoint_result.stdout
     assert "skill-philosophy-extraction" in breakpoint_result.stdout
     assert "skill-improve-codebase-architecture" in breakpoint_result.stdout
+    assert "推荐选择：`skip-module`" in breakpoint_result.stdout
 
     breakpoint_json_result = subprocess.run(
         [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints", "--format", "json"],
@@ -677,6 +679,11 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert breakpoint_payload["breakpoints"][0]["recommended"]["id"] == "migrate"
     assert breakpoint_payload["breakpoints"][0]["options"][0]["id"] == "migrate"
     assert breakpoint_payload["breakpoints"][0]["reply_format"] == "回复选项编号或 id"
+    superpowers_breakpoint = next(
+        item for item in breakpoint_payload["breakpoints"] if item["id"] == "superpowers-system"
+    )
+    assert superpowers_breakpoint["recommended"]["id"] == "skip-module"
+    assert superpowers_breakpoint["options"][0]["id"] == "skip-module"
 
 
 def test_readme_documents_current_stable_release_install_command() -> None:
