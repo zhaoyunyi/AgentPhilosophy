@@ -16,6 +16,7 @@ AgentPhilosophy 发版同时关注三类版本：
 - CLI 行为、打包、release gate、状态 schema 或默认内容源发生变化时，发布新的 CLI release。
 - 默认内容源发生变化时，同步提升 `content_version`，依赖项目用它判断是否需要重新 `push --dry-run` / `push --apply`。
 - 只有单个模块语义发生变化时，也要考虑提升对应 `module.yaml` 的 `version`，让 `status` 能提示具体模块 stale。
+- README 的 `uv tool install ...@vX.Y.Z` 只指向已经发布的稳定 tag。`prepare-release.sh` 不提前修改该链接；`main` 上准备中的 CLI 版本可以暂时高于稳定 tag。创建对应 GitHub Release 后，再单独更新 README 的稳定安装命令并提交。
 
 ## 本地准备
 
@@ -106,6 +107,8 @@ bash scripts/publish-release.sh 0.3.2
 gh release view v0.3.2 --json tagName,targetCommitish,url,name,isDraft,isPrerelease,assets
 git ls-remote --tags origin refs/tags/v0.3.2
 ```
+
+确认 release 和远端 tag 都存在后，把 README 的 `uv tool install` 版本更新为新 tag，按文档领域单独提交并推送。这样远端主分支不会出现指向尚未发布 tag 的安装命令。
 
 ## 依赖项目更新判断
 

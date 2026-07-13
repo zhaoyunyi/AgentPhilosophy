@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -690,10 +691,14 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert superpowers_breakpoint["options"][0]["id"] == "skip-module"
 
 
-def test_readme_documents_current_stable_release_install_command() -> None:
+def test_readme_documents_a_published_stable_release_install_command() -> None:
     readme = (Path(__file__).resolve().parents[2] / "README.md").read_text(encoding="utf-8")
 
-    assert f"AgentPhilosophy.git@v{__version__}" in readme
+    match = re.search(r"AgentPhilosophy\.git@v([0-9]+\.[0-9]+\.[0-9]+)", readme)
+    assert match is not None
+    stable_version = tuple(int(part) for part in match.group(1).split("."))
+    current_version = tuple(int(part) for part in __version__.split("."))
+    assert stable_version <= current_version
 
 
 def test_optional_portless_skill_renders_from_default_source(tmp_path: Path) -> None:

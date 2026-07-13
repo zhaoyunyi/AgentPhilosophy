@@ -40,6 +40,7 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "expected_agentphilosophy_version=" in content
     assert "import agentphilosophy" in content
     assert "agentphilosophy-sync\" --version" in content
+    assert 'push --help | grep -q -- "--project-name"' in content
     assert "agentphilosophy-sync\" llm-usage" in content
     assert "agentphilosophy-sync\" llm-usage --mode auto-config" in content
     assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints" in content
@@ -103,13 +104,14 @@ def test_release_scripts_have_prepare_and_publish_safety_gates() -> None:
     assert "uv run pytest -q" in prepare
     assert "bash scripts/release-smoke.sh" in prepare
     assert "scripts/generate-release-notes.py" in prepare
+    assert 'Path("README.md")' not in prepare
     assert "请补充" not in prepare
     assert "gh release create" in publish
     assert "main is not synced to origin" in publish
     assert "dist/release-notes-v${version}.md" in publish
 
 
-def test_release_metadata_stays_in_a_publishable_state() -> None:
+def test_release_metadata_allows_main_to_be_ahead_of_stable_install_tag() -> None:
     root = Path(__file__).resolve().parents[1]
 
     cli_version = _read_match(root / "pyproject.toml", r'^version = "([0-9]+\.[0-9]+\.[0-9]+)"$')
@@ -132,7 +134,7 @@ def test_release_metadata_stays_in_a_publishable_state() -> None:
         r"^source_content_version: ([0-9]+\.[0-9]+\.[0-9]+)$",
     )
     assert package_version == cli_version
-    assert readme_tag == cli_version
+    assert _version_tuple(readme_tag) <= _version_tuple(cli_version)
     assert packaged_content_version == content_version
     assert _version_tuple(content_version) <= _version_tuple(cli_version)
     assert state_agentphilosophy_version == cli_version
