@@ -46,8 +46,11 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "agentphilosophy-sync\" llm-usage --mode user-breakpoints --format json" in content
     assert "payload[\"breakpoints\"][0][\"reply_format\"]" in content
     assert "agentphilosophy-sync\" init" in content
-    assert "superpowers-system" in content
+    assert '! grep -q "superpowers-system" "$target/.agentphilosophy.yaml"' in content
+    assert 'grep -q "选择合适的模型与推理强度" "$target/AGENTS.md"' in content
+    assert 'superpowers_target="$smoke_root/project-with-superpowers"' in content
     assert "Superpowers skill 版本为 \\`6.1.1\\`" in content
+    assert "~/.agents/skills/superpowers" in content
     assert "skill-ponytail" in content
     assert "skills/ponytail/SKILL.md" in content
     assert ".codex/skills/ponytail/SKILL.md" in content

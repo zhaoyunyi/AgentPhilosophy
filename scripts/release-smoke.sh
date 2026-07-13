@@ -72,9 +72,26 @@ target="$smoke_root/project"
 "$smoke_root/venv/bin/agentphilosophy-sync" validate "$target" >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply >/dev/null
-grep -q "superpowers-system" "$target/.agentphilosophy.yaml"
-grep -q "Superpowers skill 版本为 \`6.1.1\`" "$target/AGENTS.md"
-grep -q "~/.agents/skills/superpowers" "$target/AGENTS.md"
+! grep -q "superpowers-system" "$target/.agentphilosophy.yaml"
+grep -q "model-constraints" "$target/.agentphilosophy.yaml"
+grep -q "选择合适的模型与推理强度" "$target/AGENTS.md"
+! grep -q "Superpowers System" "$target/AGENTS.md"
+
+superpowers_target="$smoke_root/project-with-superpowers"
+mkdir -p "$superpowers_target"
+cat >"$superpowers_target/.agentphilosophy.yaml" <<'YAML'
+project_name: SuperpowersSmoke
+project_type: orchestrator
+modules:
+  - doc-templates
+  - model-constraints
+  - superpowers-system
+YAML
+"$smoke_root/venv/bin/agentphilosophy-sync" validate "$superpowers_target" >/dev/null
+"$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --dry-run >/dev/null
+"$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --apply >/dev/null
+grep -q "Superpowers skill 版本为 \`6.1.1\`" "$superpowers_target/AGENTS.md"
+grep -q "~/.agents/skills/superpowers" "$superpowers_target/AGENTS.md"
 grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"
 test -f "$target/skills/ponytail/SKILL.md"
 test -f "$target/.codex/skills/ponytail/SKILL.md"

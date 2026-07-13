@@ -180,7 +180,6 @@ modules:
   - openspec-skills
   - jj-conventions
   - model-constraints
-  - superpowers-system
   - doc-templates
   - multi-module-layout
   - spec-program
@@ -227,7 +226,7 @@ vars:
 
 ## 五、Superpowers 原生 discovery 版本约束
 
-当前中央源默认 preset 会包含 `superpowers-system`。该模块不会复制上游 Superpowers 仓库，也不会生成项目级 `SKILL.md`；它只把 Codex 原生 skill discovery 的固定路径、排障方式和当前项目要求的 Superpowers skill 版本 `6.1.1` 写入 `AGENTS.md`。
+`superpowers-system` 是显式可选模块，不包含在中央源默认 preset 中。该模块不会复制上游 Superpowers 仓库，也不会生成项目级 `SKILL.md`；它只把 Codex 原生 skill discovery 的固定路径、排障方式和当前项目要求的 Superpowers skill 版本 `6.1.1` 写入 `AGENTS.md`。
 
 目标项目同步后应能在 `AGENTS.md` 看到：
 
@@ -235,7 +234,7 @@ vars:
 - Skills 入口（symlink）：`~/.agents/skills/superpowers` -> `~/.codex/superpowers/skills`
 - 当前项目要求的 Superpowers skill 版本：`6.1.1`
 
-已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到这段约束时，把模块追加到现有 `modules`，不要替换已有模块：
+已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；已经显式声明 `superpowers-system` 时继续保留，不会因默认值变化自动删除，未声明时升级 CLI 也不会自动追加。需要让旧项目拿到这段约束时，把模块追加到现有 `modules`，不要替换已有模块：
 
 ```yaml
 modules:
