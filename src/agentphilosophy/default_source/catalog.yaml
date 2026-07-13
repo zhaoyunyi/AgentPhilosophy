@@ -18,7 +18,7 @@ modules:
     risk: low
   - name: model-constraints
     category: base
-    description: 多 Agent 模型继承、reasoning 和代理调度约束
+    description: 多 Agent 模型、推理强度和代理调度约束
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - AGENTS.md
