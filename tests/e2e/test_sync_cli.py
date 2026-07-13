@@ -662,7 +662,11 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     assert "skill-reverse-skill" in breakpoint_result.stdout
     assert "skill-philosophy-extraction" in breakpoint_result.stdout
     assert "skill-improve-codebase-architecture" in breakpoint_result.stdout
-    assert "推荐选择：`skip-module`" in breakpoint_result.stdout
+    assert (
+        "推荐选择：`skip-module`，因为 Superpowers 是项目可选能力；"
+        "只有项目明确需要统一其安装位置、版本和排障方式时才追加。"
+        in breakpoint_result.stdout
+    )
 
     breakpoint_json_result = subprocess.run(
         [sys.executable, sync_py, "llm-usage", "--mode", "user-breakpoints", "--format", "json"],
