@@ -133,6 +133,28 @@ uv run sync.py push --all --apply
 
 批量同步要求 registry 中的目标项目已经存在正式 `.agentphilosophy.yaml`。未接入的项目应先按新项目或老项目迁移流程补齐配置。
 
+批量应用同步成功后，可为本轮确实发生 CLI 版本、内容版本、模块版本或托管输出变化的项目调用大模型更新项目自有文档：
+
+```bash
+uv run sync.py push --all --apply \
+  --project-name ExampleFullstack \
+  --update-docs \
+  --llm-command 'codex exec --ephemeral --sandbox workspace-write -'
+```
+
+每个需要更新文档的 registry 项目必须显式声明项目根目录内的相对路径：
+
+```yaml
+projects:
+  - name: ExampleFullstack
+    path: /absolute/path/to/ExampleFullstack
+    documentation_paths:
+      - README.md
+      - docs
+```
+
+`--project-name <名称>` 可重复提供，只处理 registry 中名称完全匹配的项目；未知名称会报错，省略时处理全部登记项目。`--llm-command` 会被解析为参数列表后直接执行，不经过 shell；模型任务通过标准输入传入。可用 `--llm-timeout <秒>` 调整每个项目的超时，默认 900 秒。该功能只接受 `--all --apply`：已经完成当前版本文档刷新的项目、同步失败的项目和未声明 `documentation_paths` 的项目不会调用模型。模型完成后 CLI 会复查 state 中登记的全部托管文件、保护文件以及文档白名单外的项目文件；任何越界改动都会使当前项目失败，但不会阻断后续 registry 项目。只有成功时才写入包含 `documentation_paths` 的 `documentation_refresh` 指纹，因此模型失败、超时、越界配置、保护漂移或文档范围扩大后可以重试。CLI 不会自动提交、推送或发布文档改动。
+
 `push --prune-managed` 只能针对明确的单个目标项目执行，不能和 `--dry-run`、`--apply` 或 `--all` 混用。它的安全条件是：
 
 - 目标文件必须在 `.agents/agentphilosophy-state.yaml` 中登记过。
@@ -610,6 +632,8 @@ uv run sync.py push --all --apply
 ```
 
 `registry.example.yaml` 是可复用模板。新机器或新使用者应复制它为 `registry.yaml`，再把 `path` 改成本机真实路径；不要把 `registry.example.yaml` 当作真实批量同步入口。
+
+需要在批量同步后调用大模型更新项目文档时，为对应项目增加 `documentation_paths`。这些值必须是项目根目录内的相对文件或目录路径；不要写项目根目录、绝对路径、密钥文件、托管文件或代码目录。未声明该字段的项目仍会正常批量同步，但跳过模型阶段。
 
 示例结构：
 

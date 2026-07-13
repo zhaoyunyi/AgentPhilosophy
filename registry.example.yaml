@@ -4,5 +4,11 @@ schema_version: 1
 projects:
   - name: ExampleFullstack
     path: /absolute/path/to/ExampleFullstack
+    documentation_paths:
+      - README.md
+      - docs
   - name: ExampleMobileSDK
     path: /absolute/path/to/ExampleMobileSDK
+    documentation_paths:
+      - README.md
+      - docs
