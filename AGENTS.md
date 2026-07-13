@@ -4,9 +4,11 @@
 
 ## 通用约定
 
-- 默认继承当前会话模型和 reasoning，不为子任务随意指定更弱模型。
-- 只有任务能并行、写入范围清晰且不会阻塞主路径时才使用多 agent。
-- 子 agent 修改代码时必须说明负责文件范围，并避免覆盖其他人改动。
+- 根据任务复杂度、风险、不确定性、时效和成本，选择合适的模型与推理强度。
+- 高风险、跨模块、难验证或证据不足的任务，优先使用能力更强的模型和更充分的推理。
+- 机械、低风险、边界清晰且容易验证的任务，可以使用更轻量的模型与推理强度。
+- 只有任务可独立推进、职责清晰且写入范围不冲突时才使用多 agent。
+- 为子 agent 明确目标、负责范围、输入、预期产物和验收标准；修改代码时避免覆盖其他 agent 或用户的改动。
 - 使用中文交流和回复。
 - 文档使用中文 Markdown 格式。
 - 默认使用 jj colocated git 管理当前仓库；如果仓库还没有 `.jj/`，先执行 `jj git init --colocate`。
@@ -17,20 +19,6 @@
 - 进入子目录前先读取该目录内的 `AGENTS.md`、`CLAUDE.md` 或 README。
 - 跨仓搜索默认只读；除非任务明确要求，不修改兄弟仓或外部项目文件。
 
-## Superpowers System
-
-<EXTREMELY_IMPORTANT>
-Superpowers 已通过 **Codex 原生 skill discovery** 安装；当前项目要求的 Superpowers skill 版本为 `6.1.1`，无需再使用旧版 `superpowers-codex bootstrap`。
-
-固定安装位置：
-
-- Superpowers 仓库：`~/.codex/superpowers`
-- Skills 入口（symlink）：`~/.agents/skills/superpowers` -> `~/.codex/superpowers/skills`
-
-如果需要升级或校准 Superpowers，先确认上述 symlink 指向正确，再把 `~/.codex/superpowers` 更新到项目要求的 `6.1.1` 对应版本，并重启 Codex CLI 让原生 skill discovery 重新扫描。
-
-如果某次会话中技能未出现：先确认上述 symlink 存在，再重启 Codex CLI。
-</EXTREMELY_IMPORTANT>
 
 ## 工程规范
 
