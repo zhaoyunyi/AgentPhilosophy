@@ -71,6 +71,27 @@ def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
         action="store_true",
         help="prune stale managed files whose current hash still matches state",
     )
+    push.add_argument(
+        "--update-docs",
+        action="store_true",
+        help="after batch apply, invoke an LLM command for configured project documentation",
+    )
+    push.add_argument(
+        "--llm-command",
+        help="LLM CLI command that reads the documentation task from standard input",
+    )
+    push.add_argument(
+        "--llm-timeout",
+        type=int,
+        default=900,
+        help="timeout in seconds for each LLM documentation update (default: 900)",
+    )
+    push.add_argument(
+        "--project-name",
+        action="append",
+        dest="project_names",
+        help="limit --all to a named registry project; repeat to select multiple projects",
+    )
 
     llm_usage = subparsers.add_parser("llm-usage", help="Print an LLM usage document for the selected source.")
     llm_usage.add_argument(
@@ -141,6 +162,31 @@ def main(argv: Sequence[str] | None = None) -> int:
                 from_report=args.from_report,
             )
         elif args.command == "push":
+            if args.update_docs and (not args.all or not args.apply):
+                report = Report()
+                report.error("push --update-docs requires --all --apply")
+                print(report.format())
+                return 1
+            if args.update_docs and not (args.llm_command or "").strip():
+                report = Report()
+                report.error("push --update-docs requires --llm-command")
+                print(report.format())
+                return 1
+            if args.llm_command and not args.update_docs:
+                report = Report()
+                report.error("push --llm-command requires --update-docs")
+                print(report.format())
+                return 1
+            if args.llm_timeout <= 0:
+                report = Report()
+                report.error("push --llm-timeout must be greater than zero")
+                print(report.format())
+                return 1
+            if args.project_names and not args.all:
+                report = Report()
+                report.error("push --project-name requires --all")
+                print(report.format())
+                return 1
             if args.prune_managed:
                 if args.dry_run or args.apply or args.all:
                     report = Report()
@@ -151,7 +197,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                     parser.error("push --prune-managed requires PROJECT")
                 report = command_prune_managed(source_root, Path(args.project).expanduser().resolve())
             elif args.all:
-                report = command_push_all(source_root, apply=bool(args.apply))
+                report = command_push_all(
+                    source_root,
+                    apply=bool(args.apply),
+                    update_docs=bool(args.update_docs),
+                    llm_command=args.llm_command,
+                    llm_timeout=args.llm_timeout,
+                    project_names=set(args.project_names or []),
+                )
             elif not args.project:
                 parser.error("push requires PROJECT unless --all is used")
             else:
