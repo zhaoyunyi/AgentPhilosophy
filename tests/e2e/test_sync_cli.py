@@ -293,7 +293,7 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     assert "以其中的项目协作规范为准" in claude_text
 
 
-def test_packaged_fullstack_without_optional_superpowers_has_no_blank_section(tmp_path: Path) -> None:
+def test_packaged_fullstack_without_superpowers_has_no_blank_section(tmp_path: Path) -> None:
     target = tmp_path / "target"
     workdir = tmp_path / "workdir"
     workdir.mkdir()
@@ -315,9 +315,6 @@ def test_packaged_fullstack_without_optional_superpowers_has_no_blank_section(tm
     assert init_result.returncode == 0, init_result.stderr + init_result.stdout
 
     config_path = target / ".agentphilosophy.yaml"
-    config_text = config_path.read_text(encoding="utf-8")
-    assert config_text.count("- superpowers-system\n") == 1
-    config_path.write_text(config_text.replace("- superpowers-system\n", ""), encoding="utf-8")
 
     push_result = subprocess.run(
         [
@@ -334,7 +331,10 @@ def test_packaged_fullstack_without_optional_superpowers_has_no_blank_section(tm
     )
     assert push_result.returncode == 0, push_result.stderr + push_result.stdout
 
+    project_config = config_path.read_text(encoding="utf-8")
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "- superpowers-system" not in project_config
+    assert "Superpowers System" not in agents_text
     assert "\n\n\n## 工程规范" not in agents_text
 
 
@@ -420,22 +420,14 @@ def test_packaged_fullstack_renders_custom_aggregate_style(tmp_path: Path) -> No
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
-def test_packaged_preset_declares_superpowers_version_by_default(tmp_path: Path, preset: str) -> None:
+def test_packaged_preset_does_not_enable_superpowers_by_default(tmp_path: Path, preset: str) -> None:
     target = tmp_path / "target"
     workdir = tmp_path / "workdir"
     workdir.mkdir()
 
-    commands = [
-        ["init", str(target), "--preset", preset],
-        ["push", str(target), "--apply"],
-    ]
-    for args in commands:
+    for args in (["init", str(target), "--preset", preset], ["push", str(target), "--apply"]):
         result = subprocess.run(
-            [
-                sys.executable,
-                str(Path(__file__).resolve().parents[2] / "sync.py"),
-                *args,
-            ],
+            [sys.executable, str(Path(__file__).resolve().parents[2] / "sync.py"), *args],
             cwd=workdir,
             text=True,
             capture_output=True,
@@ -445,13 +437,54 @@ def test_packaged_preset_declares_superpowers_version_by_default(tmp_path: Path,
 
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "- model-constraints" in project_config
+    assert "- superpowers-system" not in project_config
+    assert "Superpowers System" not in agents_text
+    assert "Superpowers skill 版本为 `6.1.1`" not in agents_text
 
-    assert "- superpowers-system" in project_config
+
+def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    init_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "init",
+            str(target),
+            "--preset",
+            "fullstack",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert init_result.returncode == 0, init_result.stderr + init_result.stdout
+
+    config_path = target / ".agentphilosophy.yaml"
+    config_text = config_path.read_text(encoding="utf-8")
+    config_path.write_text(
+        config_text.replace("- model-constraints\n", "- model-constraints\n- superpowers-system\n", 1),
+        encoding="utf-8",
+    )
+
+    push_result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[2] / "sync.py"), "push", str(target), "--apply"],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert push_result.returncode == 0, push_result.stderr + push_result.stdout
+
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers System" in agents_text
     assert "Superpowers skill 版本为 `6.1.1`" in agents_text
     assert "~/.codex/superpowers" in agents_text
     assert "~/.agents/skills/superpowers" in agents_text
-    assert "superpowers-codex bootstrap" in agents_text
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
