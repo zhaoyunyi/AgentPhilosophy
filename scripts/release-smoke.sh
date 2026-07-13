@@ -46,12 +46,16 @@ PY
 )"
 
 "$smoke_root/venv/bin/agentphilosophy-sync" --version | grep -q "${expected_agentphilosophy_version}"
+"$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--update-docs"
+"$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--llm-command"
+"$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--project-name"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage >"$smoke_root/llm-usage.md"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode auto-config >"$smoke_root/llm-usage-auto-config.md"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode user-breakpoints >"$smoke_root/llm-usage-user-breakpoints.md"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode user-breakpoints --format json >"$smoke_root/llm-usage-user-breakpoints.json"
 grep -q "自动配置安装说明" "$smoke_root/llm-usage-auto-config.md"
 grep -q "用户断点配置说明" "$smoke_root/llm-usage-user-breakpoints.md"
+grep -q "documentation_paths" "$smoke_root/llm-usage.md"
 "$smoke_root/venv/bin/python" - "$smoke_root/llm-usage-user-breakpoints.json" <<'PY'
 import json
 import sys

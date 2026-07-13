@@ -94,10 +94,6 @@ replacements = {
         r'(?m)^__version__ = "[^"]+"$',
         f'__version__ = "{version}"',
     ),
-    Path("README.md"): (
-        r"AgentPhilosophy\.git@v[0-9]+\.[0-9]+\.[0-9]+",
-        f"AgentPhilosophy.git@v{version}",
-    ),
     Path("catalog.yaml"): (
         r"(?m)^content_version: .+$",
         f"content_version: {content_version}",
