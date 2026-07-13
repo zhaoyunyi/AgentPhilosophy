@@ -112,11 +112,23 @@ uv run sync.py status
 uv run sync.py push --all --dry-run
 ```
 
+依赖项目同步成功后，可以对本轮确实发生版本、模块或托管输出变化的项目调用大模型更新项目自有文档。先在 `registry.yaml` 的项目条目中声明 `documentation_paths`，再显式执行：
+
+```bash
+uv run sync.py push --all --apply \
+  --project-name ExampleFullstack \
+  --update-docs \
+  --llm-command 'codex exec --ephemeral --sandbox workspace-write -'
+```
+
+`--project-name` 可重复提供，用于只更新 registry 中点名的项目；省略时仍处理全部登记项目。模型命令通过标准输入接收任务提示；已经完成当前版本文档刷新、同步冲突或未声明文档范围的项目不会调用模型。CLI 会在模型完成后复查所有 AgentPhilosophy 托管文件、保护文件以及允许文档范围外的项目文件，只在成功后记录包含文档路径的刷新指纹，因此失败原因修复或文档范围扩大后可以重试；它不会自动提交、推送或发布文档改动。
+
 ## Registry 文件
 
 - `registry.yaml` 是本机真实批量入口，可以包含本机绝对路径；`status` 不带 `--project`、`push --all` 都读取它。
 - `registry.example.yaml` 是可复用模板，用于复制成新的本机 `registry.yaml` 后再改路径，不应作为真实批量同步入口。
 - `registry.yaml` 已加入 `.gitignore`，避免把个人路径和批量目标误提交。
+- `documentation_paths` 是项目级相对路径白名单，只用于显式启用的批量大模型文档更新阶段。
 
 ## 安全边界
 
@@ -125,6 +137,7 @@ uv run sync.py push --all --dry-run
 - 如果文件被手动改过，prune 必须拒绝删除；缺失文件只会清理 state 记录。
 - prune 会尝试删除被删文件的直接空目录，但不会继续向上清理项目父目录。
 - `migrate --write-config` 只能在目标项目根目录 `.agentphilosophy.yaml` 不存在时，把 `.agents/migration/proposed.agentphilosophy.yaml` 写入正式配置；已存在正式配置时必须拒绝覆盖。
+- `push --update-docs` 只能与 `--all --apply --llm-command` 组合；可用可重复的 `--project-name` 缩小批量范围。模型改动托管文件、保护文件或 `documentation_paths` 外文件时命令会失败并报告漂移。
 
 默认 preset 会启用 jj colocated git 管理规则。目标项目是普通 Git 仓库但还没有 `.jj/` 时，先确认或安装 jj CLI，再执行 `jj git init --colocate`，最后用 `jj status` / `jj log` / `jj bookmark list` 验证。
 
