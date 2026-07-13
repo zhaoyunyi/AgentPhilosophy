@@ -26,3 +26,34 @@ def test_cli_version_reports_installed_agentphilosophy_version(capsys) -> None:
 
     assert exc.value.code == 0
     assert __version__ in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(
+    ("argv", "message"),
+    [
+        (["push", "--all", "--update-docs", "--llm-command", "model -"], "requires --all --apply"),
+        (["push", "--all", "--apply", "--update-docs"], "requires --llm-command"),
+        (["push", "--all", "--apply", "--llm-command", "model -"], "requires --update-docs"),
+        (
+            [
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                "model -",
+                "--llm-timeout",
+                "0",
+            ],
+            "must be greater than zero",
+        ),
+        (["push", "/tmp/project", "--project-name", "demo"], "requires --all"),
+    ],
+)
+def test_push_documentation_flags_require_safe_batch_apply_combinations(
+    argv: list[str],
+    message: str,
+    capsys,
+) -> None:
+    assert main(argv) == 1
+    assert message in capsys.readouterr().out

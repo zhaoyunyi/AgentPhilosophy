@@ -6,6 +6,7 @@ from shutil import copyfile
 
 import pytest
 
+import agentphilosophy.commands as command_module
 from agentphilosophy import __version__
 from agentphilosophy.cli import main
 from agentphilosophy.hashing import source_tree_hash
@@ -288,6 +289,73 @@ def test_push_all_apply_syncs_registry_projects(tmp_path: Path) -> None:
 
     assert main(["--source", str(source), "push", "--all", "--apply"]) == 0
     assert (target / "skills" / "skill-pack" / "SKILL.md").read_text(encoding="utf-8") == "# Skill\n"
+
+
+def test_push_all_project_name_updates_only_selected_registry_project(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    selected = tmp_path / "selected"
+    untouched = tmp_path / "untouched"
+    create_copy_tree_source(source)
+    create_target(selected)
+    create_target(untouched)
+    write(
+        source / "registry.yaml",
+        "projects:\n"
+        f"  - name: selected\n    path: {selected.as_posix()}\n"
+        f"  - name: untouched\n    path: {untouched.as_posix()}\n",
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--project-name",
+                "selected",
+            ]
+        )
+        == 0
+    )
+    assert (selected / "skills" / "skill-pack" / "SKILL.md").exists()
+    assert not (untouched / "skills" / "skill-pack" / "SKILL.md").exists()
+
+
+def test_push_all_project_name_reports_unknown_registry_project(tmp_path: Path, capsys) -> None:
+    source = tmp_path / "source"
+    create_copy_tree_source(source)
+    write(source / "registry.yaml", "projects: []\n")
+
+    assert main(["--source", str(source), "push", "--all", "--dry-run", "--project-name", "missing"]) == 1
+    assert "registry project not found: missing" in capsys.readouterr().out
+
+
+def test_push_all_continues_after_project_sync_io_error(tmp_path: Path, monkeypatch) -> None:
+    source = tmp_path / "source"
+    failing = tmp_path / "failing"
+    succeeding = tmp_path / "succeeding"
+    create_copy_tree_source(source)
+    create_target(failing)
+    create_target(succeeding)
+    write(
+        source / "registry.yaml",
+        "projects:\n"
+        f"  - name: failing\n    path: {failing.as_posix()}\n"
+        f"  - name: succeeding\n    path: {succeeding.as_posix()}\n",
+    )
+    real_command_push = command_module.command_push
+
+    def command_push_with_io_error(source_root: Path, project_root: Path, *, apply: bool):
+        if project_root == failing:
+            raise OSError("simulated write failure")
+        return real_command_push(source_root, project_root, apply=apply)
+
+    monkeypatch.setattr(command_module, "command_push", command_push_with_io_error)
+
+    assert main(["--source", str(source), "push", "--all", "--apply"]) == 1
+    assert (succeeding / "skills" / "skill-pack" / "SKILL.md").exists()
 
 
 def test_migrate_generates_candidate_diffs_but_push_requires_formal_config(tmp_path: Path) -> None:

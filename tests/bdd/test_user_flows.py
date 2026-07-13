@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import shlex
+import sys
 from pathlib import Path
 from shutil import copyfile
 
@@ -157,3 +159,555 @@ def test_bdd_explicit_superpowers_selection_is_preserved(tmp_path: Path) -> None
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers System" in agents_text
     assert "Superpowers skill 版本为 `6.1.1`" in agents_text
+
+
+def test_bdd_batch_apply_updates_versions_then_invokes_llm_for_documentation(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    write(
+        source / "modules" / "doc-templates" / "templates" / "AGENTS.md.j2",
+        "# {{ project_name }}\n\n新版协作规则\n",
+    )
+    write(
+        source / "catalog.yaml",
+        "schema_version: 1\ncontent_version: 0.3.0\nmodules:\n  - name: doc-templates\n",
+    )
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+      - docs
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "fake_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import sys
+
+prompt = sys.stdin.read()
+Path("docs").mkdir(exist_ok=True)
+Path("docs/llm-prompt.md").write_text(prompt, encoding="utf-8")
+agents = Path("AGENTS.md").read_text(encoding="utf-8")
+with Path("README.md").open("a", encoding="utf-8") as stream:
+    stream.write("\\n已根据新版规则更新：" + str("新版协作规则" in agents) + "\\n")
+""".lstrip(),
+    )
+
+    command = shlex.join([sys.executable, str(fake_llm)])
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                command,
+            ]
+        )
+        == 0
+    )
+
+    state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    prompt = (target / "docs" / "llm-prompt.md").read_text(encoding="utf-8")
+    assert "source_content_version: 0.3.0" in state_text
+    assert "新版协作规则" in (target / "AGENTS.md").read_text(encoding="utf-8")
+    assert "已根据新版规则更新：True" in (target / "README.md").read_text(encoding="utf-8")
+    assert "0.2.0 -> 0.3.0" in prompt
+    assert "AGENTS.md" in prompt
+    assert "README.md" in prompt
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                command,
+            ]
+        )
+        == 0
+    )
+    assert "documentation refresh skipped: project already current" in capsys.readouterr().out
+    assert (target / "README.md").read_text(encoding="utf-8").count("已根据新版规则更新") == 1
+
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+      - CHANGELOG.md
+      - docs
+""".lstrip(),
+    )
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                command,
+            ]
+        )
+        == 0
+    )
+    assert (target / "README.md").read_text(encoding="utf-8").count("已根据新版规则更新") == 2
+    state_text = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "- CHANGELOG.md" in state_text
+
+
+def test_bdd_batch_documentation_update_fails_when_llm_changes_managed_file(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    write(target / ".gitignore", "ignored.txt\n")
+    write(target / "ignored.txt", "safe\n")
+    write(target / "mode.txt", "safe\n")
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(
+        source / "catalog.yaml",
+        "schema_version: 1\ncontent_version: 0.3.0\nmodules:\n  - name: doc-templates\n",
+    )
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "unsafe_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import os
+import sys
+
+sys.stdin.read()
+Path("AGENTS.md").write_text("# 被模型错误修改\\n", encoding="utf-8")
+Path(".agents/agentphilosophy-state.yaml").write_text("tampered: true\\n", encoding="utf-8")
+Path("src").mkdir(exist_ok=True)
+Path("src/app.ts").write_text("export const tampered = true;\\n", encoding="utf-8")
+Path("ignored.txt").write_text("tampered\\n", encoding="utf-8")
+Path("outside-link").symlink_to("README.md")
+os.chmod("mode.txt", 0o755)
+""".lstrip(),
+    )
+
+    command = shlex.join([sys.executable, str(fake_llm)])
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                command,
+            ]
+        )
+        == 1
+    )
+    output = capsys.readouterr().out
+    assert "LLM changed managed files: AGENTS.md" in output
+    assert "LLM changed protected files: .agents/agentphilosophy-state.yaml" in output
+    assert "ignored.txt" in output
+    assert "mode.txt" in output
+    assert "outside-link" in output
+    assert "src/app.ts" in output
+    assert "LLM changed symlinks: outside-link" in output
+    state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "documentation_refresh:" not in state
+
+
+def test_bdd_batch_documentation_update_does_not_invoke_llm_after_sync_conflict(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    write(target / "AGENTS.md", "# 用户手工修改\n")
+    write(
+        source / "catalog.yaml",
+        "schema_version: 1\ncontent_version: 0.3.0\nmodules:\n  - name: doc-templates\n",
+    )
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "marker_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+with Path("README.md").open("a", encoding="utf-8") as stream:
+    stream.write("\\n模型已调用\\n")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(fake_llm)]),
+            ]
+        )
+        == 1
+    )
+    assert "模型已调用" not in (target / "README.md").read_text(encoding="utf-8")
+
+
+def test_bdd_batch_documentation_update_rejects_symlink_created_in_allowed_directory(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    outside = tmp_path / "outside.txt"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    write(outside, "safe\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - docs
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "symlink_llm.py"
+    write(
+        fake_llm,
+        f"""
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+Path("docs").mkdir(exist_ok=True)
+link = Path("docs/outside-link")
+link.symlink_to({str(outside)!r})
+link.write_text("tampered\\n", encoding="utf-8")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(fake_llm)]),
+            ]
+        )
+        == 1
+    )
+    assert "LLM changed symlinks: docs/outside-link" in capsys.readouterr().out
+    state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "documentation_refresh:" not in state
+
+
+def test_bdd_batch_documentation_update_reports_truncated_model_diagnostic(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "failing_llm.py"
+    write(
+        fake_llm,
+        """
+import sys
+
+sys.stdin.read()
+sys.stderr.write("discarded-prefix-" + "x" * 700 + " provider diagnostic: authentication denied")
+raise SystemExit(7)
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(fake_llm)]),
+            ]
+        )
+        == 1
+    )
+    output = capsys.readouterr().out
+    assert "exit code 7" in output
+    assert "provider diagnostic: authentication denied" in output
+    assert "discarded-prefix" not in output
+    state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "documentation_refresh:" not in state
+
+
+def test_bdd_batch_documentation_update_rejects_path_outside_project(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    write(
+        source / "catalog.yaml",
+        "schema_version: 1\ncontent_version: 0.3.0\nmodules:\n  - name: doc-templates\n",
+    )
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - ../outside.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "marker_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+with Path("README.md").open("a", encoding="utf-8") as stream:
+    stream.write("\\n模型已调用\\n")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(fake_llm)]),
+            ]
+        )
+        == 1
+    )
+    assert "documentation path escapes project root" in capsys.readouterr().out
+    assert "模型已调用" not in (target / "README.md").read_text(encoding="utf-8")
+
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - docs/../.agents/custom
+""".lstrip(),
+    )
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(fake_llm)]),
+            ]
+        )
+        == 1
+    )
+    assert "documentation path uses a protected project area" in capsys.readouterr().out
+    assert "模型已调用" not in (target / "README.md").read_text(encoding="utf-8")
+
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(fake_llm)]),
+            ]
+        )
+        == 0
+    )
+    assert "模型已调用" in (target / "README.md").read_text(encoding="utf-8")
+    state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "documentation_refresh:" in state
+
+
+def test_bdd_batch_documentation_failure_does_not_block_later_project(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    invalid_target = tmp_path / "invalid-project"
+    valid_target = tmp_path / "valid-project"
+    seed_central_source(source)
+    for target in (invalid_target, valid_target):
+        write(target / "README.md", f"# {target.name}\n")
+        assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+        assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    write(
+        source / "catalog.yaml",
+        "schema_version: 1\ncontent_version: 0.3.0\nmodules:\n  - name: doc-templates\n",
+    )
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: InvalidProject
+    path: {invalid_target}
+    documentation_paths:
+      - ../outside.md
+  - name: ValidProject
+    path: {valid_target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "fake_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+with Path("README.md").open("a", encoding="utf-8") as stream:
+    stream.write("\\n文档更新完成\\n")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(fake_llm)]),
+            ]
+        )
+        == 1
+    )
+    assert "文档更新完成" not in (invalid_target / "README.md").read_text(encoding="utf-8")
+    assert "文档更新完成" in (valid_target / "README.md").read_text(encoding="utf-8")

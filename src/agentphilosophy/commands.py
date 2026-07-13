@@ -10,6 +10,11 @@ from typing import Any
 from jinja2 import UndefinedError
 
 from . import __version__ as agentphilosophy_version
+from .documentation import (
+    command_update_documentation,
+    documentation_refresh_needed,
+    mark_documentation_refreshed,
+)
 from .errors import Report, SyncError
 from .fileio import write_bytes_atomic
 from .hashing import sha256_file, source_revision, source_tree_hash
@@ -489,7 +494,15 @@ def _remove_empty_leaf_dir(project_root: Path, start: Path) -> None:
         return
 
 
-def command_push_all(source_root: Path, *, apply: bool) -> Report:
+def command_push_all(
+    source_root: Path,
+    *,
+    apply: bool,
+    update_docs: bool = False,
+    llm_command: str | None = None,
+    llm_timeout: int = 900,
+    project_names: set[str] | None = None,
+) -> Report:
     report = Report()
     registry = source_root / "registry.yaml"
     try:
@@ -502,18 +515,72 @@ def command_push_all(source_root: Path, *, apply: bool) -> Report:
     if not isinstance(projects, list):
         report.error("registry.yaml projects must be a list")
         return report
+    matched_names: set[str] = set()
     for item in projects:
         if not isinstance(item, dict) or not item.get("path"):
             report.error("registry project entry must contain path")
             continue
         name = str(item.get("name") or Path(str(item["path"])).name)
-        child = command_push(source_root, Path(str(item["path"])).expanduser().resolve(), apply=apply)
-        for message in child.infos:
-            report.info(f"{name}: {message}")
-        for message in child.warnings:
-            report.warn(f"{name}: {message}")
-        for message in child.errors:
-            report.error(f"{name}: {message}")
+        if project_names and name not in project_names:
+            continue
+        matched_names.add(name)
+        project_root = Path(str(item["path"])).expanduser().resolve()
+        try:
+            previous_state = load_state(project_root, source_root)
+            child = command_push(source_root, project_root, apply=apply)
+            for message in child.infos:
+                report.info(f"{name}: {message}")
+            for message in child.warnings:
+                report.warn(f"{name}: {message}")
+            for message in child.errors:
+                report.error(f"{name}: {message}")
+            if not update_docs or not child.ok:
+                continue
+
+            current_state = load_state(project_root, source_root)
+            changed_outputs = [
+                message.split(": ", 1)[1]
+                for message in child.infos
+                if message.startswith(("add: ", "update: "))
+            ]
+            documentation_paths = item.get("documentation_paths")
+            if "documentation_paths" not in item:
+                report.warn(f"{name}: documentation refresh skipped: documentation_paths not configured")
+                continue
+            if not documentation_refresh_needed(
+                current_state,
+                changed_outputs,
+                documentation_paths,
+            ):
+                report.info(f"{name}: documentation refresh skipped: project already current")
+                continue
+
+            documentation_report = command_update_documentation(
+                project_root,
+                project_name=name,
+                documentation_paths=documentation_paths,
+                llm_command=llm_command or "",
+                timeout_seconds=llm_timeout,
+                previous_state=previous_state,
+                current_state=current_state,
+                changed_outputs=changed_outputs,
+            )
+            for message in documentation_report.infos:
+                report.info(f"{name}: {message}")
+            for message in documentation_report.warnings:
+                report.warn(f"{name}: {message}")
+            for message in documentation_report.errors:
+                report.error(f"{name}: {message}")
+            if documentation_report.ok:
+                mark_documentation_refreshed(current_state, documentation_paths)
+                write_state(project_root, current_state)
+        except (OSError, SyncError, ValueError) as exc:
+            report.error(f"{name}: batch update failed: {exc}")
+
+    if project_names:
+        missing_names = sorted(project_names - matched_names)
+        for name in missing_names:
+            report.error(f"registry project not found: {name}")
     return report
 
 
