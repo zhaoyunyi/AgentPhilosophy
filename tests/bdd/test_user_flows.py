@@ -207,7 +207,9 @@ def test_bdd_installed_optional_ponytail_and_superpowers_can_be_removed(tmp_path
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
     assert (target / "skills" / "ponytail" / "SKILL.md").is_file()
     assert (target / ".codex" / "skills" / "ponytail" / "SKILL.md").is_file()
-    assert "Superpowers System" in (target / "AGENTS.md").read_text(encoding="utf-8")
+    agents_path = target / "AGENTS.md"
+    agents_before = agents_path.read_text(encoding="utf-8")
+    assert "Superpowers System" in agents_before
 
     config_path.write_text(
         config_path.read_text(encoding="utf-8")
@@ -215,12 +217,21 @@ def test_bdd_installed_optional_ponytail_and_superpowers_can_be_removed(tmp_path
         .replace("- superpowers-system\n", ""),
         encoding="utf-8",
     )
-    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 0
+    agents_path.write_text(f"{agents_before}\n手动修改\n", encoding="utf-8")
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
+    assert (target / "skills" / "ponytail" / "SKILL.md").is_file()
+    assert (target / ".codex" / "skills" / "ponytail" / "SKILL.md").is_file()
+
+    agents_path.write_text(agents_before, encoding="utf-8")
+    assert main(["--source", str(source), "push", str(target), "--dry-run"]) == 0
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    assert "Superpowers System" not in agents_path.read_text(encoding="utf-8")
+    assert (target / "skills" / "ponytail" / "SKILL.md").is_file()
+    assert (target / ".codex" / "skills" / "ponytail" / "SKILL.md").is_file()
+    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 0
 
     assert not (target / "skills" / "ponytail" / "SKILL.md").exists()
     assert not (target / ".codex" / "skills" / "ponytail" / "SKILL.md").exists()
-    assert "Superpowers System" not in (target / "AGENTS.md").read_text(encoding="utf-8")
 
 
 def test_bdd_batch_apply_updates_versions_then_invokes_llm_for_documentation(

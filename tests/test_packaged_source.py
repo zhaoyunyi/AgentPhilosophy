@@ -44,6 +44,19 @@ def test_packaged_default_source_matches_repository_source() -> None:
         assert (packaged / relative).read_bytes() == (root / relative).read_bytes()
 
 
+def test_optional_skill_uninstall_docs_apply_before_prune() -> None:
+    root = Path(__file__).resolve().parents[1]
+    usage = (root / "docs" / "cli-usage-for-llm.md").read_text(encoding="utf-8")
+
+    uninstall_section = usage.split("需要卸载已安装的 Ponytail 时", 1)[1].split("## 八、", 1)[0]
+    dry_run_index = uninstall_section.index("`push /path/to/project --dry-run`")
+    apply_index = uninstall_section.index("`push /path/to/project --apply`")
+    prune_index = uninstall_section.index("`push /path/to/project --prune-managed`")
+
+    assert dry_run_index < apply_index < prune_index
+    assert "apply 失败时不要 prune" in uninstall_section
+
+
 def test_default_source_has_no_known_content_merge_artifacts() -> None:
     root = Path(__file__).resolve().parents[1]
     banned_fragments = [
