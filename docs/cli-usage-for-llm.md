@@ -427,7 +427,7 @@ find -L /path/to/project/.codex/skills/ponytail -name SKILL.md -print
 find -L /path/to/project/skills/ponytail -name SKILL.md -print
 ```
 
-需要卸载已安装的 Ponytail 时，从 `.agentphilosophy.yaml` 删除 `skill-ponytail`，先执行 `push /path/to/project --prune-managed` 安全删除未被手改的两个托管 skill，再执行 `push /path/to/project --apply` 刷新共享托管输出。`superpowers-system` 同样是显式可选模块；从配置删除后执行相同流程，可移除其 AGENTS 规则。
+需要卸载已安装的 Ponytail 时，从 `.agentphilosophy.yaml` 删除 `skill-ponytail`，先执行 `push /path/to/project --dry-run` 确认共享托管输出没有冲突，再执行 `push /path/to/project --apply` 刷新共享输出和模块状态。只有 apply 成功后，再执行 `push /path/to/project --prune-managed`，安全删除未被手改的两个失活托管 skill；apply 失败时不要 prune，避免形成部分卸载状态。`superpowers-system` 同样是显式可选模块；从配置删除后执行相同流程，可移除其 AGENTS 规则。
 
 ## 八、Reverse Skill 授权逆向路由 skill
 
