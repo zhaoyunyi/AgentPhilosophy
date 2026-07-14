@@ -173,11 +173,11 @@ breakpoint:
 
 我需要确认是否把 Ponytail 的“能不写就不写、复用优先、避免过度工程”规则写成项目级 skill。这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-ponytail`。
 
-推荐选择：`add-module`，因为默认 preset 会把它作为通用 skill 集合的一部分，便于后续新增功能、修 bug 或重构时先收窄实现面。
+推荐选择：`skip-module`，因为 Ponytail 是项目可选能力；只有项目明确需要长期复用精简编码判断时才追加。
 
 可选项：
-1. `add-module`：追加 `skill-ponytail`。影响：后续 `push --apply` 会同步 repo skills 和 Codex 项目级 skill。
-2. `skip-module`：不修改旧项目配置。影响：本次升级不会新增 Ponytail skill。
+1. `skip-module`：保持默认配置。影响：不新增 Ponytail skill。
+2. `add-module`：追加 `skill-ponytail`。影响：后续 `push --apply` 会同步 repo skills 和 Codex 项目级 skill。
 3. `minimal-config`：保持极简配置。影响：只保留项目当前显式模块，后续需要时再单独追加。
 
 请回复选项编号或 id。

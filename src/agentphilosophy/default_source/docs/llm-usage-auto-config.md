@@ -56,7 +56,7 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 目标项目需要 Codex 原生 skill discovery | 保持 `skill_targets.codex_project: .codex/skills` |
 | 新项目使用默认 preset | 默认不追加 `superpowers-system`；需要 Superpowers 时由项目显式选择 |
 | 项目明确需要统一 Superpowers 固定路径、版本和排障规则 | 追加 `superpowers-system`，再同步刷新 `AGENTS.md` |
-| 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-ponytail`，同步生成 Ponytail 精简编码项目级 skill |
+| 新项目使用默认 preset | 默认不追加 `skill-ponytail`；需要 Ponytail 时由项目显式选择 |
 | 旧项目需要长期复用“能不写就不写、复用优先、避免过度工程”的编码判断 | 追加 `skill-ponytail`，再同步生成 repo skills 和 Codex 项目级 skill |
 | 旧项目只是做一次明确的窄范围改动，且用户要求不增加新 skill | 不主动追加 `skill-ponytail` |
 | 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-reverse-skill`，同步生成 reverse-skill 授权逆向路由项目级 skill |

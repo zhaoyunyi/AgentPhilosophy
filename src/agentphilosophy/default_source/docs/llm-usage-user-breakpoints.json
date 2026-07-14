@@ -162,19 +162,19 @@
       "question": "我需要确认是否把 Ponytail 的精简编码规则写成项目级 skill。",
       "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-ponytail`。",
       "recommended": {
-        "id": "add-module",
-        "reason": "默认 preset 会把它作为通用 skill 集合的一部分，便于后续新增功能、修 bug 或重构时先收窄实现面。"
+        "id": "skip-module",
+        "reason": "Ponytail 是项目可选能力；只有项目明确需要长期复用精简编码判断时才追加。"
       },
       "options": [
+        {
+          "id": "skip-module",
+          "label": "保持默认配置",
+          "impact": "不新增 Ponytail skill。"
+        },
         {
           "id": "add-module",
           "label": "追加 `skill-ponytail`",
           "impact": "后续 `push --apply` 会同步 repo skills 和 Codex 项目级 skill。"
-        },
-        {
-          "id": "skip-module",
-          "label": "不修改旧项目配置",
-          "impact": "本次升级不会新增 Ponytail skill。"
         },
         {
           "id": "minimal-config",

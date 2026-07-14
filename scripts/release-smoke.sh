@@ -77,9 +77,12 @@ target="$smoke_root/project"
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply >/dev/null
 ! grep -q "superpowers-system" "$target/.agentphilosophy.yaml"
+! grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"
 grep -q "model-constraints" "$target/.agentphilosophy.yaml"
 grep -q "选择合适的模型与推理强度" "$target/AGENTS.md"
 ! grep -q "Superpowers System" "$target/AGENTS.md"
+test ! -e "$target/skills/ponytail/SKILL.md"
+test ! -e "$target/.codex/skills/ponytail/SKILL.md"
 
 superpowers_target="$smoke_root/project-with-superpowers"
 mkdir -p "$superpowers_target"
@@ -96,13 +99,25 @@ YAML
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --apply >/dev/null
 grep -q "Superpowers skill 版本为 \`6.1.1\`" "$superpowers_target/AGENTS.md"
 grep -q "~/.agents/skills/superpowers" "$superpowers_target/AGENTS.md"
-grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"
-test -f "$target/skills/ponytail/SKILL.md"
-test -f "$target/.codex/skills/ponytail/SKILL.md"
+
+ponytail_target="$smoke_root/project-with-ponytail"
+mkdir -p "$ponytail_target"
+cat >"$ponytail_target/.agentphilosophy.yaml" <<'YAML'
+project_name: PonytailSmoke
+project_type: orchestrator
+modules:
+  - skill-ponytail
+YAML
+"$smoke_root/venv/bin/agentphilosophy-sync" validate "$ponytail_target" >/dev/null
+"$smoke_root/venv/bin/agentphilosophy-sync" push "$ponytail_target" --dry-run >/dev/null
+"$smoke_root/venv/bin/agentphilosophy-sync" push "$ponytail_target" --apply >/dev/null
+grep -q "skill-ponytail" "$ponytail_target/.agentphilosophy.yaml"
+test -f "$ponytail_target/skills/ponytail/SKILL.md"
+test -f "$ponytail_target/.codex/skills/ponytail/SKILL.md"
 cmp -s \
-  "$target/skills/ponytail/SKILL.md" \
-  "$target/.codex/skills/ponytail/SKILL.md"
-grep -q "DietrichGebert/ponytail" "$target/skills/ponytail/SKILL.md"
+  "$ponytail_target/skills/ponytail/SKILL.md" \
+  "$ponytail_target/.codex/skills/ponytail/SKILL.md"
+grep -q "DietrichGebert/ponytail" "$ponytail_target/skills/ponytail/SKILL.md"
 test -f "$target/skills/improve-codebase-architecture/SKILL.md"
 test -f "$target/.codex/skills/improve-codebase-architecture/SKILL.md"
 cmp -s \
