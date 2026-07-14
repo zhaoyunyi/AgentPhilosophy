@@ -8,14 +8,14 @@ Usage:
 
 Prepare a local AgentPhilosophy release:
   - bump CLI version in pyproject.toml and src/agentphilosophy/__init__.py
-  - bump README stable install command tag
   - bump content_version in catalog.yaml and packaged default_source/catalog.yaml
   - refresh uv.lock and this repo's managed state
   - run lint, tests, central-source validation, build, and installed-wheel smoke
   - write dist/release-notes-vVERSION.md
 
-The script does not commit, push, tag, or publish. Use jj commands and then
-scripts/publish-release.sh after reviewing the diff.
+The script does not update the README stable install tag, commit, push, tag, or publish.
+Use jj commands and then scripts/publish-release.sh after reviewing the diff; update
+the README stable tag only after the GitHub Release exists.
 EOF
 }
 

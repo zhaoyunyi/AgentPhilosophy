@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import subprocess
 from pathlib import Path
 
 
@@ -22,6 +23,7 @@ def test_ci_workflow_runs_release_gate_commands() -> None:
 
     content = workflow.read_text(encoding="utf-8")
 
+    assert "fetch-depth: 0" in content
     assert "uv run ruff check ." in content
     assert "uv run pytest -q" in content
     assert "uv run sync.py validate" in content
@@ -105,6 +107,7 @@ def test_release_scripts_have_prepare_and_publish_safety_gates() -> None:
     assert "bash scripts/release-smoke.sh" in prepare
     assert "scripts/generate-release-notes.py" in prepare
     assert 'Path("README.md")' not in prepare
+    assert "bump README stable install command tag" not in prepare
     assert "请补充" not in prepare
     assert "gh release create" in publish
     assert "main is not synced to origin" in publish
@@ -139,3 +142,10 @@ def test_release_metadata_allows_main_to_be_ahead_of_stable_install_tag() -> Non
     assert _version_tuple(content_version) <= _version_tuple(cli_version)
     assert state_agentphilosophy_version == cli_version
     assert state_content_version == content_version
+    subprocess.run(
+        ["git", "rev-parse", "--verify", f"refs/tags/v{readme_tag}"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
