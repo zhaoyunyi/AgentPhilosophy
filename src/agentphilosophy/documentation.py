@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shlex
+import shutil
 import stat
 import subprocess
 from datetime import UTC, datetime
@@ -26,9 +27,7 @@ def command_update_documentation(
     report = Report()
     try:
         paths = _validated_documentation_paths(project_root, documentation_paths)
-        command = shlex.split(llm_command)
-        if not command:
-            raise SyncError("LLM command cannot be empty")
+        command = _validated_llm_command(llm_command)
     except (SyncError, ValueError) as exc:
         report.error(str(exc))
         return report
@@ -36,8 +35,15 @@ def command_update_documentation(
     try:
         project_before = _project_snapshot(project_root)
         protected_before = _protected_file_snapshot(project_root)
+        vcs_before = _version_control_metadata_snapshot(project_root)
     except (OSError, SyncError, subprocess.SubprocessError) as exc:
         report.error(f"cannot snapshot project before LLM documentation update: {exc}")
+        return report
+    vcs_symlinks = sorted(
+        path for path, fingerprint in vcs_before.items() if fingerprint.startswith("symlink:")
+    )
+    if vcs_symlinks:
+        report.error(f"version-control metadata contains symlinks: {', '.join(vcs_symlinks)}")
         return report
     allowed_symlinks = sorted(
         path
@@ -80,6 +86,7 @@ def command_update_documentation(
     try:
         project_after = _project_snapshot(project_root)
         protected_after = _protected_file_snapshot(project_root)
+        vcs_after = _version_control_metadata_snapshot(project_root)
     except (OSError, SyncError, subprocess.SubprocessError) as exc:
         report.error(f"cannot snapshot project after LLM documentation update: {exc}")
         return report
@@ -133,6 +140,8 @@ def command_update_documentation(
     )
     if protected_drift:
         report.error(f"LLM changed protected files: {', '.join(protected_drift)}")
+    if vcs_before != vcs_after:
+        report.error("LLM changed version-control metadata")
     return report
 
 
@@ -192,6 +201,73 @@ def _validated_documentation_paths(project_root: Path, raw_paths: object) -> lis
     return sorted(set(paths), key=lambda path: relative_path(project_root, path))
 
 
+def _validated_llm_command(value: str) -> list[str]:
+    command = shlex.split(value)
+    if not command:
+        raise SyncError("LLM command cannot be empty")
+    if command[0] != "codex":
+        raise SyncError("LLM command must invoke the trusted PATH executable as 'codex'")
+    executable = shutil.which("codex")
+    if executable is None:
+        raise SyncError("LLM command not found: codex")
+    if len(command) < 3 or command[1] != "exec":
+        raise SyncError(
+            "LLM command requires sandboxed Codex exec with --ephemeral, "
+            "--ignore-user-config, and --sandbox workspace-write"
+        )
+
+    arguments = command[2:]
+    sandbox_values: list[str] = []
+    for index, argument in enumerate(arguments):
+        if argument in {"-s", "--sandbox"}:
+            sandbox_values.append(arguments[index + 1] if index + 1 < len(arguments) else "")
+        elif argument.startswith("--sandbox="):
+            sandbox_values.append(argument.split("=", 1)[1])
+    if sandbox_values != ["workspace-write"]:
+        raise SyncError(
+            "LLM command requires exactly one workspace-write sandbox and forbids sandbox overrides"
+        )
+
+    seen: set[str] = set()
+    index = 0
+    while index < len(arguments):
+        argument = arguments[index]
+        if argument in {"--ephemeral", "--ignore-user-config", "--skip-git-repo-check"}:
+            key = argument
+            index += 1
+        elif argument in {"-s", "--sandbox", "-m", "--model"}:
+            if index + 1 >= len(arguments) or not arguments[index + 1]:
+                raise SyncError("LLM command has an option without a value")
+            key = "sandbox" if argument in {"-s", "--sandbox"} else "model"
+            index += 2
+        elif argument.startswith("--sandbox="):
+            key = "sandbox"
+            index += 1
+        elif argument.startswith("--model=") and argument.split("=", 1)[1]:
+            key = "model"
+            index += 1
+        elif argument == "-" and index == len(arguments) - 1:
+            key = "stdin-prompt"
+            index += 1
+        else:
+            raise SyncError(
+                "LLM command contains unsupported or unsafe Codex arguments; "
+                "no extra writable roots or config overrides are allowed"
+            )
+        if key in seen:
+            raise SyncError(f"LLM command repeats Codex option: {key}")
+        seen.add(key)
+
+    if not {"--ephemeral", "--ignore-user-config", "sandbox", "stdin-prompt"}.issubset(seen):
+        raise SyncError(
+            "LLM command requires sandboxed Codex exec with --ephemeral, "
+            "--ignore-user-config, --sandbox workspace-write, no extra writable roots, "
+            "and '-' as the stdin prompt"
+        )
+    command[0] = executable
+    return command
+
+
 def _documentation_path_fingerprint(raw_paths: object) -> list[str]:
     if not isinstance(raw_paths, list):
         return []
@@ -244,6 +320,89 @@ def _protected_file_snapshot(project_root: Path) -> dict[str, str]:
         if path.is_file():
             snapshot[rel_path] = sha256_file(path)
     return snapshot
+
+
+def _version_control_metadata_snapshot(project_root: Path) -> dict[str, str]:
+    snapshot: dict[str, str] = {}
+    _snapshot_metadata_path(snapshot, "project/.git", project_root / ".git")
+
+    git_dirs: list[tuple[str, Path]] = []
+    for label, arguments in (
+        ("git-dir", ["git", "rev-parse", "--path-format=absolute", "--git-dir"]),
+        ("git-common-dir", ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"]),
+    ):
+        result = subprocess.run(
+            arguments,
+            cwd=project_root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            git_dirs.append((label, Path(result.stdout.strip())))
+
+    unique_git_dirs: dict[Path, str] = {}
+    for label, root in git_dirs:
+        unique_git_dirs.setdefault(root.resolve(), label)
+    for root, label in unique_git_dirs.items():
+        _snapshot_metadata_tree(
+            snapshot,
+            label,
+            root,
+            excluded_top_level={"objects", "logs"},
+        )
+
+    jj_root = project_root / ".jj"
+    jj_repo = jj_root / "repo"
+    repo_root = jj_repo
+    if jj_repo.is_file():
+        _snapshot_metadata_path(snapshot, "jj/repo", jj_repo)
+        try:
+            repo_root = (jj_root / jj_repo.read_text(encoding="utf-8").strip()).resolve()
+        except (OSError, UnicodeError):
+            repo_root = jj_repo
+
+    _snapshot_metadata_tree(snapshot, "jj/working_copy", jj_root / "working_copy")
+    if repo_root.is_dir():
+        _snapshot_metadata_tree(
+            snapshot,
+            "jj/repo",
+            repo_root,
+            excluded_top_level={"index", "op_store", "store", "submodule_store"},
+        )
+    return snapshot
+
+
+def _snapshot_metadata_path(snapshot: dict[str, str], label: str, path: Path) -> None:
+    if path.is_symlink():
+        snapshot[label] = f"symlink:{path.readlink()}"
+    elif path.is_file():
+        snapshot[label] = sha256_file(path)
+
+
+def _snapshot_metadata_tree(
+    snapshot: dict[str, str],
+    label: str,
+    root: Path,
+    *,
+    excluded_top_level: set[str] | None = None,
+) -> None:
+    if not root.is_dir():
+        _snapshot_metadata_path(snapshot, label, root)
+        return
+    excluded_top_level = excluded_top_level or set()
+    pending = [root]
+    while pending:
+        directory = pending.pop()
+        for path in sorted(directory.iterdir(), reverse=True):
+            relative = path.relative_to(root)
+            if relative.parts and relative.parts[0] in excluded_top_level:
+                continue
+            path_label = f"{label}/{relative.as_posix()}"
+            if path.is_symlink() or path.is_file():
+                _snapshot_metadata_path(snapshot, path_label, path)
+            elif path.is_dir():
+                pending.append(path)
 
 
 def _documentation_prompt(
@@ -303,7 +462,7 @@ def _documentation_prompt(
 3. 不修改 `.agentphilosophy.yaml`、`.agents/`、skills、上面列出的任何托管文件，也不改变代码、配置、依赖或测试。
 4. 更新受本轮规则或版本变化影响的说明，删除已经过时的描述；同步维护相关文档索引。
 5. 文档只写项目用户和维护者需要理解的当前事实，不暴露内部模型供应商、密钥、原始提示词或运行时敏感信息。
-6. 运行适合当前文档范围的只读或验证命令；不要提交、推送、发布或操作外部环境。
+6. 运行适合当前文档范围的只读或验证命令；不要运行 Git 或 jj 命令，不要提交、推送、发布或操作外部环境。
 7. 如果当前文档已经准确，无需为了制造改动而改写。
 """
 

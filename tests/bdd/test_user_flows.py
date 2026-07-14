@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import os
 import shlex
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 from shutil import copyfile
@@ -11,6 +14,28 @@ from agentphilosophy.cli import main
 def write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def sandboxed_codex_command(script_path: Path) -> str:
+    codex = script_path.parent / f"{script_path.stem}-codex" / "codex"
+    write(
+        codex,
+        "#!/bin/sh\n"
+        f"exec {shlex.quote(sys.executable)} {shlex.quote(str(script_path))} \"$@\"\n",
+    )
+    codex.chmod(0o755)
+    os.environ["PATH"] = f"{codex.parent}{os.pathsep}{os.environ.get('PATH', '')}"
+    return shlex.join(
+        [
+            "codex",
+            "exec",
+            "--ephemeral",
+            "--ignore-user-config",
+            "--sandbox",
+            "workspace-write",
+            "-",
+        ]
+    )
 
 
 def seed_central_source(root: Path) -> None:
@@ -209,7 +234,7 @@ with Path("README.md").open("a", encoding="utf-8") as stream:
 """.lstrip(),
     )
 
-    command = shlex.join([sys.executable, str(fake_llm)])
+    command = sandboxed_codex_command(fake_llm)
     assert (
         main(
             [
@@ -234,6 +259,7 @@ with Path("README.md").open("a", encoding="utf-8") as stream:
     assert "0.2.0 -> 0.3.0" in prompt
     assert "AGENTS.md" in prompt
     assert "README.md" in prompt
+    assert "不要运行 Git 或 jj 命令" in prompt
 
     assert (
         main(
@@ -286,6 +312,377 @@ projects:
     assert "- CHANGELOG.md" in state_text
 
 
+def test_bdd_batch_documentation_update_rejects_unsandboxed_model_command(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    unsafe_llm = tmp_path / "unsafe_llm.py"
+    write(
+        unsafe_llm,
+        """
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+Path("README.md").write_text("unsafe\\n", encoding="utf-8")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join([sys.executable, str(unsafe_llm)]),
+            ]
+        )
+        == 1
+    )
+    assert "must invoke the trusted PATH executable as 'codex'" in capsys.readouterr().out
+    assert (target / "README.md").read_text(encoding="utf-8") == "# Dependent Project\n"
+
+    expanded_command = shlex.split(sandboxed_codex_command(unsafe_llm))
+    expanded_command[-1:-1] = ["--add-dir", str(tmp_path)]
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join(expanded_command),
+            ]
+        )
+        == 1
+    )
+    assert "no extra writable roots" in capsys.readouterr().out
+    assert (target / "README.md").read_text(encoding="utf-8") == "# Dependent Project\n"
+
+    feature_command = shlex.split(sandboxed_codex_command(unsafe_llm))
+    feature_command[-1:-1] = ["--enable", "unsafe-feature"]
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join(feature_command),
+            ]
+        )
+        == 1
+    )
+    assert "unsupported or unsafe Codex arguments" in capsys.readouterr().out
+    assert (target / "README.md").read_text(encoding="utf-8") == "# Dependent Project\n"
+
+    executable_path_command = shlex.split(sandboxed_codex_command(unsafe_llm))
+    executable_path_command[0] = str(shutil.which("codex"))
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join(executable_path_command),
+            ]
+        )
+        == 1
+    )
+    assert "must invoke the trusted PATH executable as 'codex'" in capsys.readouterr().out
+    assert (target / "README.md").read_text(encoding="utf-8") == "# Dependent Project\n"
+
+    bypass_command = shlex.split(sandboxed_codex_command(unsafe_llm))
+    bypass_command[-1:-1] = ["--sandbox", "danger-full-access"]
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join(bypass_command),
+            ]
+        )
+        == 1
+    )
+    assert "requires exactly one workspace-write sandbox" in capsys.readouterr().out
+    assert (target / "README.md").read_text(encoding="utf-8") == "# Dependent Project\n"
+
+    attached_root_command = shlex.split(sandboxed_codex_command(unsafe_llm))
+    attached_root_command[-1:-1] = [f"-C{tmp_path}"]
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                shlex.join(attached_root_command),
+            ]
+        )
+        == 1
+    )
+    assert "no extra writable roots" in capsys.readouterr().out
+    assert (target / "README.md").read_text(encoding="utf-8") == "# Dependent Project\n"
+
+
+def test_bdd_batch_documentation_update_rejects_version_control_metadata_changes(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    subprocess.run(["git", "init"], cwd=target, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "config", "user.name", "BDD"], cwd=target, check=True)
+    subprocess.run(["git", "config", "user.email", "bdd@example.test"], cwd=target, check=True)
+    subprocess.run(["git", "add", "."], cwd=target, check=True)
+    subprocess.run(["git", "commit", "-m", "initial"], cwd=target, check=True, capture_output=True, text=True)
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "staging_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import subprocess
+import sys
+
+sys.stdin.read()
+Path("README.md").write_text("staged by model\\n", encoding="utf-8")
+subprocess.run(["git", "add", "README.md"], check=True)
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                sandboxed_codex_command(fake_llm),
+            ]
+        )
+        == 1
+    )
+    assert "LLM changed version-control metadata" in capsys.readouterr().out
+    state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    assert "documentation_refresh:" not in state
+
+
+def test_bdd_batch_documentation_update_rejects_git_hook_changes(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    subprocess.run(["git", "init"], cwd=target, check=True, capture_output=True, text=True)
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "git_hook_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+Path("README.md").write_text("documented\\n", encoding="utf-8")
+Path(".git/hooks/pre-commit").write_text("#!/bin/sh\\nexit 1\\n", encoding="utf-8")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                sandboxed_codex_command(fake_llm),
+            ]
+        )
+        == 1
+    )
+    assert "LLM changed version-control metadata" in capsys.readouterr().out
+
+
+def test_bdd_batch_documentation_update_rejects_jj_repository_config_changes(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(target / ".jj" / "repo" / "config.toml", "safe = true\n")
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "jj_config_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+Path("README.md").write_text("documented\\n", encoding="utf-8")
+Path(".jj/repo/config.toml").write_text("tampered = true\\n", encoding="utf-8")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                sandboxed_codex_command(fake_llm),
+            ]
+        )
+        == 1
+    )
+    assert "LLM changed version-control metadata" in capsys.readouterr().out
+
+
+def test_bdd_batch_documentation_update_rejects_git_worktree_pointer_changes(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "dependent-project"
+    seed_central_source(source)
+    write(target / "README.md", "# Dependent Project\n")
+    assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    write(target / ".git", "gitdir: ../original-git-dir\n")
+    write(
+        source / "registry.yaml",
+        f"""
+schema_version: 1
+projects:
+  - name: DependentProject
+    path: {target}
+    documentation_paths:
+      - README.md
+""".lstrip(),
+    )
+    fake_llm = tmp_path / "git_pointer_llm.py"
+    write(
+        fake_llm,
+        """
+from pathlib import Path
+import sys
+
+sys.stdin.read()
+Path("README.md").write_text("documented\\n", encoding="utf-8")
+Path(".git").write_text("gitdir: ../tampered-git-dir\\n", encoding="utf-8")
+""".lstrip(),
+    )
+
+    assert (
+        main(
+            [
+                "--source",
+                str(source),
+                "push",
+                "--all",
+                "--apply",
+                "--update-docs",
+                "--llm-command",
+                sandboxed_codex_command(fake_llm),
+            ]
+        )
+        == 1
+    )
+    assert "LLM changed version-control metadata" in capsys.readouterr().out
+
+
 def test_bdd_batch_documentation_update_fails_when_llm_changes_managed_file(
     tmp_path: Path,
     capsys,
@@ -297,6 +694,8 @@ def test_bdd_batch_documentation_update_fails_when_llm_changes_managed_file(
     write(target / ".gitignore", "ignored.txt\n")
     write(target / "ignored.txt", "safe\n")
     write(target / "mode.txt", "safe\n")
+    write(target / ".jj" / "working_copy" / "checkout", "safe\n")
+    write(target / ".jj" / "repo" / "config.toml", "safe = true\n")
 
     assert main(["--source", str(source), "init", str(target), "--preset", "mobile-sdk"]) == 0
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
@@ -329,12 +728,14 @@ Path(".agents/agentphilosophy-state.yaml").write_text("tampered: true\\n", encod
 Path("src").mkdir(exist_ok=True)
 Path("src/app.ts").write_text("export const tampered = true;\\n", encoding="utf-8")
 Path("ignored.txt").write_text("tampered\\n", encoding="utf-8")
+Path(".jj/working_copy/checkout").write_text("tampered\\n", encoding="utf-8")
+Path(".jj/repo/config.toml").write_text("tampered = true\\n", encoding="utf-8")
 Path("outside-link").symlink_to("README.md")
 os.chmod("mode.txt", 0o755)
 """.lstrip(),
     )
 
-    command = shlex.join([sys.executable, str(fake_llm)])
+    command = sandboxed_codex_command(fake_llm)
     assert (
         main(
             [
@@ -358,6 +759,7 @@ os.chmod("mode.txt", 0o755)
     assert "outside-link" in output
     assert "src/app.ts" in output
     assert "LLM changed symlinks: outside-link" in output
+    assert "LLM changed version-control metadata" in output
     state = (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
     assert "documentation_refresh:" not in state
 
@@ -411,7 +813,7 @@ with Path("README.md").open("a", encoding="utf-8") as stream:
                 "--apply",
                 "--update-docs",
                 "--llm-command",
-                shlex.join([sys.executable, str(fake_llm)]),
+                sandboxed_codex_command(fake_llm),
             ]
         )
         == 1
@@ -467,7 +869,7 @@ link.write_text("tampered\\n", encoding="utf-8")
                 "--apply",
                 "--update-docs",
                 "--llm-command",
-                shlex.join([sys.executable, str(fake_llm)]),
+                sandboxed_codex_command(fake_llm),
             ]
         )
         == 1
@@ -520,7 +922,7 @@ raise SystemExit(7)
                 "--apply",
                 "--update-docs",
                 "--llm-command",
-                shlex.join([sys.executable, str(fake_llm)]),
+                sandboxed_codex_command(fake_llm),
             ]
         )
         == 1
@@ -582,7 +984,7 @@ with Path("README.md").open("a", encoding="utf-8") as stream:
                 "--apply",
                 "--update-docs",
                 "--llm-command",
-                shlex.join([sys.executable, str(fake_llm)]),
+                sandboxed_codex_command(fake_llm),
             ]
         )
         == 1
@@ -611,7 +1013,7 @@ projects:
                 "--apply",
                 "--update-docs",
                 "--llm-command",
-                shlex.join([sys.executable, str(fake_llm)]),
+                sandboxed_codex_command(fake_llm),
             ]
         )
         == 1
@@ -640,7 +1042,7 @@ projects:
                 "--apply",
                 "--update-docs",
                 "--llm-command",
-                shlex.join([sys.executable, str(fake_llm)]),
+                sandboxed_codex_command(fake_llm),
             ]
         )
         == 0
@@ -704,7 +1106,7 @@ with Path("README.md").open("a", encoding="utf-8") as stream:
                 "--apply",
                 "--update-docs",
                 "--llm-command",
-                shlex.join([sys.executable, str(fake_llm)]),
+                sandboxed_codex_command(fake_llm),
             ]
         )
         == 1

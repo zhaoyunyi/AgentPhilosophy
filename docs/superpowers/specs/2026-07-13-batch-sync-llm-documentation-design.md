@@ -9,8 +9,8 @@ AgentPhilosophy 已支持通过 `registry.yaml` 和 `push --all --apply` 批量�
 1. 复用 `push --all --apply`，在每个项目同步成功后按需调用外部大模型 CLI 更新项目自有文档。
 2. 只为本轮确实发生版本、模块或托管输出变化的项目调用模型；已经最新的项目不重复消耗模型资源。
 3. 每个依赖项目在 `registry.yaml` 显式声明允许更新的文档路径。
-4. 模型命令由调用方显式传入，通过标准输入接收中文任务提示，不绑定具体供应商、账号或模型。
-5. 模型执行后复查 AgentPhilosophy 托管文件、项目配置和 state；若模型改动这些保护文件，命令必须失败并报告漂移。
+4. 模型命令由调用方显式传入，通过标准输入接收中文任务提示；执行入口固定为受限的 Codex CLI，但不绑定账号或具体模型。
+5. 模型执行后复查 AgentPhilosophy 托管文件、项目配置、state 和版本控制元数据；若模型越界写入或操作版本控制，命令必须失败并报告漂移。
 6. 只有文档阶段成功后才把当前版本、内容源、模块和源树指纹记录为已刷新；失败后修复原因并重跑时不得因同步版本已经更新而跳过。
 
 ## 3. 非目标
@@ -28,7 +28,7 @@ AgentPhilosophy 已支持通过 `registry.yaml` 和 `push --all --apply` 批量�
 agentphilosophy-sync push --all --apply \
   --project-name ExampleFullstack \
   --update-docs \
-  --llm-command 'codex exec --ephemeral --sandbox workspace-write -'
+  --llm-command 'codex exec --ephemeral --ignore-user-config --sandbox workspace-write -'
 ```
 
 可用 `--llm-timeout <秒>` 设置单个项目的模型执行超时，默认 900 秒。
@@ -37,10 +37,10 @@ agentphilosophy-sync push --all --apply \
 
 - `--update-docs` 只能和 `--all --apply` 一起使用。
 - `--update-docs` 必须同时提供非空 `--llm-command`。
-- `--llm-command` 使用参数解析后直接执行，不经过 shell。
+- `--llm-command` 使用参数解析后直接执行，不经过 shell；只接受带 `--ephemeral --ignore-user-config --sandbox workspace-write -` 的 `codex exec`，拒绝额外可写目录、切换根目录、自定义配置和绕过 sandbox。
 - `--project-name` 可重复提供，只处理 registry 中名称完全匹配的项目；省略时处理全部项目。
 - 单个项目同步失败时，不为该项目调用模型；其他 registry 项目继续处理。
-- 模型成功后在 state 中记录包含 `documentation_paths` 的 `documentation_refresh` 指纹；失败、超时、配置错误、托管文件漂移、保护文件漂移或白名单外改动时不记录，允许后续重试。
+- 模型成功后在 state 中记录包含 `documentation_paths` 的 `documentation_refresh` 指纹；失败、超时、配置错误、托管文件漂移、保护文件漂移、版本控制元数据变化或白名单外改动时不记录，允许后续重试。
 
 ## 5. Registry 合同
 
@@ -54,7 +54,7 @@ projects:
       - docs
 ```
 
-`documentation_paths` 是相对项目根目录的文件或目录列表。绝对路径、越过项目根目录的路径、保护区、空列表和错误类型必须拒绝，不允许扩大模型写入范围。模型执行后必须用前后快照校验实际变更；只靠提示词约束不构成成功条件。
+`documentation_paths` 是相对项目根目录的文件或目录列表。绝对路径、越过项目根目录的路径、保护区、空列表和错误类型必须拒绝，不允许扩大模型写入范围。模型执行前必须通过 Codex workspace-write sandbox 限制跨仓写入，执行后再用前后快照校验项目文件和版本控制元数据；只靠提示词约束不构成成功条件。
 
 ## 6. 更新判断与提示词
 
@@ -71,7 +71,7 @@ projects:
 - 只修改 `documentation_paths` 内的项目自有文档；
 - 不修改 `.agentphilosophy.yaml`、`.agents/`、skills 或任何托管文件；
 - 让文档描述与同步后的当前实现和验证命令一致，并同步维护文档索引；
-- 不提交、不推送、不发布。
+- 不运行 Git 或 jj 命令，不提交、不推送、不发布。
 
 ## 7. BDD 场景
 
@@ -116,6 +116,18 @@ projects:
 - Given 项目已经完成当前版本文档刷新。
 - When registry 为该项目新增允许文档路径并再次执行。
 - Then 文档路径指纹发生变化，模型重新执行并在成功后写入新指纹。
+
+### 场景八：拒绝未受限的模型命令
+
+- Given 调用方提供的模型命令没有启用 Codex workspace-write sandbox，或请求额外可写目录。
+- When 执行批量文档更新。
+- Then CLI 在启动模型前失败，不允许模型写入项目或兄弟仓。
+
+### 场景九：模型操作版本控制时失败
+
+- Given 模型只修改了允许范围内的文档，但同时执行了 Git 或 jj 操作。
+- When CLI 完成执行后复查版本控制元数据。
+- Then 当前项目失败且不记录文档刷新指纹，后续 registry 项目继续处理。
 
 ## 8. 完成标准
 
