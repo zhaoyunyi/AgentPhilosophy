@@ -78,7 +78,7 @@ def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
     )
     push.add_argument(
         "--llm-command",
-        help="LLM CLI command that reads the documentation task from standard input",
+        help="sandboxed Codex exec command that reads the documentation task from standard input",
     )
     push.add_argument(
         "--llm-timeout",
