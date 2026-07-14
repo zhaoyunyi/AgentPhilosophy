@@ -489,7 +489,7 @@ def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> N
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
-def test_packaged_preset_installs_ponytail_skill_by_default(tmp_path: Path, preset: str) -> None:
+def test_packaged_preset_does_not_install_optional_ponytail_skill(tmp_path: Path, preset: str) -> None:
     target = tmp_path / "target"
     workdir = tmp_path / "workdir"
     workdir.mkdir()
@@ -516,7 +516,50 @@ def test_packaged_preset_installs_ponytail_skill_by_default(tmp_path: Path, pres
     repo_skill = target / "skills" / "ponytail" / "SKILL.md"
     codex_skill = target / ".codex" / "skills" / "ponytail" / "SKILL.md"
 
-    assert "- skill-ponytail" in project_config
+    assert "- skill-ponytail" not in project_config
+    assert not repo_skill.exists()
+    assert not codex_skill.exists()
+
+
+def test_packaged_project_can_explicitly_enable_ponytail(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    init_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "init",
+            str(target),
+            "--preset",
+            "fullstack",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert init_result.returncode == 0, init_result.stderr + init_result.stdout
+
+    config_path = target / ".agentphilosophy.yaml"
+    config_text = config_path.read_text(encoding="utf-8")
+    config_path.write_text(
+        config_text.replace("- model-constraints\n", "- model-constraints\n- skill-ponytail\n", 1),
+        encoding="utf-8",
+    )
+
+    push_result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[2] / "sync.py"), "push", str(target), "--apply"],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert push_result.returncode == 0, push_result.stderr + push_result.stdout
+
+    repo_skill = target / "skills" / "ponytail" / "SKILL.md"
+    codex_skill = target / ".codex" / "skills" / "ponytail" / "SKILL.md"
     assert repo_skill.is_file()
     assert codex_skill.is_file()
     assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
@@ -689,6 +732,9 @@ def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> No
     )
     assert superpowers_breakpoint["recommended"]["id"] == "skip-module"
     assert superpowers_breakpoint["options"][0]["id"] == "skip-module"
+    ponytail_breakpoint = next(item for item in breakpoint_payload["breakpoints"] if item["id"] == "ponytail")
+    assert ponytail_breakpoint["recommended"]["id"] == "skip-module"
+    assert ponytail_breakpoint["options"][0]["id"] == "skip-module"
 
 
 def test_readme_documents_a_published_stable_release_install_command() -> None:

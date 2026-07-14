@@ -153,7 +153,7 @@ def test_bdd_push_apply_reconciles_state_when_manual_file_matches_candidate(tmp_
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
 
 
-def test_bdd_default_preset_excludes_superpowers_but_keeps_multi_agent_rules(tmp_path: Path) -> None:
+def test_bdd_default_preset_excludes_optional_ponytail_and_superpowers(tmp_path: Path) -> None:
     source = Path(__file__).resolve().parents[2]
     target = tmp_path / "default-project"
 
@@ -163,7 +163,10 @@ def test_bdd_default_preset_excludes_superpowers_but_keeps_multi_agent_rules(tmp
     config_text = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "- model-constraints" in config_text
+    assert "- skill-ponytail" not in config_text
     assert "- superpowers-system" not in config_text
+    assert not (target / "skills" / "ponytail" / "SKILL.md").exists()
+    assert not (target / ".codex" / "skills" / "ponytail" / "SKILL.md").exists()
     assert "选择合适的模型与推理强度" in agents_text
     assert "Superpowers System" not in agents_text
 
@@ -184,6 +187,40 @@ def test_bdd_explicit_superpowers_selection_is_preserved(tmp_path: Path) -> None
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers System" in agents_text
     assert "Superpowers skill 版本为 `6.1.1`" in agents_text
+
+
+def test_bdd_installed_optional_ponytail_and_superpowers_can_be_removed(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "remove-optional-skills"
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    config_path = target / ".agentphilosophy.yaml"
+    config_text = config_path.read_text(encoding="utf-8")
+    config_path.write_text(
+        config_text.replace(
+            "- model-constraints\n",
+            "- model-constraints\n- skill-ponytail\n- superpowers-system\n",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    assert (target / "skills" / "ponytail" / "SKILL.md").is_file()
+    assert (target / ".codex" / "skills" / "ponytail" / "SKILL.md").is_file()
+    assert "Superpowers System" in (target / "AGENTS.md").read_text(encoding="utf-8")
+
+    config_path.write_text(
+        config_path.read_text(encoding="utf-8")
+        .replace("- skill-ponytail\n", "")
+        .replace("- superpowers-system\n", ""),
+        encoding="utf-8",
+    )
+    assert main(["--source", str(source), "push", str(target), "--prune-managed"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    assert not (target / "skills" / "ponytail" / "SKILL.md").exists()
+    assert not (target / ".codex" / "skills" / "ponytail" / "SKILL.md").exists()
+    assert "Superpowers System" not in (target / "AGENTS.md").read_text(encoding="utf-8")
 
 
 def test_bdd_batch_apply_updates_versions_then_invokes_llm_for_documentation(

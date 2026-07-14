@@ -216,7 +216,6 @@ modules:
   - skill-target-jj
   - skill-coding-standards
   - skill-repo-management
-  - skill-ponytail
   - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
   - skill-portless-local-dev
@@ -389,7 +388,7 @@ portless alias --remove api.myapp
 
 Ponytail 上游仓库：https://github.com/DietrichGebert/ponytail
 
-当前中央源默认 preset 会包含 `skill-ponytail`。该模块会同步生成 `skills/ponytail/SKILL.md` 和 `.codex/skills/ponytail/SKILL.md`，用于让 agent 在新增功能、修 bug、重构或改配置前先判断是否真的需要写代码、能否复用标准库/平台能力/既有依赖，并避免过度工程。
+`skill-ponytail` 是显式可选模块，不包含在中央源默认 preset 中。项目选择该模块后，会同步生成 `skills/ponytail/SKILL.md` 和 `.codex/skills/ponytail/SKILL.md`，用于让 agent 在新增功能、修 bug、重构或改配置前先判断是否真的需要写代码、能否复用标准库、平台能力或既有依赖，并避免过度工程。
 
 该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装上游 Codex 插件或全局 hook。目标项目只要通过 AgentPhilosophy 同步拿到 `skills/ponytail` 和 `.codex/skills/ponytail`，Codex 原生 skill discovery 就能在项目内触发；如果用户明确要求使用上游插件能力，再按上游仓库说明单独安装。
 
@@ -404,7 +403,7 @@ Ponytail 的默认判断顺序：
 
 Ponytail 不能用来削减验证、错误处理、安全、可访问性、用户可见流程、BDD/TDD 或项目已有架构边界；它约束的是“少写不必要代码”，不是降低工程标准。
 
-已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到该 skill 时，把模块追加到现有 `modules`，不要替换已有模块：
+已有项目的 `.agentphilosophy.yaml` 模块列表是显式冻结的；升级 CLI 不会自动追加或删除可选模块。需要安装时，把模块追加到现有 `modules`，不要替换已有模块：
 
 ```yaml
 modules:
@@ -427,6 +426,8 @@ agentphilosophy-sync push /path/to/project --apply
 find -L /path/to/project/.codex/skills/ponytail -name SKILL.md -print
 find -L /path/to/project/skills/ponytail -name SKILL.md -print
 ```
+
+需要卸载已安装的 Ponytail 时，从 `.agentphilosophy.yaml` 删除 `skill-ponytail`，先执行 `push /path/to/project --prune-managed` 安全删除未被手改的两个托管 skill，再执行 `push /path/to/project --apply` 刷新共享托管输出。`superpowers-system` 同样是显式可选模块；从配置删除后执行相同流程，可移除其 AGENTS 规则。
 
 ## 八、Reverse Skill 授权逆向路由 skill
 
