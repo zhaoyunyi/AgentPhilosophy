@@ -64,6 +64,8 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert ".codex/skills/improve-codebase-architecture/SKILL.md" in content
     assert "AgentPhilosophy ArchitectureSpec" in content
     assert "skill-mattpocock-engineering" in content
+    assert "skills/grill-me/SKILL.md" in content
+    assert ".codex/skills/grill-me/SKILL.md" in content
     assert "grill-with-docs" in content
     assert "skills/to-spec/SKILL.md" in content
     assert ".codex/skills/to-spec/SKILL.md" in content

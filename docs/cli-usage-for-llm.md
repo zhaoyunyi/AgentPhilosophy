@@ -515,7 +515,7 @@ find -L /path/to/project/skills/improve-codebase-architecture -name SKILL.md -pr
 
 当前中央源提供可选模块 `skill-code-review`。该模块会同步生成 `skills/code-review/SKILL.md` 和 `.codex/skills/code-review/SKILL.md`，用于让依赖项目快速载入 `/code-review` 双轴审查流程，而不必同步完整 Matt Pocock 产品工程主线。
 
-`skill-code-review` 与 `skill-mattpocock-engineering` 写入同一个 `code-review` skill 路径，不能同时启用。已有项目如果已经启用 `skill-mattpocock-engineering`，说明它已经拥有 `code-review`；只有当项目只需要审查入口、不需要 `/grill-with-docs`、`/to-prd`、`/to-issues`、`/implement` 和 `/tdd` 时，才追加 `skill-code-review`。
+`skill-code-review` 与 `skill-mattpocock-engineering` 写入同一个 `code-review` skill 路径，不能同时启用。已有项目如果已经启用 `skill-mattpocock-engineering`，说明它已经拥有 `code-review`；只有当项目只需要审查入口、不需要 `/grill-me`、`/grill-with-docs`、`/to-spec`、`/to-tickets`、`/implement` 和 `/tdd` 时，才追加 `skill-code-review`。
 
 ```yaml
 modules:
@@ -544,8 +544,11 @@ find -L /path/to/project/skills/code-review -name SKILL.md -print
 当前中央源默认 preset 会包含 `skill-mattpocock-engineering`。该模块改编自 Matt Pocock 的 `mattpocock/skills`（MIT License），同步生成以下 repo skills 和 Codex 项目级 skills：
 
 - `grill-with-docs`
+- `grill-me`
 - `grilling`
 - `domain-modeling`
+- `to-spec`
+- `to-tickets`
 - `to-prd`
 - `to-issues`
 - `implement`
@@ -556,17 +559,19 @@ find -L /path/to/project/skills/code-review -name SKILL.md -print
 
 ```text
 /grill-with-docs
--> /to-prd
--> /to-issues
--> 新开会话逐个 issue 用 /implement
+-> /to-spec
+-> /to-tickets
+-> 新开会话逐个 ticket 用 /implement
 ```
 
 使用含义：
 
-- `/grill-with-docs`：先拷问需求和设计，同时沉淀 `CONTEXT.md`、ADR 和领域语言。
-- `/to-prd`：把已经讨论清楚的内容整理成 PRD，不重新访谈。
-- `/to-issues`：把 PRD 拆成独立、可验证、适合新会话认领的 vertical slice issue。
-- `/implement`：按单个 PRD/issue 实现，内部倾向走 `/tdd`，最后跑 `/code-review`。
+- `/grill-me`：只做一问一答的无文档拷问；需要同步沉淀领域语言和决策时改用 `/grill-with-docs`。
+- `/grill-with-docs`：先拷问计划、决策或想法，同时沉淀 `CONTEXT.md`、ADR 和领域语言。
+- `/to-spec`：把已经讨论清楚的内容整理成 spec，不重新访谈。
+- `/to-tickets`：把 spec 拆成独立、可验证的 tracer-bullet vertical slice ticket；本地模式按 `.scratch/<feature-slug>/issues/<NN>-<slug>.md` 一票一文件保存。
+- `/implement`：按单个 spec/ticket 实现，内部倾向走 `/tdd`，最后跑 `/code-review`。
+- `/to-prd` 与 `/to-issues`：兼容已有项目的旧入口；新流程优先使用 `/to-spec` 与 `/to-tickets`。
 
 更多最佳实践见 [docs/guides/mattpocock-engineering-flow.md](guides/mattpocock-engineering-flow.md)。
 
@@ -590,7 +595,7 @@ agentphilosophy-sync push /path/to/project --apply
 同步后验证：
 
 ```bash
-find -L /path/to/project/.codex/skills -maxdepth 2 -name SKILL.md | sort | rg 'grill-with-docs|to-prd|to-issues|implement|tdd|code-review'
+find -L /path/to/project/.codex/skills -maxdepth 2 -name SKILL.md | sort | rg 'grill-me|grill-with-docs|to-spec|to-tickets|to-prd|to-issues|implement|tdd|code-review'
 ```
 
 ## 十二、Agent 哲学决策框架

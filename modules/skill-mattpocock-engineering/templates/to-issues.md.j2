@@ -18,7 +18,10 @@ description: 把 {{ project_name }} 的 PRD、计划或 spec 拆成可独立认�
 3. 按 vertical slice 拆分：每个 issue 都贯穿数据、API、UI、测试或对应集成层，交付一个可演示或可验证的窄行为。
 4. 为每个 issue 标出 blocking edges：哪些 issue 必须先完成，没有则写 `None - can start immediately`。
 5. 先展示拆分草案，等待用户确认粒度、依赖和覆盖范围。
-6. 用户确认后再发布 issue。按依赖顺序发布，阻塞项先发。
+6. 用户确认后再发布 issue：
+   - 已配置 issue tracker 时，按依赖顺序发布，阻塞项先发。
+   - 使用本地模式或没有 tracker 时，把每个 issue 分别写入 `.scratch/<feature-slug>/issues/<NN>-<slug>.md`；每个 issue 一个文件，不生成合并的 `issues.md`。
+7. 发布后明确当前工作前沿（work frontier）：列出所有 `Blocked by: None - can start immediately` 的 issue，便于 agent 立即认领。
 
 ## 草案格式
 
@@ -32,6 +35,8 @@ description: 把 {{ project_name }} 的 PRD、计划或 spec 拆成可独立认�
 ## Issue 模板
 
 ```markdown
+**Status:** ready-for-agent
+
 ## Parent
 
 父 PRD 或父 issue 链接。
@@ -56,3 +61,4 @@ None - can start immediately
 - 不要把 “先写 schema”“再写 API”“最后写 UI” 拆成水平层 issue，除非其中某个 slice 本身就是可验收行为。
 - 不关闭或修改父 issue。
 - 每个 issue 都应足够独立，后续新会话可以只拿 PRD + 单个 issue 运行 `/implement`。
+- 本地 issue 必须每个 issue 一个文件；文件编号按依赖顺序递增，不能把所有 issue 合并成一个文件。
