@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:ptszotsxrovtztkwpzzxzvyyuutlzvmv
-source_tree_hash: sha256:d9982602c21270e614f4ed4dfa8cf851c5febbbe4a5024e803d94d15284a6c14
+source_revision: jj:xmkvtszvtyptnskrpqntrqlmpvlprvzt
+source_tree_hash: sha256:b5f5fc8dea48448a953451bdde50ad7c06bcb313ca26514f0e618a9f45ec3c05
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -21,7 +21,7 @@ modules:
   skill-repo-management: 1.1.0
   skill-reverse-skill: 1.0.0
   skill-improve-codebase-architecture: 1.0.3
-  skill-mattpocock-engineering: 1.1.0
+  skill-mattpocock-engineering: 1.2.0
   skill-portless-local-dev: 1.2.0
   aphilosophy: 1.6.0
 files:
@@ -53,6 +53,13 @@ files:
   source_hash: sha256:7a5538e54dab0f850939a917a57dde26d462be1aee866d24774dd4f04a849749
   rendered_hash: sha256:18efc50f3f586af52bc9378263bb7aa681cbb1d01a86258eb1182d00c976b246
   last_written_hash: sha256:18efc50f3f586af52bc9378263bb7aa681cbb1d01a86258eb1182d00c976b246
+- path: .codex/skills/grill-me/SKILL.md
+  module: skill-mattpocock-engineering
+  output_id: grill-me-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:517705076520f9baeee65ae6e556ebedb45b0fdfcc04463c3d3ea2b1d8c7a098
+  rendered_hash: sha256:73836f638b53cbfe6e8c8c16eb3d9cdf6f4ef78ca7e075dcf6bbb9a06b236d91
+  last_written_hash: sha256:73836f638b53cbfe6e8c8c16eb3d9cdf6f4ef78ca7e075dcf6bbb9a06b236d91
 - path: .codex/skills/grill-with-docs/SKILL.md
   module: skill-mattpocock-engineering
   output_id: grill-with-docs-codex-skill
@@ -64,9 +71,9 @@ files:
   module: skill-mattpocock-engineering
   output_id: grilling-codex-skill
   strategy: managed_replace
-  source_hash: sha256:75502d2a6353ea0724346b2f3cfd76ade31cd4d50ee1a4d5b421798b78247956
-  rendered_hash: sha256:b3b06982bfd809e8f66341e32c3df01e8bc48799f6ecdc7524e96d34ad8cd57b
-  last_written_hash: sha256:b3b06982bfd809e8f66341e32c3df01e8bc48799f6ecdc7524e96d34ad8cd57b
+  source_hash: sha256:1f2568b106d24bc5e66fce33252e3418963369aa6928d59e280dd859fd9f70f4
+  rendered_hash: sha256:e20a1a9835becf272a118df10effeb037bc05cfe6632b90db38200fd9c2bd6f6
+  last_written_hash: sha256:e20a1a9835becf272a118df10effeb037bc05cfe6632b90db38200fd9c2bd6f6
 - path: .codex/skills/implement/SKILL.md
   module: skill-mattpocock-engineering
   output_id: implement-codex-skill
@@ -155,9 +162,9 @@ files:
   module: skill-mattpocock-engineering
   output_id: to-issues-codex-skill
   strategy: managed_replace
-  source_hash: sha256:02c5e23d9c587f667721c3975b04c0a716a9319cecec430ec5cbf6681966f526
-  rendered_hash: sha256:c1e231c1a9a68cfc89034c2426b1b2288be31d3267a42dc25bdc7108374e1ce0
-  last_written_hash: sha256:c1e231c1a9a68cfc89034c2426b1b2288be31d3267a42dc25bdc7108374e1ce0
+  source_hash: sha256:047631bcb61da1af316f05657e621ba72cde3a30f0b70d7bddfc79aeaebd9712
+  rendered_hash: sha256:221725c3b094c576c0d8c4fcfb42ccf336a6fae4519870bfdb8e2f9dde572b21
+  last_written_hash: sha256:221725c3b094c576c0d8c4fcfb42ccf336a6fae4519870bfdb8e2f9dde572b21
 - path: .codex/skills/to-prd/SKILL.md
   module: skill-mattpocock-engineering
   output_id: to-prd-codex-skill
@@ -176,9 +183,9 @@ files:
   module: skill-mattpocock-engineering
   output_id: to-tickets-codex-skill
   strategy: managed_replace
-  source_hash: sha256:5e81c742f8144822b9e2d0f9e325261d3947ed277fe8769222fd69a453fea03a
-  rendered_hash: sha256:3cc5faab92996540642936943d5492a9ddc12bfc14950347c1db4bb2adda3ed3
-  last_written_hash: sha256:3cc5faab92996540642936943d5492a9ddc12bfc14950347c1db4bb2adda3ed3
+  source_hash: sha256:d9dbadf679024d480eefe628ca52ab3e2aff2b48b8ae9128ca0f2764890851fa
+  rendered_hash: sha256:c608b9ff7fab1210a0d314298cc9ce1579df043f0a89ba58124472648c4b3704
+  last_written_hash: sha256:c608b9ff7fab1210a0d314298cc9ce1579df043f0a89ba58124472648c4b3704
 - path: AGENTS.md
   module: doc-templates
   output_id: agents-md
@@ -270,6 +277,13 @@ files:
   source_hash: sha256:7a5538e54dab0f850939a917a57dde26d462be1aee866d24774dd4f04a849749
   rendered_hash: sha256:18efc50f3f586af52bc9378263bb7aa681cbb1d01a86258eb1182d00c976b246
   last_written_hash: sha256:18efc50f3f586af52bc9378263bb7aa681cbb1d01a86258eb1182d00c976b246
+- path: skills/grill-me/SKILL.md
+  module: skill-mattpocock-engineering
+  output_id: grill-me-skill
+  strategy: managed_replace
+  source_hash: sha256:517705076520f9baeee65ae6e556ebedb45b0fdfcc04463c3d3ea2b1d8c7a098
+  rendered_hash: sha256:73836f638b53cbfe6e8c8c16eb3d9cdf6f4ef78ca7e075dcf6bbb9a06b236d91
+  last_written_hash: sha256:73836f638b53cbfe6e8c8c16eb3d9cdf6f4ef78ca7e075dcf6bbb9a06b236d91
 - path: skills/grill-with-docs/SKILL.md
   module: skill-mattpocock-engineering
   output_id: grill-with-docs-skill
@@ -281,9 +295,9 @@ files:
   module: skill-mattpocock-engineering
   output_id: grilling-skill
   strategy: managed_replace
-  source_hash: sha256:75502d2a6353ea0724346b2f3cfd76ade31cd4d50ee1a4d5b421798b78247956
-  rendered_hash: sha256:b3b06982bfd809e8f66341e32c3df01e8bc48799f6ecdc7524e96d34ad8cd57b
-  last_written_hash: sha256:b3b06982bfd809e8f66341e32c3df01e8bc48799f6ecdc7524e96d34ad8cd57b
+  source_hash: sha256:1f2568b106d24bc5e66fce33252e3418963369aa6928d59e280dd859fd9f70f4
+  rendered_hash: sha256:e20a1a9835becf272a118df10effeb037bc05cfe6632b90db38200fd9c2bd6f6
+  last_written_hash: sha256:e20a1a9835becf272a118df10effeb037bc05cfe6632b90db38200fd9c2bd6f6
 - path: skills/implement/SKILL.md
   module: skill-mattpocock-engineering
   output_id: implement-skill
@@ -372,9 +386,9 @@ files:
   module: skill-mattpocock-engineering
   output_id: to-issues-skill
   strategy: managed_replace
-  source_hash: sha256:02c5e23d9c587f667721c3975b04c0a716a9319cecec430ec5cbf6681966f526
-  rendered_hash: sha256:c1e231c1a9a68cfc89034c2426b1b2288be31d3267a42dc25bdc7108374e1ce0
-  last_written_hash: sha256:c1e231c1a9a68cfc89034c2426b1b2288be31d3267a42dc25bdc7108374e1ce0
+  source_hash: sha256:047631bcb61da1af316f05657e621ba72cde3a30f0b70d7bddfc79aeaebd9712
+  rendered_hash: sha256:221725c3b094c576c0d8c4fcfb42ccf336a6fae4519870bfdb8e2f9dde572b21
+  last_written_hash: sha256:221725c3b094c576c0d8c4fcfb42ccf336a6fae4519870bfdb8e2f9dde572b21
 - path: skills/to-prd/SKILL.md
   module: skill-mattpocock-engineering
   output_id: to-prd-skill
@@ -393,9 +407,9 @@ files:
   module: skill-mattpocock-engineering
   output_id: to-tickets-skill
   strategy: managed_replace
-  source_hash: sha256:5e81c742f8144822b9e2d0f9e325261d3947ed277fe8769222fd69a453fea03a
-  rendered_hash: sha256:3cc5faab92996540642936943d5492a9ddc12bfc14950347c1db4bb2adda3ed3
-  last_written_hash: sha256:3cc5faab92996540642936943d5492a9ddc12bfc14950347c1db4bb2adda3ed3
+  source_hash: sha256:d9dbadf679024d480eefe628ca52ab3e2aff2b48b8ae9128ca0f2764890851fa
+  rendered_hash: sha256:c608b9ff7fab1210a0d314298cc9ce1579df043f0a89ba58124472648c4b3704
+  last_written_hash: sha256:c608b9ff7fab1210a0d314298cc9ce1579df043f0a89ba58124472648c4b3704
 - path: spec/ArchitectureSpec.md
   module: spec-architecture
   output_id: architecture-spec
@@ -438,6 +452,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-14T03:16:05.878186+00:00'
+last_synced: '2026-07-16T05:50:50.422492+00:00'
 source_content_version: 0.7.10
 agentphilosophy_version: 0.7.10

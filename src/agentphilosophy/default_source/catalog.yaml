@@ -227,9 +227,10 @@ modules:
     risk: low
   - name: skill-mattpocock-engineering
     category: skill
-    description: Matt Pocock 产品工程主链路 skill：grill-with-docs、to-spec、to-tickets、implement、tdd 和 code-review
+    description: Matt Pocock 产品工程主链路 skill：grill-me、grill-with-docs、to-spec、to-tickets、implement、tdd 和 code-review
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
+      - skills/grill-me/SKILL.md
       - skills/grill-with-docs/SKILL.md
       - skills/grilling/SKILL.md
       - skills/domain-modeling/SKILL.md
@@ -240,6 +241,7 @@ modules:
       - skills/implement/SKILL.md
       - skills/tdd/SKILL.md
       - skills/code-review/SKILL.md
+      - .codex/skills/grill-me/SKILL.md
       - .codex/skills/grill-with-docs/SKILL.md
       - .codex/skills/grilling/SKILL.md
       - .codex/skills/domain-modeling/SKILL.md

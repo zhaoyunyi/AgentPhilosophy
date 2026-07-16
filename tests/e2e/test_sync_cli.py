@@ -196,6 +196,7 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
         assert result.returncode == 0, result.stderr + result.stdout
 
     expected_skills = [
+        "grill-me",
         "grill-with-docs",
         "grilling",
         "domain-modeling",
@@ -219,6 +220,15 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
     assert "CONTEXT.md" in grill_text
     assert "ADR" in grill_text
 
+    grill_me_text = (target / "skills" / "grill-me" / "SKILL.md").read_text(encoding="utf-8")
+    assert "/grilling" in grill_me_text
+    assert "/grill-with-docs" in grill_me_text
+
+    grilling_text = (target / "skills" / "grilling" / "SKILL.md").read_text(encoding="utf-8")
+    assert "计划、决策或想法" in grilling_text
+    assert "文件系统、工具或日志" in grilling_text
+    assert "决策必须交给用户确认" in grilling_text
+
     to_prd_text = (target / "skills" / "to-prd" / "SKILL.md").read_text(encoding="utf-8")
     assert "/to-prd" in to_prd_text
     assert "PRD" in to_prd_text
@@ -234,6 +244,8 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
     to_tickets_text = (target / "skills" / "to-tickets" / "SKILL.md").read_text(encoding="utf-8")
     assert "/to-tickets" in to_tickets_text
     assert "tracer-bullet" in to_tickets_text
+    assert ".scratch/<feature-slug>/issues/<NN>-<slug>.md" in to_tickets_text
+    assert "每个 ticket 一个文件" in to_tickets_text
 
     implement_text = (target / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
     assert "/implement" in implement_text

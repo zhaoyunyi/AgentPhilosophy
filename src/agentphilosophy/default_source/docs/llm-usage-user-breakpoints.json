@@ -299,17 +299,17 @@
     {
       "id": "mattpocock-engineering",
       "title": "是否安装 Matt Pocock 产品工程主线 skill",
-      "question": "我需要确认是否把 Matt Pocock 的 `/grill-with-docs -> /to-prd -> /to-issues -> /implement` 主线写成项目级 skill。",
+      "question": "我需要确认是否把 Matt Pocock 的 `/grill-with-docs -> /to-spec -> /to-tickets -> /implement` 主线写成项目级 skill。",
       "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-mattpocock-engineering`。",
       "recommended": {
         "id": "add-module",
-        "reason": "默认 preset 会把它作为通用 skill 集合的一部分，便于后续先澄清需求，再沉淀 PRD、拆 issue，并逐个 issue 新开会话实现。"
+        "reason": "默认 preset 会把它作为通用 skill 集合的一部分，便于后续先澄清需求，再沉淀 spec、拆 ticket，并逐个 ticket 新开会话实现。"
       },
       "options": [
         {
           "id": "add-module",
           "label": "追加 `skill-mattpocock-engineering`",
-          "impact": "后续 `push --apply` 会同步 `grill-with-docs`、`to-prd`、`to-issues`、`implement`、`tdd`、`code-review` 等 repo skills 和 Codex 项目级 skill。"
+          "impact": "后续 `push --apply` 会同步 `grill-me`、`grill-with-docs`、`to-spec`、`to-tickets`、兼容入口 `to-prd`、`to-issues`、`implement`、`tdd`、`code-review` 等 repo skills 和 Codex 项目级 skill。"
         },
         {
           "id": "skip-module",
