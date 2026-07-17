@@ -1,0 +1,5 @@
+interface:
+  display_name: "Grill Me"
+  short_description: "一问一答压实计划与决策"
+policy:
+  allow_implicit_invocation: false

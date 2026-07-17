@@ -1,0 +1,3 @@
+interface:
+  display_name: "Grilling"
+  short_description: "持续追问直到决策树收敛"

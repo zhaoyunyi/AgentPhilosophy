@@ -1,0 +1,5 @@
+interface:
+  display_name: "To Spec"
+  short_description: "把已澄清对话固化为 spec"
+policy:
+  allow_implicit_invocation: false

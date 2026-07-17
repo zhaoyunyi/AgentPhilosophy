@@ -1,0 +1,5 @@
+interface:
+  display_name: "Improve Codebase Architecture"
+  short_description: "发现深模块重构候选并生成报告"
+policy:
+  allow_implicit_invocation: false

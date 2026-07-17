@@ -1,0 +1,5 @@
+interface:
+  display_name: "Handoff"
+  short_description: "把会话压缩成可接续交接文档"
+policy:
+  allow_implicit_invocation: false

@@ -1,60 +1,99 @@
-# Matt Pocock Skills 产品工程主线
+# Matt Pocock 完整工程 Skill 家族
 
-AgentPhilosophy 默认 preset 会同步 `skill-mattpocock-engineering`。该模块改编自 Matt Pocock 的 `mattpocock/skills`，用于把模糊想法推进到可交付实现，同时保留项目领域语言、spec、ticket 和验证证据。
+AgentPhilosophy 默认 preset 通过 `skill-mattpocock-engineering` 和独立的 `skill-improve-codebase-architecture`，提供 Matt Pocock 原生插件当前列出的 22 个活跃 skills。内容按 AgentPhilosophy 的中央源、双目标输出、项目目录、BDD/TDD 与 jj 合同做了适配；不引入上游 `deprecated`、`in-progress`、`misc` 和 `personal` 目录。
 
 上游来源：https://github.com/mattpocock/skills
+
+上游采用 MIT License。许可文本随主模块写入 `skills/MATTPOCOCK-SKILLS-LICENSE.txt` 与 `.codex/skills/MATTPOCOCK-SKILLS-LICENSE.txt`；可独立选择的 `code-review` 和 `improve-codebase-architecture` 模块也会在各自目录保留同一文本。
+
+## 完整能力集
+
+| 类别 | Skills |
+| --- | --- |
+| 路由与设置 | `ask-matt`、`setup-matt-pocock-skills` |
+| 需求与规划 | `grill-me`、`grilling`、`grill-with-docs`、`to-spec`、`to-tickets`、`triage`、`wayfinder` |
+| 实现与验证 | `implement`、`tdd`、`code-review`、`diagnosing-bugs`、`resolving-merge-conflicts` |
+| 调研与设计 | `research`、`prototype`、`domain-modeling`、`codebase-design`、`improve-codebase-architecture` |
+| 跨会话与学习 | `handoff`、`teach`、`writing-great-skills` |
+
+`to-prd` 与 `to-issues` 是 AgentPhilosophy 为旧项目保留的兼容入口，不计入上游 22 个活跃 skills；新流程使用 `to-spec` 与 `to-tickets`。兼容入口不是 symlink 或失效占位符，而是仍会生成到两个 skill 根目录的真实 skill：用户明确输入 `/to-prd`、`/to-issues` 或点名对应旧流程时仍会触发。两者的 `agents/openai.yaml` 显式设置 `allow_implicit_invocation: false`，所以普通的需求讨论或拆票请求不会被旧名称隐式抢占；主入口保持 `to-spec`、`to-tickets`。
+
+## “完整引入”的准确边界
+
+本项目以 Matt 仓库 `.claude-plugin/plugin.json` 列出的 22 个活跃 skills 为完整性真值，并做三层保证：
+
+1. 22 个活跃 skills 全部有项目级入口；`to-prd`、`to-issues` 另作为两个兼容入口保留。
+2. 上游随 skill 使用的模板、脚本和说明文件按需一并带入，例如 `triage/AGENT-BRIEF.md`、`prototype/UI.md`、`diagnosing-bugs/scripts/hitl-loop.template.sh`；不是只复制一份 `SKILL.md`。
+3. 每个目录同时写入 `skills/` 与 `.codex/skills/`，内容逐字节一致，并通过 `agents/openai.yaml` 声明展示信息和隐式触发策略。
+
+“完整”不包含上游明确放在 `deprecated`、`in-progress`、`misc`、`personal` 下的非活跃内容，也不表示自动安装 GitHub/GitLab issue tracker、浏览器、测试框架或其他外部工具。需要外部系统的 skill 会正常被发现和读取，但真正执行仍取决于目标项目已有 CLI、MCP、登录态、权限与运行时依赖。
 
 ## 推荐主线
 
 ```text
-/grill-with-docs
+/ask-matt（不知道入口时）
+-> /grill-with-docs
 -> /to-spec
 -> /to-tickets
 -> 新开会话逐个 ticket 用 /implement
+-> /tdd
+-> /code-review
 ```
 
-含义：
+常见分支：
 
-- `/grill-me`：只做一问一答的无文档拷问；需要沉淀领域语言和决策时改用 `/grill-with-docs`。
-- `/grill-with-docs`：先拷问计划、决策或想法，同时沉淀 `CONTEXT.md`、ADR 和领域语言。
-- `/to-spec`：把已经讨论清楚的内容整理成 spec，不重新访谈。
-- `/to-tickets`：把 spec 拆成独立、可验证的 tracer-bullet vertical slice ticket。
-- `/implement`：按单个 spec/ticket 实现，内部倾向走 `/tdd`，最后跑 `/code-review`。
-- `/to-prd` 与 `/to-issues`：保留给已有项目兼容调用。
+- 需要一手资料：`/research` 后回到 `/grill-with-docs`。
+- 状态或界面问题无法靠讨论解决：`/handoff -> /prototype -> /handoff`。
+- 疑难 bug：`/diagnosing-bugs`，修复后若发现缺少 seam，再进入 `/improve-codebase-architecture`。
+- 超大且仍在迷雾中的工作：`/wayfinder`，地图收敛后回到 `/to-spec`。
+- 外部 issue/PR 队列：`/triage`，形成 brief 后交给 `/implement`。
+- 设计模块形状：`/codebase-design`；扫描候选由 `/improve-codebase-architecture` 完成。
+- 冲突中的 jj/Git 操作：`/resolving-merge-conflicts`。
 
-## 上下文切分
+## 项目目录适配
 
-`/grill-with-docs`、`/to-spec` 和 `/to-tickets` 尽量放在同一个连续会话里完成，避免中途压缩后丢失需求细节。如果上下文接近上限，先写 handoff 文档，再在新会话恢复。
+首次使用 tracker、triage、wayfinder 或领域文档流程时运行 `/setup-matt-pocock-skills`。设置沿用上游更清晰的项目拥有目录：
 
-`/implement` 应该逐个 ticket 新开会话：新会话只带 spec、单个 ticket、项目规则和必要代码上下文。这样每个实现会话能保持窄范围，减少串改。
+```text
+docs/agents/
+├── issue-tracker.md
+├── triage-labels.md
+├── domain.md
+└── out-of-scope/
+```
 
-## 文档沉淀边界
+同时保留 AgentPhilosophy 现有边界：
 
-- `CONTEXT.md` 只写领域词汇和统一语言，不写 PRD、任务清单或实现细节。
-- ADR 只记录难反转、没有上下文会显得奇怪、且有真实权衡的决定。
-- Spec 描述用户问题、解决方案、user stories、已确认技术决策、测试决策和非目标。
-- Ticket 必须是 vertical slice：完成后能单独演示或验证，不按 schema/API/UI 水平层拆散。
-- 未配置 tracker 时，每个 ticket 单独写入 `.scratch/<feature-slug>/issues/<NN>-<slug>.md`，并标记 `Status: ready-for-agent`。
+- `.agentphilosophy.yaml` 仍是模块、路径与同步配置真值。
+- `AGENTS.md` / `CLAUDE.md` 是托管输出时，setup 写 `.agents/custom/AGENTS.custom.md`，再走 validate、dry-run、apply；不直接手改托管文件。
+- 本地 spec 与 ticket 使用 `.scratch/<feature>/spec.md` 和 `.scratch/<feature>/issues/<NN>-<slug>.md`。
+- 领域规范继续读取 `CONTEXT.md` / `CONTEXT-MAP.md`、`docs/adr/` 和 `spec/`。
+- 新增 `docs/agents/` 长期文档时更新 `docs/README.md`。
 
-## 实现和验证
+没有必要创建 `.matt/` 或另一套隐藏配置/state 目录。
 
-`/implement` 的默认顺序：
+## 上下文与实现边界
 
-1. 读取 spec 和单个 ticket。
-2. 明确测试 seam。
-3. 用 `/tdd` 做一个失败测试、一个最小实现、一次局部验证。
-4. 重复到 acceptance criteria 覆盖完成。
-5. 运行完整验证命令。
-6. 用 `/code-review` 分别检查 Standards 和 Spec。
-7. 按项目版本控制规则提交；jj 仓库使用 `jj describe`、`jj new` 和 `jj git push`。
+`grill-with-docs`、`to-spec`、`to-tickets` 尽量在一个连续会话内完成。上下文接近上限或需要原型分支时先 `/handoff`；每个 `/implement` 从 spec 与单票开始新会话。
+
+`CONTEXT.md` 只存领域语言，ADR 只记录难反转且有真实权衡的决定，spec 描述行为与约束，ticket 必须是可独立验证的 vertical slice。实现使用最高稳定 seam 的行为测试，完成后按 Standards 与 Spec 双轴 review。
 
 ## 旧项目升级
 
-新项目使用默认 preset 时会自动包含 `skill-mattpocock-engineering`。旧项目的 `.agentphilosophy.yaml` 模块列表是显式冻结的，升级 CLI 不会自动追加模块。需要引入这组 skill 时，追加模块后同步：
+旧项目模块列表显式冻结。只升级 AgentPhilosophy CLI 或依赖版本，不会静默修改 `.agentphilosophy.yaml`，也不会自动给旧项目追加 Matt、Portless、Reverse 或可选 Ponytail。升级后的行为分三种：
+
+| 旧项目状态 | 升级后会发生什么 |
+| --- | --- |
+| 已包含 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture` | `status` 会根据 state/version/hash 提示需要刷新；dry-run 展示文件计划，apply 才更新托管输出与 state |
+| 只包含旧版 Matt 子集或只有其中一个模块 | 只刷新配置中已有模块；要完整家族必须显式补齐两个模块 |
+| 完全未包含 Matt 模块 | 不产生 Matt skill 文件；需要先编辑模块列表，再走 validate、dry-run、apply |
+
+需要完整家族时同时确认以下两个模块存在：
 
 ```yaml
 modules:
   - existing-module
+  - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
 ```
 
@@ -67,10 +106,19 @@ agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
 ```
 
-同步后应能看到：
+验证 repo 与 Codex 双目标：
 
 ```bash
-find /path/to/project/.codex/skills -maxdepth 2 -name SKILL.md | sort
+find -L /path/to/project/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
+find -L /path/to/project/.codex/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
 ```
 
-其中包括 `grill-me`、`grill-with-docs`、`to-spec`、`to-tickets`、兼容入口 `to-prd`、`to-issues`，以及 `implement`、`tdd` 和 `code-review`。
+每个 skill 的支持文件与 `agents/openai.yaml` 也应在两个目标目录逐字节一致；同名未托管文件存在时同步必须拒绝覆盖。
+
+apply 成功后会发生这些可观察变化：
+
+- 新增或刷新 22 个活跃 skill 入口，以及 `to-prd`、`to-issues` 两个兼容入口。
+- `setup-matt-pocock-skills` 引导长期项目配置落在 `docs/agents/`，同时尊重 `.agentphilosophy.yaml` 和 `.agents/custom/` 的托管边界。
+- `.agents/agentphilosophy-state.yaml` 记录新的 CLI/content version、模块版本和托管文件哈希；该文件由同步器维护，不手改。
+- 同名且未被 AgentPhilosophy 托管的文件不会被直接覆盖；同步会先报告冲突，避免吞掉项目自有 skill。
+- 已存在的 `deprecated`、个人 skill 或外部工具不会被 AgentPhilosophy 顺手删除；只有明确使用 `--prune-managed` 才处理已失活且仍保持原哈希的托管输出。

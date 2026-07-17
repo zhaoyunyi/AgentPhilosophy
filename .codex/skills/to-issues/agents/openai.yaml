@@ -1,0 +1,5 @@
+interface:
+  display_name: "To Issues"
+  short_description: "兼容入口：把 spec 拆成可认领 issues"
+policy:
+  allow_implicit_invocation: false

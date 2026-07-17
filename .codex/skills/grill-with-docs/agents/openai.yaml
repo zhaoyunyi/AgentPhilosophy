@@ -1,0 +1,5 @@
+interface:
+  display_name: "Grill With Docs"
+  short_description: "访谈并同步领域语言与 ADR"
+policy:
+  allow_implicit_invocation: false
