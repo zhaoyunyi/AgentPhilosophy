@@ -9,6 +9,8 @@ description: 在 AgentPhilosophy 中按 red-green-refactor 实现功能或修 bu
 
 目标：用能长期保留的行为测试驱动实现，而不是用实现细节测试锁死结构。
 
+需要判断测试形状或替身边界时，读取同目录的 `tests.md` 与 `mocking.md`。
+
 ## 执行前
 
 1. 读取 `CONTEXT.md` 和相关 ADR，让测试名、fixture 和断言使用项目领域词。

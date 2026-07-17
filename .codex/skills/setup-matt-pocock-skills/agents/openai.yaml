@@ -1,0 +1,5 @@
+interface:
+  display_name: "Setup Matt Pocock Skills"
+  short_description: "配置 tracker、triage 与领域文档目录"
+policy:
+  allow_implicit_invocation: false

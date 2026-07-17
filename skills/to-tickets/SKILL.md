@@ -9,6 +9,8 @@ description: 把 AgentPhilosophy 的 spec、计划或当前对话拆成可独立
 
 目标：把 spec 拆成独立、可验证、可交给新会话的 tracer-bullet vertical slice tickets。
 
+开始前读取 `docs/agents/issue-tracker.md`。存在 tracker 合同时按其发布；没有时使用下面的本地 Markdown 约定。
+
 ## 流程
 
 1. 读取 spec、当前对话、相关代码和项目领域词。若用户给了 issue、URL 或路径，先读取完整内容。

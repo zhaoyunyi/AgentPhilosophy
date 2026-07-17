@@ -1,0 +1,5 @@
+interface:
+  display_name: "Writing Great Skills"
+  short_description: "编写可预测且可维护的 Agent Skills"
+policy:
+  allow_implicit_invocation: false
