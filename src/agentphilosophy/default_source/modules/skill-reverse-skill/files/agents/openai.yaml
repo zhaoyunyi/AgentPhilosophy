@@ -1,0 +1,5 @@
+interface:
+  display_name: "Reverse Skill"
+  short_description: "授权安全研究的安全路由入口"
+policy:
+  allow_implicit_invocation: true

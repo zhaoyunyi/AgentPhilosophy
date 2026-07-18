@@ -1,18 +1,41 @@
 name: skill-reverse-skill
 description: reverse-skill 授权逆向、安全研究、CTF 和本机工具链路由项目级 skill
-version: 1.0.0
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
 upstream:
   repository: https://github.com/zhaoxuya520/reverse-skill
   ref: main
-  revision: e19cab89b348cd7b796e63de1d4499df1ae5b4b9
+  revision: b8ae07db073783597b11f60fa2e900e3f9b9163f
   tracked_paths:
+    - CHANGELOG.md
+    - LICENSE
     - README.md
     - README_AI.md
+    - VERSION
+    - skills/MASTER-ROUTING.md
     - skills/SKILL.md
+    - skills/ops
     - skills/routing_zh.md
+    - skills/protocol-reverse
+    - skills/ghidra-reverse
+    - skills/cloud-k8s
+    - skills/windows-ad
+    - skills/digital-forensics
+    - skills/code-audit
+    - skills/threat-hunting
+    - skills/wifi-wireless
+    - skills/browser-extension-reverse
+    - skills/ot-ics
+    - skills/macos-reverse
+    - skills/thick-client
+    - skills/go-rust-reverse
+    - skills/hardware-security
+    - skills/database-security
+    - skills/email-security
+    - skills/identity-federation
+    - skills/radio-sdr
     - skills/reverse-engineering/SKILL.md
     - skills/js-reverse/SKILL.md
 provides:
@@ -28,5 +51,17 @@ outputs:
     type: rendered_file
     template: templates/SKILL.md.j2
     target: "{{ skill_targets.codex_project }}/reverse-skill/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: reverse-skill-files
+    type: copy_tree
+    source: files
+    target: "{{ skill_targets.repo_skills }}/reverse-skill"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: reverse-codex-files
+    type: copy_tree
+    source: files
+    target: "{{ skill_targets.codex_project }}/reverse-skill"
     strategy: managed_replace
     on_existing_unmanaged: report_only

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Portless Local Dev"
+  short_description: "使用稳定命名的本地开发 URL"
+policy:
+  allow_implicit_invocation: true
