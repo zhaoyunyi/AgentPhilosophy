@@ -118,24 +118,60 @@ cmp -s \
   "$ponytail_target/skills/ponytail/SKILL.md" \
   "$ponytail_target/.codex/skills/ponytail/SKILL.md"
 grep -q "DietrichGebert/ponytail" "$ponytail_target/skills/ponytail/SKILL.md"
+grep -q "lite|full|ultra" "$ponytail_target/skills/ponytail/SKILL.md"
+test -f "$ponytail_target/skills/ponytail/agents/openai.yaml"
+test -f "$ponytail_target/skills/ponytail/PONYTAIL-LICENSE.txt"
+diff -qr "$ponytail_target/skills/ponytail" "$ponytail_target/.codex/skills/ponytail"
+grep -q "allow_implicit_invocation: true" "$ponytail_target/skills/ponytail/agents/openai.yaml"
+test -f "$target/skills/portless-local-dev/PORTLESS-LICENSE.txt"
+test -f "$target/skills/portless-local-dev/agents/openai.yaml"
+diff -qr "$target/skills/portless-local-dev" "$target/.codex/skills/portless-local-dev"
+grep -q "0.15.4" "$target/skills/portless-local-dev/SKILL.md"
+grep -q "portless doctor" "$target/skills/portless-local-dev/SKILL.md"
+test -f "$target/skills/reverse-skill/REVERSE-SKILL-LICENSE.txt"
+test -f "$target/skills/reverse-skill/agents/openai.yaml"
+diff -qr "$target/skills/reverse-skill" "$target/.codex/skills/reverse-skill"
+grep -q "MASTER-ROUTING" "$target/skills/reverse-skill/SKILL.md"
+grep -q "Evidence -> Finding -> Path" "$target/skills/reverse-skill/SKILL.md"
 test -f "$target/skills/improve-codebase-architecture/SKILL.md"
 test -f "$target/.codex/skills/improve-codebase-architecture/SKILL.md"
 cmp -s \
   "$target/skills/improve-codebase-architecture/SKILL.md" \
   "$target/.codex/skills/improve-codebase-architecture/SKILL.md"
+diff -qr \
+  "$target/skills/improve-codebase-architecture" \
+  "$target/.codex/skills/improve-codebase-architecture"
+grep -q "Copyright (c) 2026 Matt Pocock" \
+  "$target/skills/improve-codebase-architecture/MATTPOCOCK-SKILLS-LICENSE.txt"
 grep -q "AgentPhilosophy ArchitectureSpec" "$target/skills/improve-codebase-architecture/SKILL.md"
 grep -q "skill-mattpocock-engineering" "$target/.agentphilosophy.yaml"
-for skill_name in grill-me grill-with-docs grilling domain-modeling to-spec to-tickets to-prd to-issues implement tdd code-review; do
+for skill_name in \
+  ask-matt triage setup-matt-pocock-skills wayfinder prototype diagnosing-bugs research \
+  codebase-design resolving-merge-conflicts grill-me grill-with-docs grilling handoff teach \
+  writing-great-skills domain-modeling to-spec to-tickets to-prd to-issues implement tdd code-review; do
   test -f "$target/skills/${skill_name}/SKILL.md"
   test -f "$target/.codex/skills/${skill_name}/SKILL.md"
-  cmp -s \
-    "$target/skills/${skill_name}/SKILL.md" \
-    "$target/.codex/skills/${skill_name}/SKILL.md"
+  diff -qr "$target/skills/${skill_name}" "$target/.codex/skills/${skill_name}"
 done
+cmp -s \
+  "$target/skills/MATTPOCOCK-SKILLS-LICENSE.txt" \
+  "$target/.codex/skills/MATTPOCOCK-SKILLS-LICENSE.txt"
+grep -q "Copyright (c) 2026 Matt Pocock" "$target/skills/MATTPOCOCK-SKILLS-LICENSE.txt"
 test -f "$target/skills/grill-me/SKILL.md"
 test -f "$target/.codex/skills/grill-me/SKILL.md"
 test -f "$target/.codex/skills/to-spec/SKILL.md"
 test -f "$target/.codex/skills/to-prd/SKILL.md"
+test -f "$target/skills/to-prd/agents/openai.yaml"
+test -f "$target/skills/to-issues/agents/openai.yaml"
+grep -q "allow_implicit_invocation: false" "$target/skills/to-prd/agents/openai.yaml"
+grep -q "allow_implicit_invocation: false" "$target/skills/to-issues/agents/openai.yaml"
+test -f "$target/skills/setup-matt-pocock-skills/issue-tracker-local.md"
+test -f "$target/skills/triage/AGENT-BRIEF.md"
+test -f "$target/skills/diagnosing-bugs/scripts/hitl-loop.template.sh"
+test -f "$target/skills/codebase-design/DEEPENING.md"
+test -f "$target/skills/prototype/UI.md"
+test -f "$target/skills/teach/MISSION-FORMAT.md"
+test -f "$target/skills/writing-great-skills/GLOSSARY.md"
 grep -q "/grill-with-docs" "$target/skills/grill-with-docs/SKILL.md"
 grep -q "/grilling" "$target/skills/grill-me/SKILL.md"
 grep -q "/to-spec" "$target/skills/to-spec/SKILL.md"

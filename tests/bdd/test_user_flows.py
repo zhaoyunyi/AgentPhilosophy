@@ -167,8 +167,78 @@ def test_bdd_default_preset_excludes_optional_ponytail_and_superpowers(tmp_path:
     assert "- superpowers-system" not in config_text
     assert not (target / "skills" / "ponytail" / "SKILL.md").exists()
     assert not (target / ".codex" / "skills" / "ponytail" / "SKILL.md").exists()
+    assert (target / "skills" / "portless-local-dev" / "PORTLESS-LICENSE.txt").is_file()
+    assert (target / "skills" / "reverse-skill" / "REVERSE-SKILL-LICENSE.txt").is_file()
+    assert (target / "skills" / "portless-local-dev" / "agents" / "openai.yaml").is_file()
+    assert (target / "skills" / "reverse-skill" / "agents" / "openai.yaml").is_file()
     assert "选择合适的模型与推理强度" in agents_text
     assert "Superpowers System" not in agents_text
+
+
+def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "complete-mattpocock-project"
+    active_skills = {
+        "ask-matt",
+        "code-review",
+        "codebase-design",
+        "diagnosing-bugs",
+        "domain-modeling",
+        "grill-me",
+        "grill-with-docs",
+        "grilling",
+        "handoff",
+        "implement",
+        "improve-codebase-architecture",
+        "prototype",
+        "research",
+        "resolving-merge-conflicts",
+        "setup-matt-pocock-skills",
+        "tdd",
+        "teach",
+        "to-spec",
+        "to-tickets",
+        "triage",
+        "wayfinder",
+        "writing-great-skills",
+    }
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    repo_skills = {
+        path.parent.name
+        for path in (target / "skills").glob("*/SKILL.md")
+        if path.parent.name in active_skills
+    }
+    codex_skills = {
+        path.parent.name
+        for path in (target / ".codex" / "skills").glob("*/SKILL.md")
+        if path.parent.name in active_skills
+    }
+    assert repo_skills == active_skills
+    assert codex_skills == active_skills
+    for skill_name in active_skills:
+        assert (target / "skills" / skill_name / "agents" / "openai.yaml").is_file()
+        assert (target / ".codex" / "skills" / skill_name / "agents" / "openai.yaml").is_file()
+    for compatibility_name in ("to-prd", "to-issues"):
+        repo_metadata = target / "skills" / compatibility_name / "agents" / "openai.yaml"
+        codex_metadata = target / ".codex" / "skills" / compatibility_name / "agents" / "openai.yaml"
+        assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
+        assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
+
+
+def test_bdd_complete_mattpocock_install_refuses_unmanaged_skill_conflict(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "mattpocock-conflict-project"
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    unmanaged = target / "skills" / "ask-matt" / "SKILL.md"
+    write(unmanaged, "# 用户自己的 ask-matt\n")
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
+    assert unmanaged.read_text(encoding="utf-8") == "# 用户自己的 ask-matt\n"
+    assert not (target / ".codex" / "skills" / "ask-matt" / "SKILL.md").exists()
 
 
 def test_bdd_explicit_superpowers_selection_is_preserved(tmp_path: Path) -> None:
@@ -207,6 +277,8 @@ def test_bdd_installed_optional_ponytail_and_superpowers_can_be_removed(tmp_path
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
     assert (target / "skills" / "ponytail" / "SKILL.md").is_file()
     assert (target / ".codex" / "skills" / "ponytail" / "SKILL.md").is_file()
+    assert (target / "skills" / "ponytail" / "PONYTAIL-LICENSE.txt").is_file()
+    assert (target / "skills" / "ponytail" / "agents" / "openai.yaml").is_file()
     agents_path = target / "AGENTS.md"
     agents_before = agents_path.read_text(encoding="utf-8")
     assert "Superpowers System" in agents_before
