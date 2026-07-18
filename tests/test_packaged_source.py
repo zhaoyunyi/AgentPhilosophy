@@ -104,6 +104,21 @@ def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
         assert upstream.get("tracked_paths")
 
 
+def test_updated_external_skill_modules_lock_reviewed_upstream_revisions() -> None:
+    root = Path(__file__).resolve().parents[1]
+    expected = {
+        "skill-ponytail": ("1.1.0", "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"),
+        "skill-portless-local-dev": ("1.3.0", "e0c2af5734fcdc2f6c6992423a023d8ec0c68e26"),
+        "skill-reverse-skill": ("1.1.0", "b8ae07db073783597b11f60fa2e900e3f9b9163f"),
+    }
+
+    for module_name, (version, revision) in expected.items():
+        data = read_yaml(root / "modules" / module_name / "module.yaml")
+        assert data["version"] == version
+        assert data["upstream"]["revision"] == revision
+        assert "LICENSE" in data["upstream"]["tracked_paths"]
+
+
 def test_long_lived_docs_are_listed_in_docs_index() -> None:
     root = Path(__file__).resolve().parents[1]
     index = root / "docs" / "README.md"

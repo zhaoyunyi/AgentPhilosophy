@@ -286,7 +286,7 @@
         {
           "id": "use-mattpocock",
           "label": "使用 Matt Pocock 主线",
-          "impact": "同时同步 Matt Pocock 产品工程主线和 `code-review`，不要再追加 `skill-code-review`。"
+          "impact": "确认 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`，同步完整 Matt Pocock 家族和 `code-review`，不要再追加 `skill-code-review`。"
         },
         {
           "id": "skip-module",
@@ -298,23 +298,23 @@
     },
     {
       "id": "mattpocock-engineering",
-      "title": "是否安装 Matt Pocock 产品工程主线 skill",
-      "question": "我需要确认是否把 Matt Pocock 的 `/grill-with-docs -> /to-spec -> /to-tickets -> /implement` 主线写成项目级 skill。",
-      "why": "这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-mattpocock-engineering`。",
+      "title": "是否安装 Matt Pocock 完整工程 skill 家族",
+      "question": "我需要确认是否把 Matt Pocock 原生插件的 22 个活跃 skills 及支持文件写成项目级能力集。",
+      "why": "这个选择会决定是否同时保留或追加 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`。",
       "recommended": {
         "id": "add-module",
-        "reason": "默认 preset 会把它作为通用 skill 集合的一部分，便于后续先澄清需求，再沉淀 spec、拆 ticket，并逐个 ticket 新开会话实现。"
+        "reason": "默认 preset 会完整提供路由、设置、澄清、规划、调研、原型、诊断、实现、review、架构和跨会话能力，并保持 repo/Codex 双目标一致。"
       },
       "options": [
         {
           "id": "add-module",
-          "label": "追加 `skill-mattpocock-engineering`",
-          "impact": "后续 `push --apply` 会同步 `grill-me`、`grill-with-docs`、`to-spec`、`to-tickets`、兼容入口 `to-prd`、`to-issues`、`implement`、`tdd`、`code-review` 等 repo skills 和 Codex 项目级 skill。"
+          "label": "追加完整 Matt Pocock 家族",
+          "impact": "确认两个 Matt Pocock 模块，后续 `push --apply` 会同步 22 个活跃 skills、兼容入口、支持文件和 `agents/openai.yaml`。"
         },
         {
           "id": "skip-module",
           "label": "不修改旧项目配置",
-          "impact": "本次升级不会新增 Matt Pocock 产品工程主线 skill。"
+          "impact": "本次升级不会新增 Matt Pocock 完整工程 skill 家族。"
         },
         {
           "id": "minimal-config",

@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.7.11
+content_version: 0.7.12
 modules:
   - name: openspec-skills
     category: base
@@ -187,27 +187,39 @@ modules:
     risk: low
   - name: skill-portless-local-dev
     category: skill
-    description: Portless 稳定本地 URL、按需安装、项目脚本改造和本地验收入口 skill
+    description: Portless 0.15.4 稳定本地 URL、诊断、安全监听和本地验收入口 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/portless-local-dev/SKILL.md
+      - skills/portless-local-dev/agents/openai.yaml
+      - skills/portless-local-dev/PORTLESS-LICENSE.txt
       - .codex/skills/portless-local-dev/SKILL.md
+      - .codex/skills/portless-local-dev/agents/openai.yaml
+      - .codex/skills/portless-local-dev/PORTLESS-LICENSE.txt
     risk: low
   - name: skill-ponytail
     category: skill
-    description: Ponytail 精简编码阶梯、复用优先和不过度工程项目级 skill
+    description: Ponytail 4.8.4 三级精简编码、根因修复和复用优先项目级 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/ponytail/SKILL.md
+      - skills/ponytail/agents/openai.yaml
+      - skills/ponytail/PONYTAIL-LICENSE.txt
       - .codex/skills/ponytail/SKILL.md
+      - .codex/skills/ponytail/agents/openai.yaml
+      - .codex/skills/ponytail/PONYTAIL-LICENSE.txt
     risk: low
   - name: skill-reverse-skill
     category: skill
-    description: reverse-skill 授权逆向、安全研究、CTF 和本机工具链路由项目级 skill
+    description: reverse-skill 1.0.0 Scope 门禁、证据链和扩展安全领域路由项目级 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/reverse-skill/SKILL.md
+      - skills/reverse-skill/agents/openai.yaml
+      - skills/reverse-skill/REVERSE-SKILL-LICENSE.txt
       - .codex/skills/reverse-skill/SKILL.md
+      - .codex/skills/reverse-skill/agents/openai.yaml
+      - .codex/skills/reverse-skill/REVERSE-SKILL-LICENSE.txt
     risk: medium
   - name: skill-improve-codebase-architecture
     category: skill
@@ -227,12 +239,25 @@ modules:
     risk: low
   - name: skill-mattpocock-engineering
     category: skill
-    description: Matt Pocock 产品工程主链路 skill：grill-me、grill-with-docs、to-spec、to-tickets、implement、tdd 和 code-review
+    description: Matt Pocock 活跃工程 skill 家族；结合独立架构评审模块覆盖上游原生插件的 22 个活跃 skills
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
+      - skills/MATTPOCOCK-SKILLS-LICENSE.txt
       - skills/grill-me/SKILL.md
       - skills/grill-with-docs/SKILL.md
       - skills/grilling/SKILL.md
+      - skills/ask-matt/SKILL.md
+      - skills/triage/SKILL.md
+      - skills/setup-matt-pocock-skills/SKILL.md
+      - skills/wayfinder/SKILL.md
+      - skills/prototype/SKILL.md
+      - skills/diagnosing-bugs/SKILL.md
+      - skills/research/SKILL.md
+      - skills/codebase-design/SKILL.md
+      - skills/resolving-merge-conflicts/SKILL.md
+      - skills/handoff/SKILL.md
+      - skills/teach/SKILL.md
+      - skills/writing-great-skills/SKILL.md
       - skills/domain-modeling/SKILL.md
       - skills/to-spec/SKILL.md
       - skills/to-tickets/SKILL.md
@@ -241,9 +266,22 @@ modules:
       - skills/implement/SKILL.md
       - skills/tdd/SKILL.md
       - skills/code-review/SKILL.md
+      - .codex/skills/MATTPOCOCK-SKILLS-LICENSE.txt
       - .codex/skills/grill-me/SKILL.md
       - .codex/skills/grill-with-docs/SKILL.md
       - .codex/skills/grilling/SKILL.md
+      - .codex/skills/ask-matt/SKILL.md
+      - .codex/skills/triage/SKILL.md
+      - .codex/skills/setup-matt-pocock-skills/SKILL.md
+      - .codex/skills/wayfinder/SKILL.md
+      - .codex/skills/prototype/SKILL.md
+      - .codex/skills/diagnosing-bugs/SKILL.md
+      - .codex/skills/research/SKILL.md
+      - .codex/skills/codebase-design/SKILL.md
+      - .codex/skills/resolving-merge-conflicts/SKILL.md
+      - .codex/skills/handoff/SKILL.md
+      - .codex/skills/teach/SKILL.md
+      - .codex/skills/writing-great-skills/SKILL.md
       - .codex/skills/domain-modeling/SKILL.md
       - .codex/skills/to-spec/SKILL.md
       - .codex/skills/to-tickets/SKILL.md

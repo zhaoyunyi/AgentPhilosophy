@@ -196,9 +196,21 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
         assert result.returncode == 0, result.stderr + result.stdout
 
     expected_skills = [
+        "ask-matt",
+        "triage",
+        "setup-matt-pocock-skills",
+        "wayfinder",
+        "prototype",
+        "diagnosing-bugs",
+        "research",
+        "codebase-design",
+        "resolving-merge-conflicts",
         "grill-me",
         "grill-with-docs",
         "grilling",
+        "handoff",
+        "teach",
+        "writing-great-skills",
         "domain-modeling",
         "to-spec",
         "to-tickets",
@@ -209,11 +221,44 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
         "code-review",
     ]
     for skill_name in expected_skills:
-        repo_skill = target / "skills" / skill_name / "SKILL.md"
-        codex_skill = target / ".codex" / "skills" / skill_name / "SKILL.md"
+        repo_dir = target / "skills" / skill_name
+        codex_dir = target / ".codex" / "skills" / skill_name
+        repo_skill = repo_dir / "SKILL.md"
+        codex_skill = codex_dir / "SKILL.md"
         assert repo_skill.is_file()
         assert codex_skill.is_file()
-        assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
+        repo_files = sorted(path.relative_to(repo_dir) for path in repo_dir.rglob("*") if path.is_file())
+        codex_files = sorted(path.relative_to(codex_dir) for path in codex_dir.rglob("*") if path.is_file())
+        assert repo_files == codex_files
+        for relative in repo_files:
+            assert (repo_dir / relative).read_bytes() == (codex_dir / relative).read_bytes()
+
+    setup_text = (target / "skills" / "setup-matt-pocock-skills" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "docs/agents" in setup_text
+    assert ".agentphilosophy.yaml" in setup_text
+    assert ".agents/custom/AGENTS.custom.md" in setup_text
+    assert (target / "skills" / "setup-matt-pocock-skills" / "issue-tracker-local.md").is_file()
+    assert (target / "skills" / "triage" / "AGENT-BRIEF.md").is_file()
+    assert (target / "skills" / "diagnosing-bugs" / "scripts" / "hitl-loop.template.sh").is_file()
+    assert (target / "skills" / "codebase-design" / "DEEPENING.md").is_file()
+    assert (target / "skills" / "prototype" / "UI.md").is_file()
+    assert (target / "skills" / "teach" / "MISSION-FORMAT.md").is_file()
+    assert (target / "skills" / "writing-great-skills" / "GLOSSARY.md").is_file()
+    for compatibility_name in ("to-prd", "to-issues"):
+        compatibility_metadata = (
+            target / "skills" / compatibility_name / "agents" / "openai.yaml"
+        ).read_text(encoding="utf-8")
+        assert "allow_implicit_invocation: false" in compatibility_metadata
+    upstream_license = target / "skills" / "MATTPOCOCK-SKILLS-LICENSE.txt"
+    codex_upstream_license = target / ".codex" / "skills" / "MATTPOCOCK-SKILLS-LICENSE.txt"
+    assert upstream_license.is_file()
+    assert codex_upstream_license.read_bytes() == upstream_license.read_bytes()
+    assert "Copyright (c) 2026 Matt Pocock" in upstream_license.read_text(encoding="utf-8")
+    assert (
+        target / "skills" / "improve-codebase-architecture" / "MATTPOCOCK-SKILLS-LICENSE.txt"
+    ).is_file()
 
     grill_text = (target / "skills" / "grill-with-docs" / "SKILL.md").read_text(encoding="utf-8")
     assert "/grill-with-docs" in grill_text
@@ -580,6 +625,20 @@ def test_packaged_project_can_explicitly_enable_ponytail(tmp_path: Path) -> None
     assert "DietrichGebert/ponytail" in repo_skill_text
     assert "能不写就不写" in repo_skill_text
     assert "不要削减验证、错误处理、安全或可访问性" in repo_skill_text
+    assert "lite|full|ultra" in repo_skill_text
+    assert "根因" in repo_skill_text
+    assert "真实调用链" in repo_skill_text
+    repo_dir = repo_skill.parent
+    codex_dir = codex_skill.parent
+    repo_files = sorted(path.relative_to(repo_dir) for path in repo_dir.rglob("*") if path.is_file())
+    codex_files = sorted(path.relative_to(codex_dir) for path in codex_dir.rglob("*") if path.is_file())
+    assert repo_files == codex_files
+    for relative in repo_files:
+        assert (repo_dir / relative).read_bytes() == (codex_dir / relative).read_bytes()
+    assert (repo_dir / "PONYTAIL-LICENSE.txt").is_file()
+    assert "allow_implicit_invocation: true" in (repo_dir / "agents" / "openai.yaml").read_text(
+        encoding="utf-8"
+    )
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
@@ -619,6 +678,21 @@ def test_packaged_preset_installs_reverse_skill_by_default(tmp_path: Path, prese
     assert "zhaoxuya520/reverse-skill" in repo_skill_text
     assert "授权逆向、安全研究、CTF 或自有资产分析" in repo_skill_text
     assert "不要把上游仓库整包复制进目标项目" in repo_skill_text
+    assert "上游 `1.0.0`" in repo_skill_text
+    assert "MASTER-ROUTING" in repo_skill_text
+    assert "network_profile" in repo_skill_text
+    assert "Evidence -> Finding -> Path" in repo_skill_text
+    assert "protocol-reverse" in repo_skill_text
+    assert "code-audit" in repo_skill_text
+    repo_dir = repo_skill.parent
+    codex_dir = codex_skill.parent
+    repo_files = sorted(path.relative_to(repo_dir) for path in repo_dir.rglob("*") if path.is_file())
+    codex_files = sorted(path.relative_to(codex_dir) for path in codex_dir.rglob("*") if path.is_file())
+    assert repo_files == codex_files
+    for relative in repo_files:
+        assert (repo_dir / relative).read_bytes() == (codex_dir / relative).read_bytes()
+    assert (repo_dir / "REVERSE-SKILL-LICENSE.txt").is_file()
+    assert (repo_dir / "agents" / "openai.yaml").is_file()
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])
@@ -657,6 +731,20 @@ def test_packaged_preset_installs_portless_skill_by_default(tmp_path: Path, pres
     assert "Portless 官方仓库" in repo_skill_text
     assert "接入深度决策" in repo_skill_text
     assert "不要把 Portless 改造成唯一启动方式" in repo_skill_text
+    assert "0.15.4" in repo_skill_text
+    assert "portless doctor" in repo_skill_text
+    assert "127.0.0.1" in repo_skill_text
+    assert "::1" in repo_skill_text
+    assert "WSL" in repo_skill_text
+    repo_dir = repo_skill.parent
+    codex_dir = codex_skill.parent
+    repo_files = sorted(path.relative_to(repo_dir) for path in repo_dir.rglob("*") if path.is_file())
+    codex_files = sorted(path.relative_to(codex_dir) for path in codex_dir.rglob("*") if path.is_file())
+    assert repo_files == codex_files
+    for relative in repo_files:
+        assert (repo_dir / relative).read_bytes() == (codex_dir / relative).read_bytes()
+    assert (repo_dir / "PORTLESS-LICENSE.txt").is_file()
+    assert (repo_dir / "agents" / "openai.yaml").is_file()
 
 
 def test_cli_prints_llm_usage_document_from_default_source(tmp_path: Path) -> None:

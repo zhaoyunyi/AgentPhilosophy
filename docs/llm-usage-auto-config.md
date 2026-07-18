@@ -67,8 +67,8 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 旧项目只是执行已经明确的局部改动，不需要沉淀架构评审流程 | 不主动追加 `skill-improve-codebase-architecture` |
 | 旧项目只需要快速复用 `/code-review`，不需要整条产品工程主线 | 如果未启用 `skill-mattpocock-engineering`，追加 `skill-code-review`，再同步生成 repo skills 和 Codex 项目级 skill |
 | 项目已经启用 `skill-mattpocock-engineering` | 不再追加 `skill-code-review`，避免两个模块写入同一个 `code-review` skill 路径 |
-| 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-mattpocock-engineering`，同步生成 `/grill-me`、`/grill-with-docs`、`/to-spec`、`/to-tickets`、`/implement`、`/tdd`、`/code-review` 主链路 skill |
-| 旧项目需要长期复用“先澄清 -> spec -> ticket -> 单 ticket 实现”的产品工程流程 | 追加 `skill-mattpocock-engineering`，再同步生成 repo skills 和 Codex 项目级 skill |
+| 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`，同步生成 Matt Pocock 22 个活跃 skills、支持文件和双目标目录 |
+| 旧项目需要完整复用路由、设置、澄清、规划、调研、原型、诊断、实现、review、交接与架构流程 | 确认同时包含 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`，再同步 repo skills 和 Codex 项目级 skills |
 | 旧项目只是一次性明确局部改动，且用户要求极简配置 | 不主动追加 `skill-mattpocock-engineering` |
 | 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-portless-local-dev`，同步生成 Portless 本地开发入口判断 skill |
 | 只有一次性本地浏览器验收或临时端口冲突 | 不修改 `.agentphilosophy.yaml`，只记录一次性 Portless 使用 |

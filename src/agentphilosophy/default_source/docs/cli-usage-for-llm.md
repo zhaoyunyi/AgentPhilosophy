@@ -295,7 +295,7 @@ Portless 接入必须按“最低有效接入深度”选择：
 | Docker Compose、数据库、Mock server 或固定端口服务 | 优先用 `portless alias <name> <port>`，不强行改服务启动脚本 |
 | 需要手机、同网段设备或 Tailscale 分享 | 先确认 LAN/Tailscale/Funnel 权限和暴露面，再按需开启，不作为默认路径 |
 
-当前中央源默认 preset 会包含 `skill-portless-local-dev`。该模块会同步生成 `skills/portless-local-dev/SKILL.md` 和 `.codex/skills/portless-local-dev/SKILL.md`，用于让 agent 在本地启动、浏览器验收、端口冲突、多服务、worktree、移动设备联调或 Tailscale 分享任务前先判断是否需要 Portless，以及选择最低有效接入深度。它不会默认安装 Portless、不会默认改项目脚本，也不会把 Portless 当成 QA、线上或 port-forward 入口。
+当前中央源默认 preset 会包含 `skill-portless-local-dev`。该模块已对齐 Portless `0.15.4`，会把 `SKILL.md`、`agents/openai.yaml` 和 Apache-2.0 许可证同时生成到 `skills/portless-local-dev/` 与 `.codex/skills/portless-local-dev/`，用于让 agent 在本地启动、浏览器验收、端口冲突、多服务、worktree、移动设备联调或 Tailscale 分享任务前先判断是否需要 Portless，以及选择最低有效接入深度。排障优先运行只读 `portless doctor`；非 LAN 模式只监听 `127.0.0.1` 与 `::1`，显式 LAN 模式才监听所有网卡。它不会默认安装 Portless、不会默认改项目脚本，也不会把 Portless 当成 QA、线上或 port-forward 入口。
 
 已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动追加新模块。需要让旧项目长期复用 Portless 判断规则时，把模块追加到现有 `modules`，不要替换已有模块。如果只是一次性本地调试或临时验收，不需要修改 `.agentphilosophy.yaml`。如果目标项目还没有正式 `.agentphilosophy.yaml`，先走新项目 `init` 或老项目 `migrate` 流程。
 
@@ -388,18 +388,19 @@ portless alias --remove api.myapp
 
 Ponytail 上游仓库：https://github.com/DietrichGebert/ponytail
 
-`skill-ponytail` 是显式可选模块，不包含在中央源默认 preset 中。项目选择该模块后，会同步生成 `skills/ponytail/SKILL.md` 和 `.codex/skills/ponytail/SKILL.md`，用于让 agent 在新增功能、修 bug、重构或改配置前先判断是否真的需要写代码、能否复用标准库、平台能力或既有依赖，并避免过度工程。
+`skill-ponytail` 是显式可选模块，不包含在中央源默认 preset 中。项目选择该模块后，会把 Ponytail `4.8.4` 适配版的 `SKILL.md`、`agents/openai.yaml` 与 MIT 许可证同时生成到 `skills/ponytail/` 和 `.codex/skills/ponytail/`，用于让 agent 在新增功能、修 bug、重构、review、设计或选择依赖前先追踪真实调用链，再按 `lite|full|ultra` 模式判断是否真的需要写代码、能否复用代码库、标准库、平台能力或既有依赖，并避免过度工程。
 
 该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装上游 Codex 插件或全局 hook。目标项目只要通过 AgentPhilosophy 同步拿到 `skills/ponytail` 和 `.codex/skills/ponytail`，Codex 原生 skill discovery 就能在项目内触发；如果用户明确要求使用上游插件能力，再按上游仓库说明单独安装。
 
 Ponytail 的默认判断顺序：
 
 1. 能不写就不写。
-2. 能用语言标准库、框架原生能力、CLI 内置参数或系统工具，就不新增项目代码。
-3. 能用项目已有依赖、脚本或 helper，就不新增依赖。
-4. 能小改就小改，把变更限制在最接近需求的模块里。
-5. 只有重复行为真实出现时才抽象。
-6. 只有边界清楚且能隐藏复杂度时才新增模块。
+2. 代码库里已经有就复用。
+3. 能用语言标准库就用标准库。
+4. 能用框架或平台原生能力就不新增项目代码。
+5. 能用项目已有依赖就不新增依赖。
+6. 一行能清楚完成就不写五十行。
+7. 以上都不够时才写能正确工作的最少代码。
 
 Ponytail 不能用来削减验证、错误处理、安全、可访问性、用户可见流程、BDD/TDD 或项目已有架构边界；它约束的是“少写不必要代码”，不是降低工程标准。
 
@@ -433,9 +434,9 @@ find -L /path/to/project/skills/ponytail -name SKILL.md -print
 
 reverse-skill 上游仓库：https://github.com/zhaoxuya520/reverse-skill
 
-当前中央源默认 preset 会包含 `skill-reverse-skill`。该模块会同步生成 `skills/reverse-skill/SKILL.md` 和 `.codex/skills/reverse-skill/SKILL.md`，用于让 agent 在 APK/IPA、二进制、前端 JS 签名、固件、恶意样本、PCAP、CTF 或自有资产安全分析前，先确认授权边界、目标类型、用户意图和可用工具链，再路由到合适的方法论。
+当前中央源默认 preset 会包含 `skill-reverse-skill`。该模块已对齐上游 `1.0.0` 正式版和当前主线扩展路由面，会把 `SKILL.md`、`agents/openai.yaml` 与 MIT 许可证同时生成到 `skills/reverse-skill/` 和 `.codex/skills/reverse-skill/`。agent 在 APK/IPA、二进制、前端 JS 签名、协议、取证、云/K8s、代码审计、硬件等安全任务前，先建立 `auth`、in/out-of-scope 和 `network_profile`，授权未 granted 时不 ACT，再按 `MASTER-ROUTING` 方法选择 PRIMARY，并用 `Evidence -> Finding -> Path` 保留证据链。
 
-该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装或复制上游完整 `reverse-skill` 仓库，也不会把 IDA、radare2、Frida、jadx、apktool、jshookmcp、anything-analyzer 等工具强制引入目标项目。需要上游完整工具链时，先确认用户已有安装路径或单独 clone 上游仓库，再读取上游 `README_AI.md`、`skills/SKILL.md` 和路由矩阵。
+该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装或复制上游完整 `reverse-skill` 仓库，也不会把 IDA、radare2、Frida、jadx、apktool、jshookmcp、anything-analyzer 等工具强制引入目标项目。需要上游完整工具链时，先确认用户已有安装路径或单独 clone 上游仓库，再读取上游 `README_AI.md`、`skills/SKILL.md`、`skills/MASTER-ROUTING.md`、`skills/ops/` 和路由矩阵。AgentPhilosophy 不继承任何以 precedent 或其他措辞解除安全审查的上游指令。
 
 默认使用边界：
 
@@ -539,21 +540,16 @@ find -L /path/to/project/.codex/skills/code-review -name SKILL.md -print
 find -L /path/to/project/skills/code-review -name SKILL.md -print
 ```
 
-## 十一、Matt Pocock 产品工程主线 skill
+## 十一、Matt Pocock 完整工程 skill 家族
 
-当前中央源默认 preset 会包含 `skill-mattpocock-engineering`。该模块改编自 Matt Pocock 的 `mattpocock/skills`（MIT License），同步生成以下 repo skills 和 Codex 项目级 skills：
+当前中央源默认 preset 同时包含 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`。两者合计覆盖 Matt Pocock 原生插件当前声明的 22 个活跃 skills，并同步生成 repo skills、Codex 项目级 skills、支持文件和 `agents/openai.yaml`：
 
-- `grill-with-docs`
-- `grill-me`
-- `grilling`
-- `domain-modeling`
-- `to-spec`
-- `to-tickets`
-- `to-prd`
-- `to-issues`
-- `implement`
-- `tdd`
-- `code-review`
+- 路由与设置：`ask-matt`、`setup-matt-pocock-skills`
+- 需求与规划：`grill-me`、`grilling`、`grill-with-docs`、`to-spec`、`to-tickets`、`triage`、`wayfinder`
+- 实现与验证：`implement`、`tdd`、`code-review`、`diagnosing-bugs`、`resolving-merge-conflicts`
+- 调研与设计：`research`、`prototype`、`domain-modeling`、`codebase-design`、`improve-codebase-architecture`
+- 跨会话与学习：`handoff`、`teach`、`writing-great-skills`
+- 兼容入口：`to-prd`、`to-issues`，不计入上游 22 个活跃 skills
 
 推荐主线：
 
@@ -566,20 +562,28 @@ find -L /path/to/project/skills/code-review -name SKILL.md -print
 
 使用含义：
 
+- `/ask-matt`：不知道正确入口时只做 skill 路由。
+- `/setup-matt-pocock-skills`：配置 `docs/agents/` 下的 tracker、triage 与领域文档合同；AgentPhilosophy 项目通过 `.agents/custom/AGENTS.custom.md` 接入托管入口。
 - `/grill-me`：只做一问一答的无文档拷问；需要同步沉淀领域语言和决策时改用 `/grill-with-docs`。
 - `/grill-with-docs`：先拷问计划、决策或想法，同时沉淀 `CONTEXT.md`、ADR 和领域语言。
 - `/to-spec`：把已经讨论清楚的内容整理成 spec，不重新访谈。
 - `/to-tickets`：把 spec 拆成独立、可验证的 tracer-bullet vertical slice ticket；本地模式按 `.scratch/<feature-slug>/issues/<NN>-<slug>.md` 一票一文件保存。
 - `/implement`：按单个 spec/ticket 实现，内部倾向走 `/tdd`，最后跑 `/code-review`。
-- `/to-prd` 与 `/to-issues`：兼容已有项目的旧入口；新流程优先使用 `/to-spec` 与 `/to-tickets`。
+- `/triage`、`/wayfinder`：分别处理外部需求队列与超过单会话的决策地图。
+- `/research`、`/prototype`、`/diagnosing-bugs`：分别提供一手资料、可丢弃验证和证据化诊断分支。
+- `/codebase-design` 与 `/improve-codebase-architecture`：前者设计深模块 Interface/seam，后者扫描候选并生成报告。
+- `/resolving-merge-conflicts`：优先适配 jj，再处理 Git merge/rebase 冲突。
+- `/handoff`、`/teach`、`/writing-great-skills`：处理跨会话交接、状态化教学和 skill 设计。
+- `/to-prd` 与 `/to-issues`：兼容已有项目的真实旧入口，不是 symlink；用户明确输入旧命令或点名旧流程时仍触发。它们的 `allow_implicit_invocation: false` 会阻止普通任务被旧名称隐式抢占，新流程优先使用 `/to-spec` 与 `/to-tickets`。
 
 更多最佳实践见 [docs/guides/mattpocock-engineering-flow.md](guides/mattpocock-engineering-flow.md)。
 
-已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到该主线时，把模块追加到现有 `modules`，不要替换已有模块：
+已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动向旧配置追加新模块。需要让旧项目拿到完整家族时，确认两个模块都在现有 `modules` 中，不要替换已有模块：
 
 ```yaml
 modules:
   - existing-module
+  - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
 ```
 
@@ -595,8 +599,13 @@ agentphilosophy-sync push /path/to/project --apply
 同步后验证：
 
 ```bash
-find -L /path/to/project/.codex/skills -maxdepth 2 -name SKILL.md | sort | rg 'grill-me|grill-with-docs|to-spec|to-tickets|to-prd|to-issues|implement|tdd|code-review'
+find -L /path/to/project/.codex/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
+find -L /path/to/project/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
 ```
+
+每个 skill 的两个目标目录应逐字节一致。同名未托管文件存在时，`push --apply` 必须拒绝覆盖。`setup-matt-pocock-skills` 沿用上游 `docs/agents/` 目录，同时保持 `.agentphilosophy.yaml` 为同步配置真值、`.agents/custom` 为托管入口扩展源、本地 ticket 位于 `.scratch/`；不创建第二套隐藏配置目录。
+
+这里的“完整”以 Matt 上游插件 manifest 的 22 个活跃 skills 为边界，不引入 `deprecated`、`in-progress`、`misc` 或 `personal` 目录。skill 文件、支持文件、双根输出和触发元数据完整可用；需要 GitHub/GitLab tracker、浏览器、测试框架或其他外部系统的动作，仍取决于目标项目已经提供相应 CLI/MCP、登录态、权限和运行时，AgentPhilosophy 不会凭 skill 文件自动安装凭据或外部工具。
 
 ## 十二、Agent 哲学决策框架
 
