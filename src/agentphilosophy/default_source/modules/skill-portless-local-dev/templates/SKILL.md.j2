@@ -7,6 +7,8 @@ description: 为 {{ project_name }} 判断、按需安装和改造 Portless 本�
 
 Portless 官方仓库：https://github.com/vercel-labs/portless
 
+本封装已审阅并锁定 Portless `0.15.4`：项目内安装需要 Node.js 24+。这一版在非 LAN 模式下只监听 `127.0.0.1` 和 `::1`，显式启用 LAN 时才监听所有网卡；同时包含 `portless doctor`、HTTP/2 Host 转发、WebSocket、IPv6 upstream、worktree 前缀、多 TLD、sudo 状态目录，以及 Windows/WSL 双侧 CA 信任修复。
+
 ## 何时使用
 
 在以下场景优先评估 Portless，但不要默认安装或改造项目：
@@ -42,6 +44,7 @@ Portless 官方仓库：https://github.com/vercel-labs/portless
 4. 判断框架是否读取 `PORT` 环境变量；Portless 会自动处理常见框架，但自定义 server 仍应显式读取 `process.env.PORT`。
 5. 判断是否已有全局 `portless` 或项目内依赖；只有需要团队复用、写脚本或锁版本时才修改 package 文件。
 6. 写改造前先保留一个无 Portless 的直接启动路径，便于 `PORTLESS=0`、`pnpm run dev:app` 或 `pnpm run dev:raw` 回退。
+7. 排障先运行只读的 `portless doctor`，再根据它报告的 Node、状态目录、代理、路由、域名解析、CA 信任或 LAN 前置条件处理，不先做提权或清理。
 
 ## 安装策略
 
@@ -111,6 +114,7 @@ portless alias --remove api.myapp
 
 ```bash
 portless --version
+portless doctor
 portless trust
 portless list
 portless get myapp
@@ -130,7 +134,9 @@ PORTLESS=0 pnpm dev
 
 ## LAN 和真机联调
 
+- 非 LAN 模式的代理和 HTTP redirect listener 只绑定 IPv4/IPv6 loopback：`127.0.0.1` 与 `::1`，不会通过 LAN、VPN 或其他网卡接受连接。
 - `portless proxy start --lan` 会使用 mDNS，把服务暴露为 `<name>.local`，适合手机或同网段设备访问。
+- 只有显式 LAN 模式会绑定 `0.0.0.0` 与 `::`；启用前要确认同网段暴露范围。
 - LAN 模式会被 Portless 记住；如果要回到 `.localhost`，显式运行 `PORTLESS_LAN=0 portless proxy start` 或按当前项目脚本关闭 LAN 模式。
 - macOS 自带 `dns-sd`；Linux 需要确认 `avahi-utils` 或等价 mDNS 工具可用。
 - Next.js 使用 `.local` hostname 时，需要在 `next.config.js` 的 `allowedDevOrigins` 中加入对应域名，例如 `myapp.local` 和 `*.myapp.local`。
@@ -149,6 +155,7 @@ PORTLESS=0 pnpm dev
 - 原直接启动命令仍可作为回退路径，或 `PORTLESS=0 <原命令>` 可用。
 - 项目脚本或 `portless.json` 改造后，必须证明原脚本、Portless 脚本和回退路径都可用。
 - 多服务场景中，前端、API、WebSocket、OAuth callback、CORS 和 cookie origin 都指向稳定 hostname。
+- HTTPS 的 HTTP/1.1 Upgrade 与 HTTP/2 extended CONNECT 都应保持 WebSocket/HMR 可用；依赖 Host 的后端应收到浏览器请求对应的 Host，而不是 loopback 地址。
 - worktree 场景中不同工作区不会互相抢端口；必要时检查生成的子域名前缀。
 - Safari 或系统 DNS 无法解析 `.localhost` 子域名时，运行 `portless hosts sync` 并记录清理方式 `portless hosts clean`。
 - 如果需要同一组 app 同时支持多个本地域名后缀，可重复传 `--tld`，或用逗号分隔的 `PORTLESS_TLD`；记录主 URL 仍以第一个 TLD 为准。
@@ -157,5 +164,6 @@ PORTLESS=0 pnpm dev
 
 - 不在 CI 中默认启动需要交互或提权的 Portless；CI 应使用直接端口或预先配置好的代理。
 - 默认 HTTPS 首跑会生成并信任本地 CA；绑定 443/80 在 macOS/Linux 上可能触发 `sudo`；非交互环境、无 TTY 或 `CI=1` 下 Portless 会直接失败而不是提示。
+- 提权代理仍应与发起用户共享 `~/.portless` 状态目录；不要把 route 写进 root 的 home。Windows/WSL 场景要同时验证 Linux 信任库与 Windows 当前用户 Root 信任库，并用 `portless clean` 对称清理。
 - 不把 Portless 当线上入口或 QA 默认入口；它只解决本地开发、联调和分享。
 - 涉及 sudo、信任本地 CA、`/etc/hosts`、OS startup service、Tailscale Funnel 时，先说明影响范围，并给出 `portless clean` 或对应卸载命令。

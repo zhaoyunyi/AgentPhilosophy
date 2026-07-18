@@ -1,0 +1,5 @@
+interface:
+  display_name: "Ponytail"
+  short_description: "用最小正确方案完成编码任务"
+policy:
+  allow_implicit_invocation: true
