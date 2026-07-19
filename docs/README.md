@@ -2,6 +2,14 @@
 
 本索引用于定位 `docs/` 下长期有效的项目文档。新增、迁移或沉淀长期文档时，必须在同一轮改动中更新本文件；测试会检查每个 `docs/**/*.md` 是否出现在这里，避免正文有变更但没有入口。
 
+## Agent 导航
+
+- [docs/agents/README.md](agents/README.md)：Matt skills 项目级 setup 与统一读取入口。
+- [docs/agents/issue-tracker.md](agents/issue-tracker.md)：GitHub issue 与 Wayfinder 约定。
+- [docs/agents/triage-labels.md](agents/triage-labels.md)：稳定 triage 标签语义。
+- [docs/agents/domain.md](agents/domain.md)：领域、架构和代码的读取顺序。
+- [docs/agents/out-of-scope/README.md](agents/out-of-scope/README.md)：明确排除项的记录边界。
+
 ## CLI 与同步说明
 
 - [docs/cli-usage-for-llm.md](cli-usage-for-llm.md)：给 LLM 或自动化 agent 的完整 CLI 操作说明，覆盖接入、迁移、同步、可选模块和写入前校验。
