@@ -353,6 +353,34 @@
       "reply_format": "回复选项编号或 id；选择 add-module 时说明是否已有稳定本地域名"
     },
     {
+      "id": "optimize-build-pipeline",
+      "title": "旧项目是否补上构建流水线调优 skill",
+      "question": "我需要确认是否把完整墙钟、硬件采样、缓存、并行、registry 和 A/B 验收规则写成项目级 skill。",
+      "why": "新项目默认 preset 已包含该模块；旧项目的模块列表是显式冻结的，这个选择会决定是否追加 `skill-optimize-build-pipeline`。",
+      "recommended": {
+        "id": "add-module",
+        "reason": "项目存在长期 CI/CD、镜像构建或 self-hosted runner 性能治理需求时应沉淀统一流程。"
+      },
+      "options": [
+        {
+          "id": "add-module",
+          "label": "追加 `skill-optimize-build-pipeline`",
+          "impact": "后续 `push --apply` 会同步测量合同、优化手册和时间线分析器。"
+        },
+        {
+          "id": "skip-module",
+          "label": "不修改旧项目配置",
+          "impact": "本次只做一次性分析，不沉淀项目级流程。"
+        },
+        {
+          "id": "minimal-config",
+          "label": "保持极简配置",
+          "impact": "只保留当前显式模块，后续需要时再追加。"
+        }
+      ],
+      "reply_format": "回复选项编号或 id"
+    },
+    {
       "id": "philosophy-extraction",
       "title": "是否安装哲学脱水 skill",
       "question": "我需要确认是否把哲学或概念性文章脱水规则写成项目级 skill。",

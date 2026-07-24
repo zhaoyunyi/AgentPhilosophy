@@ -216,6 +216,7 @@ modules:
   - skill-target-jj
   - skill-coding-standards
   - skill-repo-management
+  - skill-optimize-build-pipeline
   - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
   - skill-portless-local-dev
@@ -636,7 +637,47 @@ agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
 ```
 
-## 十一、Registry 文件
+## 十三、构建流水线调优 skill
+
+当前中央源默认 preset 包含 `skill-optimize-build-pipeline`。它会把完整 Skill、测量合同、优化决策手册和
+时间线分析器同步到：
+
+```text
+skills/optimize-build-pipeline/
+.codex/skills/optimize-build-pipeline/
+```
+
+该 Skill 用于诊断和优化 CI/CD、self-hosted runner、Docker/BuildKit 镜像构建与 registry 供应链，统一要求：
+
+- 记录 workflow 创建到最终 receipt 的真实完整墙钟；
+- 区分自然新 revision、冷缓存、热缓存、空闲和真实并发；
+- 同时采集 CPU/throttle、RSS、I/O、调度 request/limit、cache 与 registry task/overhead；
+- 优先消除重复网络/构建，再做 cache、并行、调度校准，最后才扩 CPU 或迁代码托管平台；
+- 保留测试、coverage、扫描、smoke、source revision/context、digest equality 和独立 pull；
+- 最终 receipt 仅在所有异步 gate join 后生成，不把供应链验收写成产品已 rollout。
+
+已有项目的 `modules` 是显式冻结的。需要长期复用这套调优流程时追加：
+
+```yaml
+modules:
+  - existing-module
+  - skill-optimize-build-pipeline
+```
+
+随后执行标准同步流程，并验证 repo/Codex 两个目标目录内容一致：
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+find -L /path/to/project/{skills,.codex/skills}/optimize-build-pipeline -type f -print
+```
+
+时间线分析器接受 `stage/start_epoch/end_epoch/lane/category/status` TSV；它会计算真实墙钟、并发重叠、空闲
+间隙和峰值并行度，避免把并行阶段手工相加。它不自动宣称关键路径，仍需结合依赖关系和原始 run evidence。
+
+## 十四、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
@@ -659,7 +700,7 @@ projects:
     path: /absolute/path/to/ExampleProject
 ```
 
-## 十二、新项目接入流程
+## 十五、新项目接入流程
 
 1. 选择 preset。
 2. 生成 `.agentphilosophy.yaml`。
@@ -682,7 +723,7 @@ uv run sync.py status --project /path/to/project
 uv run sync.py init /path/to/project --interactive
 ```
 
-## 十三、老项目迁移流程
+## 十六、老项目迁移流程
 
 `migrate` 只做盘点，不会生成正式 `.agentphilosophy.yaml`，也不会覆盖项目已有文件。
 
@@ -708,7 +749,7 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
-## 十四、安全边界
+## 十七、安全边界
 
 - `push` 不带 `--apply` 时不写目标项目文件；`--dry-run` 是推荐显式写法。
 - `push --apply` 也不会覆盖未托管的既有文件；遇到冲突会写候选文件到迁移目录。
@@ -719,7 +760,7 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 十五、LLM 执行规则
+## 十八、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。

@@ -91,6 +91,7 @@ def test_cli_defaults_to_packaged_source_outside_central_repo(tmp_path: Path) ->
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     assert "- aphilosophy" in project_config
     assert "- skill-reverse-skill" in project_config
+    assert "- skill-optimize-build-pipeline" in project_config
     assert "- skill-improve-codebase-architecture" in project_config
     assert "- skill-mattpocock-engineering" in project_config
 
@@ -889,6 +890,56 @@ modules:
     assert "Portless 官方仓库" in repo_skill_text
     assert "接入深度决策" in repo_skill_text
     assert "一次性 `portless run`，不改文件" in repo_skill_text
+
+
+def test_optimize_build_pipeline_skill_renders_from_default_source(tmp_path: Path) -> None:
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+    target = tmp_path / "target"
+    write(
+        target / ".agentphilosophy.yaml",
+        """
+project_name: DemoProject
+project_type: fullstack
+modules:
+  - skill-optimize-build-pipeline
+""".lstrip(),
+    )
+
+    commands = [
+        ["validate", str(target)],
+        ["push", str(target), "--dry-run"],
+        ["push", str(target), "--apply"],
+    ]
+    for args in commands:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[2] / "sync.py"),
+                *args,
+            ],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    repo_dir = target / "skills" / "optimize-build-pipeline"
+    codex_dir = target / ".codex" / "skills" / "optimize-build-pipeline"
+    repo_files = sorted(path.relative_to(repo_dir) for path in repo_dir.rglob("*") if path.is_file())
+    codex_files = sorted(path.relative_to(codex_dir) for path in codex_dir.rglob("*") if path.is_file())
+    assert repo_files == codex_files
+    assert repo_files == [
+        Path("SKILL.md"),
+        Path("agents/openai.yaml"),
+        Path("references/measurement-contract.md"),
+        Path("references/optimization-playbook.md"),
+        Path("scripts/analyze_timeline.py"),
+    ]
+    for relative in repo_files:
+        assert (repo_dir / relative).read_bytes() == (codex_dir / relative).read_bytes()
+    assert "不要把预测值写成实测值" in (repo_dir / "SKILL.md").read_text(encoding="utf-8")
 
 
 def test_optional_philosophy_extraction_skill_renders_from_default_source(tmp_path: Path) -> None:

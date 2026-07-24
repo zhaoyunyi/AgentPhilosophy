@@ -1,0 +1,21 @@
+name: skill-optimize-build-pipeline
+description: 完整墙钟、硬件证据、缓存、并行与 registry receipt 驱动的构建流水线调优 skill
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: []
+conflicts: []
+provides:
+  - skill:optimize-build-pipeline
+outputs:
+  - id: optimize-build-pipeline-files
+    type: copy_tree
+    source: optimize-build-pipeline
+    target: "{{ skill_targets.repo_skills }}/optimize-build-pipeline"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: optimize-build-pipeline-codex-files
+    type: copy_tree
+    source: optimize-build-pipeline
+    target: "{{ skill_targets.codex_project }}/optimize-build-pipeline"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only

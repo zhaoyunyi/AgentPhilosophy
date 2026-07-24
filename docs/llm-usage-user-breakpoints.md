@@ -107,7 +107,7 @@ breakpoint:
 3. 项目基础信息：`project_name`、`project_type`、`description`。
 4. 目录路径：`paths.docs_guide_dir`、`paths.spec_dir`、`paths.philosophy_dir`。
 5. skill 输出位置：`skill_targets.repo_skills`、`skill_targets.codex_project`、`skill_targets.claude_project`。
-6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-code-review`、`skill-mattpocock-engineering`、`skill-portless-local-dev` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
+6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-code-review`、`skill-mattpocock-engineering`、`skill-portless-local-dev`、`skill-optimize-build-pipeline` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
 7. 验证命令：`vars.test_command`。
 8. 老文件接管：是否按 `adopt-plan.yaml` 接管已有文件。
 9. dry-run 结果确认：是否允许执行 `push --apply`。
@@ -268,7 +268,24 @@ breakpoint:
 请回复选项编号或 id；如果选择 `add-module`，请说明是否已有团队约定的稳定本地域名。
 ```
 
-### 10. 哲学脱水可选模块
+### 10. 构建流水线调优 skill
+
+```markdown
+## 配置断点：旧项目是否补上构建流水线调优 skill
+
+我需要确认是否把完整墙钟、硬件采样、缓存、并行、registry 和 A/B 验收规则写成项目级 skill。新项目默认 preset 已包含该模块；旧项目的模块列表是显式冻结的。
+
+推荐选择：`add-module`，因为项目存在长期 CI/CD、镜像构建或 self-hosted runner 性能治理需求。
+
+可选项：
+1. `add-module`：追加 `skill-optimize-build-pipeline`。影响：后续 `push --apply` 会同步测量合同、优化手册和时间线分析器。
+2. `skip-module`：不修改旧项目配置。影响：本次只做一次性分析，不沉淀项目级流程。
+3. `minimal-config`：保持极简配置。影响：只保留当前显式模块，后续需要时再追加。
+
+请回复选项编号或 id。
+```
+
+### 11. 哲学脱水可选模块
 
 ```markdown
 ## 配置断点：是否安装哲学脱水 skill
@@ -285,7 +302,7 @@ breakpoint:
 请回复选项编号或 id；`add-module` 会同时启用 `aphilosophy`，因为哲学脱水 skill 依赖这组决策文档。
 ```
 
-### 11. 验证命令
+### 12. 验证命令
 
 ```markdown
 ## 配置断点：确认测试命令
@@ -302,7 +319,7 @@ breakpoint:
 请回复选项编号或 id；如果选择 `custom`，请直接给出命令。
 ```
 
-### 12. apply 确认
+### 13. apply 确认
 
 ```markdown
 ## 配置断点：是否应用 dry-run 计划
