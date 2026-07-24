@@ -177,6 +177,14 @@ modules:
       - skills/repo-management/SKILL.md
       - .codex/skills/repo-management/SKILL.md
     risk: low
+  - name: skill-optimize-build-pipeline
+    category: skill
+    description: 完整墙钟、硬件证据、缓存、并行与 registry receipt 驱动的构建流水线调优 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/optimize-build-pipeline/
+      - .codex/skills/optimize-build-pipeline/
+    risk: medium
   - name: skill-philosophy-extraction
     category: skill
     description: 哲学文章脱水、操作性原则提取和 aphilosophy 冲突协议模板生成 skill

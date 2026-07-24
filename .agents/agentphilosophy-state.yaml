@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
 source_revision: jj:pmkzzuwqnqupknzxstnotrnonstuwnvy
-source_tree_hash: sha256:b17d04d4a952ab5a5d6ff8a689d07b59d7b9aee4180e8783a83203a62b550f28
+source_tree_hash: sha256:22c726a073ebb4cf0dcbb3dbc559c19e5374caf7080f55261ae6bc6554826599
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -19,6 +19,7 @@ modules:
   skill-target-jj: 1.1.0
   skill-coding-standards: 1.1.0
   skill-repo-management: 1.1.0
+  skill-optimize-build-pipeline: 1.0.0
   skill-reverse-skill: 1.1.0
   skill-improve-codebase-architecture: 1.1.1
   skill-mattpocock-engineering: 1.3.2
@@ -284,6 +285,41 @@ files:
   source_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
   rendered_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
   last_written_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
+- path: .codex/skills/optimize-build-pipeline/SKILL.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+  rendered_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+  last_written_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+- path: .codex/skills/optimize-build-pipeline/agents/openai.yaml
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+  rendered_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+  last_written_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+- path: .codex/skills/optimize-build-pipeline/references/measurement-contract.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:references/measurement-contract.md
+  strategy: managed_replace
+  source_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+  rendered_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+  last_written_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+- path: .codex/skills/optimize-build-pipeline/references/optimization-playbook.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:references/optimization-playbook.md
+  strategy: managed_replace
+  source_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+  rendered_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+  last_written_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+- path: .codex/skills/optimize-build-pipeline/scripts/analyze_timeline.py
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:scripts/analyze_timeline.py
+  strategy: managed_replace
+  source_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+  rendered_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+  last_written_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
 - path: .codex/skills/portless-local-dev/PORTLESS-LICENSE.txt
   module: skill-portless-local-dev
   output_id: portless-local-dev-codex-files:PORTLESS-LICENSE.txt
@@ -956,6 +992,41 @@ files:
   source_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
   rendered_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
   last_written_hash: sha256:af39fd2bf4fa2600210bb2aa776a0eaaeb0389087e692d5d8f5a0d1681608e41
+- path: skills/optimize-build-pipeline/SKILL.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+  rendered_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+  last_written_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+- path: skills/optimize-build-pipeline/agents/openai.yaml
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+  rendered_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+  last_written_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+- path: skills/optimize-build-pipeline/references/measurement-contract.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:references/measurement-contract.md
+  strategy: managed_replace
+  source_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+  rendered_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+  last_written_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+- path: skills/optimize-build-pipeline/references/optimization-playbook.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:references/optimization-playbook.md
+  strategy: managed_replace
+  source_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+  rendered_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+  last_written_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+- path: skills/optimize-build-pipeline/scripts/analyze_timeline.py
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:scripts/analyze_timeline.py
+  strategy: managed_replace
+  source_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+  rendered_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+  last_written_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
 - path: skills/portless-local-dev/PORTLESS-LICENSE.txt
   module: skill-portless-local-dev
   output_id: portless-local-dev-files:PORTLESS-LICENSE.txt
@@ -1348,6 +1419,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-19T06:41:23.184900+00:00'
+last_synced: '2026-07-24T04:47:47.487506+00:00'
 source_content_version: 0.7.12
 agentphilosophy_version: 0.7.12

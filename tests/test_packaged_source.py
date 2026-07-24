@@ -82,6 +82,32 @@ def test_default_source_has_no_known_content_merge_artifacts() -> None:
     assert offenders == []
 
 
+def test_optimize_build_pipeline_module_is_packaged_with_complete_resources() -> None:
+    root = Path(__file__).resolve().parents[1]
+    relative_root = Path("modules/skill-optimize-build-pipeline/optimize-build-pipeline")
+    repository_skill = root / relative_root
+    packaged_skill = root / "src/agentphilosophy/default_source" / relative_root
+    expected = {
+        "SKILL.md",
+        "agents/openai.yaml",
+        "references/measurement-contract.md",
+        "references/optimization-playbook.md",
+        "scripts/analyze_timeline.py",
+    }
+    repository_files = {
+        path.relative_to(repository_skill).as_posix()
+        for path in repository_skill.rglob("*")
+        if path.is_file()
+    }
+    packaged_files = {
+        path.relative_to(packaged_skill).as_posix()
+        for path in packaged_skill.rglob("*")
+        if path.is_file()
+    }
+    assert repository_files == expected
+    assert packaged_files == expected
+
+
 def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
     root = Path(__file__).resolve().parents[1]
     external_skill_modules = {
