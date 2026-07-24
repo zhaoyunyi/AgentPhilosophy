@@ -171,6 +171,10 @@ def test_bdd_default_preset_excludes_optional_ponytail_and_superpowers(tmp_path:
     assert (target / "skills" / "reverse-skill" / "REVERSE-SKILL-LICENSE.txt").is_file()
     assert (target / "skills" / "portless-local-dev" / "agents" / "openai.yaml").is_file()
     assert (target / "skills" / "reverse-skill" / "agents" / "openai.yaml").is_file()
+    portless_text = (target / "skills" / "portless-local-dev" / "SKILL.md").read_text(encoding="utf-8")
+    assert "dev.example.com" in portless_text
+    assert "严格 OAuth" in portless_text
+    assert "不能与 LAN 模式组合" in portless_text
     assert "选择合适的模型与推理强度" in agents_text
     assert "Superpowers System" not in agents_text
 

@@ -133,8 +133,17 @@ def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
 def test_updated_external_skill_modules_lock_reviewed_upstream_revisions() -> None:
     root = Path(__file__).resolve().parents[1]
     expected = {
+        "skill-code-review": ("1.0.4", "ed37663cc5fbef691ddfecd080dff42f7e7e350d"),
+        "skill-improve-codebase-architecture": (
+            "1.1.2",
+            "ed37663cc5fbef691ddfecd080dff42f7e7e350d",
+        ),
+        "skill-mattpocock-engineering": (
+            "1.3.3",
+            "ed37663cc5fbef691ddfecd080dff42f7e7e350d",
+        ),
         "skill-ponytail": ("1.1.0", "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"),
-        "skill-portless-local-dev": ("1.3.0", "e0c2af5734fcdc2f6c6992423a023d8ec0c68e26"),
+        "skill-portless-local-dev": ("1.4.0", "15ef06434c81523b1b24db2d52a17caf31edecf1"),
         "skill-reverse-skill": ("1.1.0", "b8ae07db073783597b11f60fa2e900e3f9b9163f"),
     }
 
