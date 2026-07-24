@@ -737,6 +737,12 @@ def test_packaged_preset_installs_portless_skill_by_default(tmp_path: Path, pres
     assert "127.0.0.1" in repo_skill_text
     assert "::1" in repo_skill_text
     assert "WSL" in repo_skill_text
+    assert "dev.example.com" in repo_skill_text
+    assert "最长后缀" in repo_skill_text
+    assert "63 个字符" in repo_skill_text
+    assert "253 个字符" in repo_skill_text
+    assert "严格 OAuth" in repo_skill_text
+    assert "不能与 LAN 模式组合" in repo_skill_text
     repo_dir = repo_skill.parent
     codex_dir = codex_skill.parent
     repo_files = sorted(path.relative_to(repo_dir) for path in repo_dir.rglob("*") if path.is_file())
@@ -890,6 +896,8 @@ modules:
     assert "Portless 官方仓库" in repo_skill_text
     assert "接入深度决策" in repo_skill_text
     assert "一次性 `portless run`，不改文件" in repo_skill_text
+    assert "dev.example.com" in repo_skill_text
+    assert "最长后缀" in repo_skill_text
 
 
 def test_optimize_build_pipeline_skill_renders_from_default_source(tmp_path: Path) -> None:

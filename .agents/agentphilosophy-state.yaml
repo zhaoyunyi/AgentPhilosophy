@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:mqwwkopqrnpykwnusymrtsvrrrnswovw
-source_tree_hash: sha256:9dcbada6e27930fc4afb3ac9d0ef82d20625ac9e20899dd97769b7c925e92170
+source_revision: jj:qwxuxwkppvpqrtqykmulrwqyqzwnnksk
+source_tree_hash: sha256:d64ce68b66a6009ac9d888b6c4eb343cefcf2efeb581f2ee909536dd9622a8ca
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -21,9 +21,9 @@ modules:
   skill-repo-management: 1.1.0
   skill-optimize-build-pipeline: 1.0.0
   skill-reverse-skill: 1.1.0
-  skill-improve-codebase-architecture: 1.1.1
-  skill-mattpocock-engineering: 1.3.2
-  skill-portless-local-dev: 1.3.0
+  skill-improve-codebase-architecture: 1.1.2
+  skill-mattpocock-engineering: 1.3.3
+  skill-portless-local-dev: 1.4.0
   aphilosophy: 1.6.0
 files:
 - path: .codex/skills/MATTPOCOCK-SKILLS-LICENSE.txt
@@ -331,9 +331,9 @@ files:
   module: skill-portless-local-dev
   output_id: portless-local-dev-codex-skill
   strategy: managed_replace
-  source_hash: sha256:2118d343203394b1de20776b6a793eb33d5678b06e023f415ee9b13687e372d6
-  rendered_hash: sha256:ea26c6df34c067908a07230a898ce8ea74713cd778b8ee0f1216c37183e876e8
-  last_written_hash: sha256:ea26c6df34c067908a07230a898ce8ea74713cd778b8ee0f1216c37183e876e8
+  source_hash: sha256:c346831cf5f47940552fee74a471f580bbda23cc91da05f0b5ae859007fa4721
+  rendered_hash: sha256:83c77ccb4e1a5808cc932f2d22b29748dd2b0f79e389235d56272afcc8c1fb2f
+  last_written_hash: sha256:83c77ccb4e1a5808cc932f2d22b29748dd2b0f79e389235d56272afcc8c1fb2f
 - path: .codex/skills/portless-local-dev/agents/openai.yaml
   module: skill-portless-local-dev
   output_id: portless-local-dev-codex-files:agents/openai.yaml
@@ -1038,9 +1038,9 @@ files:
   module: skill-portless-local-dev
   output_id: portless-local-dev-skill
   strategy: managed_replace
-  source_hash: sha256:2118d343203394b1de20776b6a793eb33d5678b06e023f415ee9b13687e372d6
-  rendered_hash: sha256:ea26c6df34c067908a07230a898ce8ea74713cd778b8ee0f1216c37183e876e8
-  last_written_hash: sha256:ea26c6df34c067908a07230a898ce8ea74713cd778b8ee0f1216c37183e876e8
+  source_hash: sha256:c346831cf5f47940552fee74a471f580bbda23cc91da05f0b5ae859007fa4721
+  rendered_hash: sha256:83c77ccb4e1a5808cc932f2d22b29748dd2b0f79e389235d56272afcc8c1fb2f
+  last_written_hash: sha256:83c77ccb4e1a5808cc932f2d22b29748dd2b0f79e389235d56272afcc8c1fb2f
 - path: skills/portless-local-dev/agents/openai.yaml
   module: skill-portless-local-dev
   output_id: portless-local-dev-files:agents/openai.yaml
@@ -1419,6 +1419,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-24T04:49:04.471846+00:00'
+last_synced: '2026-07-24T05:15:59.352777+00:00'
 source_content_version: 0.7.13
 agentphilosophy_version: 0.7.13

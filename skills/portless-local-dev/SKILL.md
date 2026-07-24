@@ -7,7 +7,7 @@ description: 为 AgentPhilosophy 判断、按需安装和改造 Portless 本地�
 
 Portless 官方仓库：https://github.com/vercel-labs/portless
 
-本封装已审阅并锁定 Portless `0.15.4`：项目内安装需要 Node.js 24+。这一版在非 LAN 模式下只监听 `127.0.0.1` 和 `::1`，显式启用 LAN 时才监听所有网卡；同时包含 `portless doctor`、HTTP/2 Host 转发、WebSocket、IPv6 upstream、worktree 前缀、多 TLD、sudo 状态目录，以及 Windows/WSL 双侧 CA 信任修复。
+本封装已审阅并锁定 Portless 上游 revision `15ef06434c81523b1b24db2d52a17caf31edecf1`，其 package version 仍为 `0.15.4`：项目内安装需要 Node.js 24+。该 revision 在非 LAN 模式下只监听 `127.0.0.1` 和 `::1`，显式启用 LAN 时才监听所有网卡；同时包含 `portless doctor`、HTTP/2 Host 转发、WebSocket、IPv6 upstream、worktree 前缀、多 TLD、多段自定义 TLD、sudo 状态目录，以及 Windows/WSL 双侧 CA 信任修复。
 
 ## 何时使用
 
@@ -124,6 +124,7 @@ portless proxy start
 portless proxy start --no-tls
 portless proxy start --lan
 portless proxy start --tld localhost --tld test
+portless proxy start --tld dev.example.com
 PORTLESS_TLD=localhost,test portless proxy start
 PORTLESS_LAN=0 portless proxy start
 portless myapp --tailscale pnpm dev
@@ -131,6 +132,15 @@ portless myapp --funnel pnpm dev
 portless service install
 PORTLESS=0 pnpm dev
 ```
+
+## 自定义 TLD 与 OAuth
+
+- `--tld` 可接受 `dev.example.com` 这类多段小写 DNS 名，让本地 URL 使用 `https://myapp.dev.example.com`，适合复用生产同形的 OAuth redirect URI、跨子域 cookie 和 Host 路由。
+- 只使用自己拥有并能配置的真实域名。严格 OAuth 服务通常不接受 `.localhost` 或 `.test` redirect URI；改用真实域名前，仍要在服务端登记精确 callback URL。
+- 每个 DNS label 只能使用小写字母、数字和内部连字符，单个 label 最长 63 个字符，完整 TLD 和最终 hostname 各自不得超过 253 个字符，也不能带结尾点号。
+- 同时配置重叠 TLD（例如 `example.com` 与 `dev.example.com`）时，Portless 按最长后缀匹配，避免把 `myapp.dev.example.com` 误拆到较短域名。
+- 非 LAN 模式会把注册 hostname 同步到 `/etc/hosts` 并继续只绑定 loopback；多段自定义 TLD 不能与 LAN 模式组合，LAN 模式固定使用 `.local` 并忽略 `--tld`。
+- 避免直接使用裸 `.com`、`.org` 等公共 TLD；避免 `.local` 的 mDNS 冲突，以及 `.dev`、`.app` 和其子域的 HSTS 约束。
 
 ## LAN 和真机联调
 
@@ -158,7 +168,7 @@ PORTLESS=0 pnpm dev
 - HTTPS 的 HTTP/1.1 Upgrade 与 HTTP/2 extended CONNECT 都应保持 WebSocket/HMR 可用；依赖 Host 的后端应收到浏览器请求对应的 Host，而不是 loopback 地址。
 - worktree 场景中不同工作区不会互相抢端口；必要时检查生成的子域名前缀。
 - Safari 或系统 DNS 无法解析 `.localhost` 子域名时，运行 `portless hosts sync` 并记录清理方式 `portless hosts clean`。
-- 如果需要同一组 app 同时支持多个本地域名后缀，可重复传 `--tld`，或用逗号分隔的 `PORTLESS_TLD`；记录主 URL 仍以第一个 TLD 为准。
+- 如果需要同一组 app 同时支持多个本地域名后缀，可重复传 `--tld`，或用逗号分隔的 `PORTLESS_TLD`；记录主 URL 仍以第一个 TLD 为准，路由解析按最长后缀优先。
 
 ## 安全边界
 
