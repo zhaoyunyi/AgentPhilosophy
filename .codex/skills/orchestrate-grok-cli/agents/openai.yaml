@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grok CLI 编排"
+  short_description: "编排 Grok headless agent、Stop hook 与独立审查"
+  default_prompt: "使用 $orchestrate-grok-cli 编排多个 Grok headless agent，设置 Stop hook，并独立审查各自修改。"

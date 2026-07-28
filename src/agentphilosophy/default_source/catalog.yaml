@@ -185,6 +185,14 @@ modules:
       - skills/optimize-build-pipeline/
       - .codex/skills/optimize-build-pipeline/
     risk: medium
+  - name: skill-orchestrate-grok-cli
+    category: skill
+    description: Grok CLI headless agent、自动权限、Stop hook、并行隔离任务与独立审查编排 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/orchestrate-grok-cli/
+      - .codex/skills/orchestrate-grok-cli/
+    risk: medium
   - name: skill-philosophy-extraction
     category: skill
     description: 哲学文章脱水、操作性原则提取和 aphilosophy 冲突协议模板生成 skill

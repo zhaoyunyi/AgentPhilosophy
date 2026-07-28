@@ -677,7 +677,36 @@ find -L /path/to/project/{skills,.codex/skills}/optimize-build-pipeline -type f 
 时间线分析器接受 `stage/start_epoch/end_epoch/lane/category/status` TSV；它会计算真实墙钟、并发重叠、空闲
 间隙和峰值并行度，避免把并行阶段手工相加。它不自动宣称关键路径，仍需结合依赖关系和原始 run evidence。
 
-## 十四、Registry 文件
+## 十四、Grok CLI headless 编排 skill
+
+当前中央源默认 preset 包含 `skill-orchestrate-grok-cli`，同步后同时提供：
+
+```text
+skills/orchestrate-grok-cli/
+.codex/skills/orchestrate-grok-cli/
+```
+
+该 Skill 用于把多个 Grok CLI 当作受限执行者编排，覆盖单次 headless 入口、自动批准、Stop hook、并行隔离、进程轮询和独立 diff 审查。一次性任务使用 `grok --prompt-file`、`--prompt-json` 或 `-p`；`grok agent headless` 是 WebSocket relay，不作为 prompt 执行入口。
+
+已有项目的 `modules` 是显式冻结的。需要该能力时追加模块并执行标准同步流程：
+
+```yaml
+modules:
+  - existing-module
+  - skill-orchestrate-grok-cli
+```
+
+```bash
+agentphilosophy-sync validate
+agentphilosophy-sync validate /path/to/project
+agentphilosophy-sync push /path/to/project --dry-run
+agentphilosophy-sync push /path/to/project --apply
+find -L /path/to/project/{skills,.codex/skills}/orchestrate-grok-cli -type f -print
+```
+
+自动批准只消除 Grok 自身的交互确认，不扩张用户授权；生产、外部写入、凭据、提交、推送和发布仍受原始任务边界约束。Stop hook 只提供完成信号，最终验收必须由编排者基于现场 diff 和新鲜验证独立完成。
+
+## 十五、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
