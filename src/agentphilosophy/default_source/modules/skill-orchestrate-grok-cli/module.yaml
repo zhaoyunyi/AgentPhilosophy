@@ -1,0 +1,21 @@
+name: skill-orchestrate-grok-cli
+description: Grok CLI headless agent、自动权限、Stop hook、并行隔离任务与独立审查编排 skill
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: []
+conflicts: []
+provides:
+  - skill:orchestrate-grok-cli
+outputs:
+  - id: orchestrate-grok-cli-files
+    type: copy_tree
+    source: orchestrate-grok-cli
+    target: "{{ skill_targets.repo_skills }}/orchestrate-grok-cli"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: orchestrate-grok-cli-codex-files
+    type: copy_tree
+    source: orchestrate-grok-cli
+    target: "{{ skill_targets.codex_project }}/orchestrate-grok-cli"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only

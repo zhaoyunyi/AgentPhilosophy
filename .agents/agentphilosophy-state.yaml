@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:rltmpmtlutyvyvttlyqxxxvrttspnpro
-source_tree_hash: sha256:c411c57c4e5562c7ca9ed6e1d0e30367855be92764171524832f26b1d543676d
+source_revision: jj:zsrrkvtpktwoztsnrvsoplvnkzylqkvp
+source_tree_hash: sha256:c6ad31e81a270ee17150b30ff0268909aa3b081989335bedd87201d94467f16f
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -20,6 +20,7 @@ modules:
   skill-coding-standards: 1.1.0
   skill-repo-management: 1.1.0
   skill-optimize-build-pipeline: 1.0.0
+  skill-orchestrate-grok-cli: 1.0.0
   skill-reverse-skill: 1.1.0
   skill-improve-codebase-architecture: 1.1.2
   skill-mattpocock-engineering: 1.3.3
@@ -320,6 +321,34 @@ files:
   source_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   rendered_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   last_written_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+- path: .codex/skills/orchestrate-grok-cli/SKILL.md
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-codex-files:SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:5f6345ee03eef2c12faf6aaa5279b5d490e49c473a566afd7fde580685c04b42
+  rendered_hash: sha256:5f6345ee03eef2c12faf6aaa5279b5d490e49c473a566afd7fde580685c04b42
+  last_written_hash: sha256:5f6345ee03eef2c12faf6aaa5279b5d490e49c473a566afd7fde580685c04b42
+- path: .codex/skills/orchestrate-grok-cli/agents/openai.yaml
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-codex-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:a1d30e1257ccb21e6b6185d8b7fea2f82db31c7a1b0919c1db39cae3d89946ea
+  rendered_hash: sha256:a1d30e1257ccb21e6b6185d8b7fea2f82db31c7a1b0919c1db39cae3d89946ea
+  last_written_hash: sha256:a1d30e1257ccb21e6b6185d8b7fea2f82db31c7a1b0919c1db39cae3d89946ea
+- path: .codex/skills/orchestrate-grok-cli/references/headless-orchestration.md
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-codex-files:references/headless-orchestration.md
+  strategy: managed_replace
+  source_hash: sha256:f4b56be0b6681affd42f95c69a5fd670d677db9a7a62f7bc32cd0bd4fe1ea282
+  rendered_hash: sha256:f4b56be0b6681affd42f95c69a5fd670d677db9a7a62f7bc32cd0bd4fe1ea282
+  last_written_hash: sha256:f4b56be0b6681affd42f95c69a5fd670d677db9a7a62f7bc32cd0bd4fe1ea282
+- path: .codex/skills/orchestrate-grok-cli/scripts/grok-stop-hook.sh
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-codex-files:scripts/grok-stop-hook.sh
+  strategy: managed_replace
+  source_hash: sha256:f51c0223241c1c997f1fc5d125bce8b4919275e5ce60eaf354ac15b832e94110
+  rendered_hash: sha256:f51c0223241c1c997f1fc5d125bce8b4919275e5ce60eaf354ac15b832e94110
+  last_written_hash: sha256:f51c0223241c1c997f1fc5d125bce8b4919275e5ce60eaf354ac15b832e94110
 - path: .codex/skills/portless-local-dev/PORTLESS-LICENSE.txt
   module: skill-portless-local-dev
   output_id: portless-local-dev-codex-files:PORTLESS-LICENSE.txt
@@ -1027,6 +1056,34 @@ files:
   source_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   rendered_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   last_written_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+- path: skills/orchestrate-grok-cli/SKILL.md
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-files:SKILL.md
+  strategy: managed_replace
+  source_hash: sha256:5f6345ee03eef2c12faf6aaa5279b5d490e49c473a566afd7fde580685c04b42
+  rendered_hash: sha256:5f6345ee03eef2c12faf6aaa5279b5d490e49c473a566afd7fde580685c04b42
+  last_written_hash: sha256:5f6345ee03eef2c12faf6aaa5279b5d490e49c473a566afd7fde580685c04b42
+- path: skills/orchestrate-grok-cli/agents/openai.yaml
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:a1d30e1257ccb21e6b6185d8b7fea2f82db31c7a1b0919c1db39cae3d89946ea
+  rendered_hash: sha256:a1d30e1257ccb21e6b6185d8b7fea2f82db31c7a1b0919c1db39cae3d89946ea
+  last_written_hash: sha256:a1d30e1257ccb21e6b6185d8b7fea2f82db31c7a1b0919c1db39cae3d89946ea
+- path: skills/orchestrate-grok-cli/references/headless-orchestration.md
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-files:references/headless-orchestration.md
+  strategy: managed_replace
+  source_hash: sha256:f4b56be0b6681affd42f95c69a5fd670d677db9a7a62f7bc32cd0bd4fe1ea282
+  rendered_hash: sha256:f4b56be0b6681affd42f95c69a5fd670d677db9a7a62f7bc32cd0bd4fe1ea282
+  last_written_hash: sha256:f4b56be0b6681affd42f95c69a5fd670d677db9a7a62f7bc32cd0bd4fe1ea282
+- path: skills/orchestrate-grok-cli/scripts/grok-stop-hook.sh
+  module: skill-orchestrate-grok-cli
+  output_id: orchestrate-grok-cli-files:scripts/grok-stop-hook.sh
+  strategy: managed_replace
+  source_hash: sha256:f51c0223241c1c997f1fc5d125bce8b4919275e5ce60eaf354ac15b832e94110
+  rendered_hash: sha256:f51c0223241c1c997f1fc5d125bce8b4919275e5ce60eaf354ac15b832e94110
+  last_written_hash: sha256:f51c0223241c1c997f1fc5d125bce8b4919275e5ce60eaf354ac15b832e94110
 - path: skills/portless-local-dev/PORTLESS-LICENSE.txt
   module: skill-portless-local-dev
   output_id: portless-local-dev-files:PORTLESS-LICENSE.txt
@@ -1419,6 +1476,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-24T05:43:52.143256+00:00'
+last_synced: '2026-07-28T09:36:35.839670+00:00'
 source_content_version: 0.7.14
 agentphilosophy_version: 0.7.14

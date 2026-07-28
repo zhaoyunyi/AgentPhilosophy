@@ -18,6 +18,7 @@ modules:
   - skill-coding-standards
   - skill-repo-management
   - skill-optimize-build-pipeline
+  - skill-orchestrate-grok-cli
   - skill-reverse-skill
   - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
