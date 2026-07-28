@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.7.14
+content_version: 0.7.15
 modules:
   - name: openspec-skills
     category: base
