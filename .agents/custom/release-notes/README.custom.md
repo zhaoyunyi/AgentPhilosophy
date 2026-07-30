@@ -1,4 +1,5 @@
 <!-- release-notes:start -->
+- [v0.7.16](v0.7.16.md)
 <!-- release-notes:end -->
 
 ## AgentPhilosophy 发布工具
