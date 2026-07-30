@@ -19,6 +19,10 @@
 - 进入子目录前先读取该目录内的 `AGENTS.md`、`CLAUDE.md` 或 README。
 - 跨仓搜索默认只读；除非任务明确要求，不修改兄弟仓或外部项目文件。
 
+- 正式版本默认使用语义化版本 `MAJOR.MINOR.PATCH`：不兼容变更提升 MAJOR，向后兼容功能提升 MINOR，向后兼容修复提升 PATCH；项目已有更严格版本规则时，以项目明确记录的规则为准，不能静默混用口径。
+- 版本号必须在清单、运行时元数据、锁文件和发布标签等权威位置保持一致；无法同轮更新的派生位置要在发布说明中列为已知差异。
+- 每次正式发布必须新增 `release-notes/v<MAJOR>.<MINOR>.<PATCH>.md` 并更新 `release-notes/README.md`；索引为 AgentPhilosophy layered 输出时，更新 `.agents/custom/release-notes/README.custom.md` 后执行同步，不直接修改托管结果。
+- 发布说明至少记录变更摘要、兼容性与迁移、验证结果、回滚入口和发布回执；测试通过、构建完成或候选环境 Ready 不能称为已发布，只有目标平台的 tag、Release、制品或部署回执闭环后才能下发布结论。
 
 ## 工程规范
 

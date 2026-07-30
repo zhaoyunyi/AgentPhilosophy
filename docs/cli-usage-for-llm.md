@@ -204,6 +204,7 @@ modules:
   - model-constraints
   - doc-templates
   - multi-module-layout
+  - release-conventions
   - spec-program
   - spec-ddd
   - spec-bdd
@@ -234,7 +235,9 @@ vars:
 - `frontend`：前端主导项目。
 - `mobile-sdk`：移动 SDK 或多子工程工作区。
 
-这些 preset 默认包含 `jj-conventions` 和 `skill-jj-management`。LLM 接入目标项目时，如果目标项目是 Git 仓库但还没有 `.jj/`，应先确认 `command -v jj && jj --version`，缺失时安装 jj CLI，然后运行 `jj git init --colocate`，再用 `jj status`、`jj log`、`jj bookmark list` 验证。
+这些 preset 默认包含 `jj-conventions`、`skill-jj-management` 和 `release-conventions`。`release-conventions` 会把 SemVer 版本口径、发布回执边界写入 `AGENTS.md`，并生成 layered `release-notes/README.md`；项目版本条目写入 `.agents/custom/release-notes/README.custom.md` 后再执行 `push --apply`。旧项目的 `modules` 是显式冻结的，升级 CLI 不会自动追加该模块；需要采用发布治理规则时，先把 `release-conventions` 加入现有模块列表，再走 `validate`、dry-run 和 apply。
+
+LLM 接入目标项目时，如果目标项目是 Git 仓库但还没有 `.jj/`，应先确认 `command -v jj && jj --version`，缺失时安装 jj CLI，然后运行 `jj git init --colocate`，再用 `jj status`、`jj log`、`jj bookmark list` 验证。
 
 常用路径：
 

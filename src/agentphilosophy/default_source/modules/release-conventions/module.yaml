@@ -1,0 +1,22 @@
+name: release-conventions
+description: 发布说明目录、SemVer 版本口径和发布回执规则
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: [doc-templates]
+conflicts: []
+provides:
+  - docs:release-notes
+  - governance:versioning
+outputs:
+  - id: release-rules
+    type: fragment
+    template: templates/release-rules.md.j2
+    target: AGENTS.md
+    section: release
+    order: 50
+  - id: release-notes-index
+    type: rendered_file
+    template: templates/release-notes-README.md.j2
+    target: release-notes/README.md
+    strategy: layered
+    on_existing_unmanaged: report_only

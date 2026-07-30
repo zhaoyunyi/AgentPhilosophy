@@ -1,13 +1,14 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:vlxunowkttwokqqukrsummrqtntmystr
-source_tree_hash: sha256:414dfc1790a4e34a466216b1ef5d726611dbca716bfb85cad33de3ffaa1396ee
+source_revision: jj:qvporxnltxswpxozwlprysnlwpqrzsmw
+source_tree_hash: sha256:6e6d5d5ff576b7deac240840e05dcc52aaf56ed7e2f4596438a07ece35c5719d
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
   model-constraints: 1.1.0
   doc-templates: 1.1.0
   multi-module-layout: 1.0.0
+  release-conventions: 1.0.0
   spec-program: 1.0.0
   spec-ddd: 1.2.0
   spec-bdd: 1.0.0
@@ -703,9 +704,9 @@ files:
   module: doc-templates
   output_id: agents-md
   strategy: layered
-  source_hash: sha256:f4b9f2023d4d3e034c1e7fca3f90604889ad1d803be90639757cf7e065e973bd
-  rendered_hash: sha256:38053d4bb13574b83fbef79f327dafa125e2a84f36d0dc6f36ab0cb18e01a77a
-  last_written_hash: sha256:38053d4bb13574b83fbef79f327dafa125e2a84f36d0dc6f36ab0cb18e01a77a
+  source_hash: sha256:c89a2b6693b686ab33c7a5851256c831d69ae86ac084f20c629a2af435d4427c
+  rendered_hash: sha256:0c6fef61cad1446b6a1095dd62476d6f139bfda1dcb14801fbaa03f24177b013
+  last_written_hash: sha256:0c6fef61cad1446b6a1095dd62476d6f139bfda1dcb14801fbaa03f24177b013
 - path: CLAUDE.md
   module: doc-templates
   output_id: claude-md
@@ -762,6 +763,13 @@ files:
   source_hash: sha256:f46acc67e79a85a99e6c1da64f8e5389e8a9393acb4d66ba83c1e60085499cc8
   rendered_hash: sha256:f46acc67e79a85a99e6c1da64f8e5389e8a9393acb4d66ba83c1e60085499cc8
   last_written_hash: sha256:f46acc67e79a85a99e6c1da64f8e5389e8a9393acb4d66ba83c1e60085499cc8
+- path: release-notes/README.md
+  module: release-conventions
+  output_id: release-notes-index
+  strategy: layered
+  source_hash: sha256:eb1657de1ecd4064fab7d5591e85e3bb858208d9581e2082a7adc117eb929c3f
+  rendered_hash: sha256:80754d1e2f26cf44d61d155ca66cf469f3330523a96624ae4c4aab82c1390e6c
+  last_written_hash: sha256:80754d1e2f26cf44d61d155ca66cf469f3330523a96624ae4c4aab82c1390e6c
 - path: skills/MATTPOCOCK-SKILLS-LICENSE.txt
   module: skill-mattpocock-engineering
   output_id: mattpocock-skill-files:MATTPOCOCK-SKILLS-LICENSE.txt
@@ -1476,6 +1484,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-28T09:38:08.919621+00:00'
+last_synced: '2026-07-30T02:25:13.097963+00:00'
 source_content_version: 0.7.15
 agentphilosophy_version: 0.7.15

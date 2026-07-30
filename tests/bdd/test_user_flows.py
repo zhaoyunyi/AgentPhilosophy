@@ -89,6 +89,34 @@ def test_bdd_new_project_init_then_dry_run_keeps_formal_files_untouched(tmp_path
     assert not (target / "AGENTS.md").exists()
 
 
+def test_bdd_default_harness_renders_release_notes_and_version_rules(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "release-managed-project"
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+    release_index = (target / "release-notes" / "README.md").read_text(encoding="utf-8")
+
+    assert "- release-conventions" in project_config
+    assert "MAJOR.MINOR.PATCH" in agents_text
+    assert "release-notes/v<MAJOR>.<MINOR>.<PATCH>.md" in agents_text
+    assert "发布回执" in agents_text
+    assert "release-managed-project 发布说明索引" in release_index
+    assert "兼容性与迁移" in release_index
+
+    custom_index = target / ".agents" / "custom" / "release-notes" / "README.custom.md"
+    write(custom_index, "- [v1.0.0](v1.0.0.md)：首次正式发布。\n")
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    assert "[v1.0.0](v1.0.0.md)" in (target / "release-notes" / "README.md").read_text(encoding="utf-8")
+
+    release_readme = target / "release-notes" / "README.md"
+    release_readme.write_text(f"{release_readme.read_text(encoding='utf-8')}\n手工修改\n", encoding="utf-8")
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 1
+
+
 def test_bdd_old_project_migrate_adopt_then_manual_edit_conflict(tmp_path: Path) -> None:
     source = tmp_path / "source"
     target = tmp_path / "old-project"

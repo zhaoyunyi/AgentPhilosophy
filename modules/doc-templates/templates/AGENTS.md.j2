@@ -7,7 +7,8 @@
 {{ section("model_constraints") }}
 {{ section("version_control") }}
 {{ section("module_boundary") }}
-{{ section("deploy") }}{% set superpowers_rules = section("superpowers_system") %}{% if superpowers_rules %}
+{{ section("deploy") }}
+{{ section("release") }}{% set superpowers_rules = section("superpowers_system") %}{% if superpowers_rules %}
 {{ superpowers_rules }}{% endif %}
 
 ## 工程规范

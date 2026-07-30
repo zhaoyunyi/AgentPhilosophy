@@ -77,6 +77,9 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "skill-philosophy-extraction" in content
     assert "skills/philosophy-extraction/SKILL.md" in content
     assert ".codex/skills/philosophy-extraction/SKILL.md" in content
+    assert 'test -f "$target/release-notes/README.md"' in content
+    assert 'grep -q "MAJOR.MINOR.PATCH" "$target/AGENTS.md"' in content
+    assert 'grep -q "发布回执" "$target/AGENTS.md"' in content
     assert "expected_content_version=" in content
     assert "importlib.resources import files" in content
     assert "default_source\" / \"catalog.yaml" in content
@@ -97,6 +100,7 @@ def test_release_process_documents_prepare_publish_and_dependency_status() -> No
     assert "uv run sync.py status" in content
     assert "agentphilosophy_version stale" in content
     assert "source_content_version stale" in content
+    assert "release-notes/v<version>.md" in content
 
 
 def test_release_scripts_have_prepare_and_publish_safety_gates() -> None:
@@ -115,7 +119,7 @@ def test_release_scripts_have_prepare_and_publish_safety_gates() -> None:
     assert "请补充" not in prepare
     assert "gh release create" in publish
     assert "main is not synced to origin" in publish
-    assert "dist/release-notes-v${version}.md" in publish
+    assert "release-notes/v${version}.md" in publish
 
 
 def test_release_metadata_allows_main_to_be_ahead_of_stable_install_tag() -> None:

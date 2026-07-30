@@ -22,6 +22,7 @@ RELEASE_NOISE_PREFIXES = (
     ".mypy_cache/",
     ".venv/",
     "dist/",
+    "release-notes/",
 )
 RELEASE_NOISE_PARTS = {"__pycache__"}
 RELEASE_NOISE_SUFFIXES = (".pyc", ".pyo")
@@ -327,6 +328,24 @@ def dependency_impact_lines(
     return lines
 
 
+def update_release_index(repo_root: Path, version: str) -> None:
+    index_path = repo_root / ".agents" / "custom" / "release-notes" / "README.custom.md"
+    start_marker = "<!-- release-notes:start -->"
+    end_marker = "<!-- release-notes:end -->"
+    index_text = index_path.read_text(encoding="utf-8")
+
+    if start_marker not in index_text or end_marker not in index_text:
+        raise ValueError(f"release notes index markers missing: {index_path}")
+
+    entry = f"- [v{version}](v{version}.md)"
+    indexed_entries = index_text.split(start_marker, 1)[1].split(end_marker, 1)[0]
+    if entry in indexed_entries:
+        return
+
+    index_text = index_text.replace(start_marker, f"{start_marker}\n{entry}", 1)
+    index_path.write_text(index_text, encoding="utf-8")
+
+
 def generate_release_notes(repo_root: Path, version: str, content_version: str) -> Path:
     repo_root = repo_root.resolve()
     base_ref = previous_release_tag(repo_root, version)
@@ -352,8 +371,32 @@ def generate_release_notes(repo_root: Path, version: str, content_version: str) 
         summary_lines.append(f"- 最近提交参考：{commits[0]}。")
 
     commit_lines = [f"- {subject}" for subject in commits] or ["- 未检测到可用的最近提交记录。"]
+    compatibility_lines = [
+        "- 新项目使用当前默认 preset 时会获得本版本的默认模块集合。",
+        "- 旧项目的 `.agentphilosophy.yaml` 模块列表是显式冻结的；"
+        "升级 CLI 不会自动追加新模块，先按发布摘要审查后再修改配置。",
+    ]
+    if module_changes:
+        compatibility_lines.append(
+            "- 本版本包含模块版本变化；依赖项目同步前先运行 `status` 与 `push --dry-run` 审查影响。"
+        )
+
+    rollback_target = base_ref or "上一已验证版本"
+    rollback_lines = [
+        f"- CLI 或中央内容需要回退时，恢复到 `{rollback_target}`，"
+        "并保持 CLI、内容源与目标项目 state 的版本关系可解释。",
+        "- 回退后先运行 `validate`、目标项目 `status` 和 `push --dry-run`；"
+        "不要直接用旧内容源覆盖已经由新版本写入且被人工修改的托管文件。",
+    ]
+    receipt_lines = [
+        f"- GitHub Release：`v{version}`；以 `gh release view v{version}` 回读的 tag、目标提交和 assets 为正式回执。",
+        f"- 远端标签：`refs/tags/v{version}`；以 `git ls-remote --tags origin refs/tags/v{version}` 的结果为准。",
+        "- 上述回读未完成前，本说明只代表发布候选，不能称为已正式发布。",
+    ]
 
     lines = [
+        f"# AgentPhilosophy v{version} 发布说明",
+        "",
         "## 变更摘要",
         "",
         *summary_lines,
@@ -366,6 +409,10 @@ def generate_release_notes(repo_root: Path, version: str, content_version: str) 
         "",
         *module_change_lines(module_changes),
         "",
+        "## 兼容性与迁移",
+        "",
+        *compatibility_lines,
+        "",
         "## 最近提交参考",
         "",
         *commit_lines,
@@ -373,6 +420,10 @@ def generate_release_notes(repo_root: Path, version: str, content_version: str) 
         "## 依赖项目影响",
         "",
         *dependency_impact_lines(version, content_version, module_changes, changes),
+        "",
+        "## 回滚入口",
+        "",
+        *rollback_lines,
         "",
         "## 验证",
         "",
@@ -382,11 +433,16 @@ def generate_release_notes(repo_root: Path, version: str, content_version: str) 
         "- `uv build`",
         f"- `bash scripts/release-smoke.sh dist/agentphilosophy-{version}-py3-none-any.whl`",
         "",
+        "## 发布回执",
+        "",
+        *receipt_lines,
+        "",
     ]
 
-    output_path = repo_root / "dist" / f"release-notes-v{version}.md"
+    output_path = repo_root / "release-notes" / f"v{version}.md"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text("\n".join(lines), encoding="utf-8")
+    update_release_index(repo_root, version)
     return output_path
 
 

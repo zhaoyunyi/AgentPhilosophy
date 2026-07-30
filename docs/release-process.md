@@ -54,7 +54,7 @@ bash scripts/prepare-release.sh 0.3.2 --content-version 0.3.1
 - 运行 `uv lock`。
 - 运行 `uv run sync.py push . --apply`，刷新本仓 state 中的 `agentphilosophy_version` 与 `source_content_version`。
 - 运行 lint、测试、中央源校验、构建和安装后 smoke。
-- 根据版本相关 diff、最近提交和模块版本变化生成 `dist/release-notes-v<version>.md`，供 GitHub release 审阅和使用。
+- 根据版本相关 diff、最近提交和模块版本变化生成 `release-notes/v<version>.md`，并更新 [发布说明索引](../release-notes/README.md)，供 GitHub Release 审阅、使用和长期追溯。
 
 ## 审查与提交
 
@@ -99,7 +99,7 @@ bash scripts/publish-release.sh 0.3.2
 - `dist/agentphilosophy-<version>-py3-none-any.whl` 存在。
 - `dist/agentphilosophy-<version>.tar.gz` 存在。
 - `v<version>` tag / release 尚未存在。
-- 使用 `dist/release-notes-v<version>.md` 作为 release notes。
+- 使用 `release-notes/v<version>.md` 作为 release notes；该文件应已随 release change 提交并出现在发布说明索引中。
 
 发布后可用以下命令确认：
 
@@ -147,4 +147,4 @@ uv run sync.py status --project /path/to/project
 - `模块版本变化`：确认 `modules/*/module.yaml` 的 version bump 与模块语义变化一致。
 - `依赖项目影响`：确认 stale 提示、dry-run 建议和需要优先审查的模块输出清楚。
 
-如果摘要没有捕捉到发布语义，可以直接编辑 `dist/release-notes-v<version>.md` 后再运行 `publish-release.sh`。
+如果摘要没有捕捉到发布语义，可以直接编辑 `release-notes/v<version>.md` 后再运行 `publish-release.sh`。不要把发布说明移回 `dist/`；`dist/` 只保存本地构建产物。
