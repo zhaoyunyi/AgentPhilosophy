@@ -32,7 +32,7 @@ fi
 tag="v${version}"
 wheel="dist/agentphilosophy-${version}-py3-none-any.whl"
 sdist="dist/agentphilosophy-${version}.tar.gz"
-notes="dist/release-notes-v${version}.md"
+notes="release-notes/v${version}.md"
 
 for path in "$wheel" "$sdist" "$notes"; do
   if [[ ! -f "$path" ]]; then

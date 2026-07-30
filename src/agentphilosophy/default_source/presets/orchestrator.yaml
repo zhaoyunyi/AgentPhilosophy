@@ -6,6 +6,7 @@ modules:
   - model-constraints
   - doc-templates
   - multi-module-layout
+  - release-conventions
   - spec-program
   - spec-ddd
   - spec-bdd

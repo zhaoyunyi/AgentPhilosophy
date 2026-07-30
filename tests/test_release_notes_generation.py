@@ -20,6 +20,13 @@ def write(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
+def write_release_index(repo: Path) -> None:
+    write(
+        repo / ".agents" / "custom" / "release-notes" / "README.custom.md",
+        "<!-- release-notes:start -->\n<!-- release-notes:end -->\n",
+    )
+
+
 def git(repo: Path, *args: str) -> None:
     subprocess.run(["git", *args], cwd=repo, check=True, capture_output=True, text=True)
 
@@ -28,6 +35,7 @@ def test_generate_release_notes_summarizes_diff_commits_and_module_versions(tmp_
     generator = load_generator()
     repo = tmp_path / "repo"
     repo.mkdir()
+    write_release_index(repo)
     git(repo, "init")
     git(repo, "config", "user.email", "test@example.com")
     git(repo, "config", "user.name", "Test User")
@@ -56,9 +64,15 @@ def test_generate_release_notes_summarizes_diff_commits_and_module_versions(tmp_
     write(repo / "tests" / "test_release_notes.py", "def test_notes():\n    assert True\n")
 
     notes_path = generator.generate_release_notes(repo, "0.4.5", "0.4.5")
+    generator.generate_release_notes(repo, "0.4.5", "0.4.5")
 
     content = notes_path.read_text(encoding="utf-8")
-    assert notes_path == repo / "dist" / "release-notes-v0.4.5.md"
+    assert notes_path == repo / "release-notes" / "v0.4.5.md"
+    assert content.startswith("# AgentPhilosophy v0.4.5 发布说明\n")
+    index_content = (
+        repo / ".agents" / "custom" / "release-notes" / "README.custom.md"
+    ).read_text(encoding="utf-8")
+    assert index_content.count("- [v0.4.5](v0.4.5.md)") == 1
     assert "发布 AgentPhilosophy CLI v0.4.5" in content
     assert "默认内容源 `content_version` 升级到 `0.4.5`" in content
     assert "## 本次 diff 重点" in content
@@ -66,15 +80,35 @@ def test_generate_release_notes_summarizes_diff_commits_and_module_versions(tmp_
     assert "tests/test_release_notes.py" in content
     assert "## 模块版本变化" in content
     assert "`spec-bdd`：`1.0.0` -> `1.1.0`，BDD 协作规范。" in content
+    assert "## 兼容性与迁移" in content
+    assert "## 回滚入口" in content
+    assert "## 发布回执" in content
+    assert "GitHub Release" in content
     assert "## 最近提交参考" in content
     assert "文档：补充发版审阅流程" in content
     assert "请补充" not in content
+
+
+def test_release_notes_index_is_linked_from_repository_entry_points() -> None:
+    root = Path(__file__).resolve().parents[1]
+    index = root / "release-notes" / "README.md"
+
+    assert index.is_file()
+    index_content = index.read_text(encoding="utf-8")
+    assert "<!-- release-notes:start -->" in index_content
+    assert "<!-- release-notes:end -->" in index_content
+    custom_index = root / ".agents" / "custom" / "release-notes" / "README.custom.md"
+    assert custom_index.is_file()
+    assert "<!-- release-notes:start -->" in custom_index.read_text(encoding="utf-8")
+    assert "release-notes/README.md" in (root / "README.md").read_text(encoding="utf-8")
+    assert "release-notes/README.md" in (root / "docs" / "README.md").read_text(encoding="utf-8")
 
 
 def test_generate_release_notes_uses_reachable_tag_below_target_version(tmp_path: Path) -> None:
     generator = load_generator()
     repo = tmp_path / "repo"
     repo.mkdir()
+    write_release_index(repo)
     git(repo, "init")
     git(repo, "config", "user.email", "test@example.com")
     git(repo, "config", "user.name", "Test User")
@@ -111,6 +145,7 @@ def test_generate_release_notes_reports_deleted_modules(tmp_path: Path) -> None:
     generator = load_generator()
     repo = tmp_path / "repo"
     repo.mkdir()
+    write_release_index(repo)
     git(repo, "init")
     git(repo, "config", "user.email", "test@example.com")
     git(repo, "config", "user.name", "Test User")
@@ -137,6 +172,7 @@ def test_generate_release_notes_filters_state_managed_outputs_and_release_noise(
     generator = load_generator()
     repo = tmp_path / "repo"
     repo.mkdir()
+    write_release_index(repo)
     git(repo, "init")
     git(repo, "config", "user.email", "test@example.com")
     git(repo, "config", "user.name", "Test User")

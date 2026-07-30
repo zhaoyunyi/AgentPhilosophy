@@ -20,6 +20,7 @@
 ## 发布与运维
 
 - [docs/release-process.md](release-process.md)：AgentPhilosophy CLI 和中央内容源的发版、版本口径、发布校验和依赖项目更新判断。
+- [release-notes/README.md](../release-notes/README.md)：正式版本发布说明的长期索引、命名约定和维护规则。
 
 ## 指南
 

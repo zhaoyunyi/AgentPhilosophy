@@ -7,6 +7,7 @@ modules:
   - doc-templates
   - multi-module-layout
   - deploy-conventions
+  - release-conventions
   - spec-program
   - spec-ddd
   - spec-bdd

@@ -11,7 +11,7 @@ Prepare a local AgentPhilosophy release:
   - bump content_version in catalog.yaml and packaged default_source/catalog.yaml
   - refresh uv.lock and this repo's managed state
   - run lint, tests, central-source validation, build, and installed-wheel smoke
-  - write dist/release-notes-vVERSION.md
+  - write release-notes/vVERSION.md and update the release notes index
 
 The script does not update the README stable install tag, commit, push, tag, or publish.
 Use jj commands and then scripts/publish-release.sh after reviewing the diff; update
@@ -122,8 +122,9 @@ mkdir -p dist
 uv build
 bash scripts/release-smoke.sh "dist/agentphilosophy-${version}-py3-none-any.whl"
 
-mkdir -p dist
 uv run python scripts/generate-release-notes.py "$version" --content-version "$content_version"
+uv run sync.py push . --apply
+uv run sync.py validate
 
 echo "Prepared AgentPhilosophy release v${version} with content_version ${content_version}."
-echo "Review dist/release-notes-v${version}.md before publishing."
+echo "Review release-notes/v${version}.md before publishing."

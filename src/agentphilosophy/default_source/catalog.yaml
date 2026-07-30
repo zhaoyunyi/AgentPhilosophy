@@ -52,6 +52,14 @@ modules:
     outputs:
       - AGENTS.md
     risk: low
+  - name: release-conventions
+    category: base
+    description: 发布说明目录、SemVer 版本口径和发布回执规则
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - AGENTS.md
+      - release-notes/README.md
+    risk: low
   - name: spec-program
     category: spec
     description: 项目开发总原则

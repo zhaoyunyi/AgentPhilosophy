@@ -54,6 +54,8 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 需要 OpenSpec、proposal、tasks 或 spec-first 交付 | 保留或加入 `openspec-skills` |
 | Git 仓库尚未使用 jj，且项目规则要求 jj | 先确认 `jj` 可用，再初始化 colocated jj |
 | 目标项目需要 Codex 原生 skill discovery | 保持 `skill_targets.codex_project: .codex/skills` |
+| 新项目使用默认 preset | 保留 `release-conventions`，生成发布说明索引、SemVer 口径和发布回执规则 |
+| 旧项目需要长期维护正式版本与发布说明 | 追加 `release-conventions`，再同步刷新 `AGENTS.md` 和 `release-notes/README.md` |
 | 新项目使用默认 preset | 默认不追加 `superpowers-system`；需要 Superpowers 时由项目显式选择 |
 | 项目明确需要统一 Superpowers 固定路径、版本和排障规则 | 追加 `superpowers-system`，再同步刷新 `AGENTS.md` |
 | 新项目使用默认 preset | 默认不追加 `skill-ponytail`；需要 Ponytail 时由项目显式选择 |
