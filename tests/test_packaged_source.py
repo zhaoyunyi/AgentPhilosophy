@@ -16,6 +16,7 @@ def source_files(root: Path) -> list[Path]:
         root / "docs" / "llm-usage-auto-config.md",
         root / "docs" / "llm-usage-user-breakpoints.md",
         root / "docs" / "llm-usage-user-breakpoints.json",
+        root / "docs" / "guides" / "code-review-graph.md",
     ]
     include_dirs = [
         root / "modules",
@@ -111,6 +112,7 @@ def test_optimize_build_pipeline_module_is_packaged_with_complete_resources() ->
 def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
     root = Path(__file__).resolve().parents[1]
     external_skill_modules = {
+        "skill-code-review-graph",
         "skill-code-review",
         "skill-ponytail",
         "skill-portless-local-dev",
@@ -133,6 +135,10 @@ def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
 def test_updated_external_skill_modules_lock_reviewed_upstream_revisions() -> None:
     root = Path(__file__).resolve().parents[1]
     expected = {
+        "skill-code-review-graph": (
+            "1.0.0",
+            "2c6dae32643572ee528eb9b77dbcc17f58f3a8c9",
+        ),
         "skill-code-review": ("1.0.4", "ed37663cc5fbef691ddfecd080dff42f7e7e350d"),
         "skill-improve-codebase-architecture": (
             "1.1.2",

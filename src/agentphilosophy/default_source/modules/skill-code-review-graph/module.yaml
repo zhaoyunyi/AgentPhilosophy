@@ -1,0 +1,45 @@
+name: skill-code-review-graph
+description: code-review-graph 2.3.8 图谱构建、MCP 查询和 CLI 维护项目级 skill
+version: 1.0.0
+project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+requires: []
+conflicts: []
+upstream:
+  repository: https://github.com/tirth8205/code-review-graph
+  ref: refs/tags/v2.3.8^{}
+  revision: 2c6dae32643572ee528eb9b77dbcc17f58f3a8c9
+  tracked_paths:
+    - README.md
+    - LICENSE
+    - pyproject.toml
+    - code_review_graph/skills.py
+    - docs/USAGE.md
+    - docs/COMMANDS.md
+    - skills/review-changes/SKILL.md
+provides:
+  - skill:code-review-graph
+outputs:
+  - id: code-review-graph-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.repo_skills }}/code-review-graph/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: code-review-graph-codex-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.codex_project }}/code-review-graph/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: code-review-graph-files
+    type: copy_tree
+    source: files
+    target: "{{ skill_targets.repo_skills }}/code-review-graph"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: code-review-graph-codex-files
+    type: copy_tree
+    source: files
+    target: "{{ skill_targets.codex_project }}/code-review-graph"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only

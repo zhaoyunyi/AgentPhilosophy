@@ -9,12 +9,14 @@ description = "Central Agent collaboration specification sync tool"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+  "code-review-graph==2.3.8",
   "Jinja2>=3.1",
   "PyYAML>=6.0",
 ]
 
 [project.scripts]
 agentphilosophy-sync = "agentphilosophy.cli:main"
+code-review-graph = "code_review_graph.cli:main"
 
 [dependency-groups]
 dev = [

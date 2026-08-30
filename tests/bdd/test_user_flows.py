@@ -260,6 +260,26 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
         assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
 
 
+def test_bdd_default_preset_installs_code_review_graph_orchestration_skill(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "code-review-graph-project"
+
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    config_text = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
+    assert "- skill-code-review-graph" in config_text
+
+    for skill_root in (target / "skills", target / ".codex" / "skills"):
+        skill_dir = skill_root / "code-review-graph"
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        assert (skill_dir / "CODE-REVIEW-GRAPH-LICENSE.txt").is_file()
+        assert "MCP 是 agent 的主要查询接口" in skill_text
+        assert "code-review-graph build" in skill_text
+        assert "detect_changes_tool" in skill_text
+        assert "图谱用于缩小读取范围，不能替代读取实现与测试" in skill_text
+
+
 def test_bdd_complete_mattpocock_install_refuses_unmanaged_skill_conflict(tmp_path: Path) -> None:
     source = Path(__file__).resolve().parents[2]
     target = tmp_path / "mattpocock-conflict-project"

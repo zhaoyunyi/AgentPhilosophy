@@ -1,0 +1,5 @@
+interface:
+  display_name: "Code Review Graph"
+  short_description: "用结构图谱缩小代码审查与影响分析范围"
+policy:
+  allow_implicit_invocation: true

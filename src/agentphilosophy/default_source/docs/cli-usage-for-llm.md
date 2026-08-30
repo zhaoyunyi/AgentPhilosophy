@@ -544,7 +544,36 @@ find -L /path/to/project/.codex/skills/code-review -name SKILL.md -print
 find -L /path/to/project/skills/code-review -name SKILL.md -print
 ```
 
-## 十一、Matt Pocock 完整工程 skill 家族
+## 十一、code-review-graph 结构图谱依赖
+
+AgentPhilosophy 固定依赖 `code-review-graph==2.3.8`，并通过 `pyproject.toml` 重新导出同名 `code-review-graph` CLI。默认 preset 还会包含 `skill-code-review-graph`，将 `SKILL.md`、`agents/openai.yaml` 和 MIT 许可证同步到仓库级与 Codex 项目级 skill 目录。
+
+三层入口的职责必须区分：
+
+- Skill 负责触发和编排，不执行图谱解析。
+- MCP 是 agent 日常查询最小上下文、影响半径、改动风险、调用关系、流程和测试关系的主要入口。
+- CLI 负责安装 MCP、首次构建、增量更新、状态、watch、可视化和人工诊断。
+
+上游 `install --platform codex` 会写用户级 Codex MCP 与 hooks 配置，并可能修改项目 `AGENTS.md` 和 Git hook；没有明确安装意图时先运行 `--dry-run`。正式安装后需要重启 Codex：
+
+```bash
+code-review-graph install --platform codex --repo . --dry-run
+code-review-graph install --platform codex --repo . --yes
+code-review-graph build --repo .
+code-review-graph status --repo .
+```
+
+旧项目的模块列表是显式冻结的。需要长期同步图谱 skill 时，在保留已有模块的基础上追加：
+
+```yaml
+modules:
+  - existing-module
+  - skill-code-review-graph
+```
+
+然后按 `validate`、目标项目 dry-run、apply、status 的标准顺序同步。完整用法见 [docs/guides/code-review-graph.md](guides/code-review-graph.md)。
+
+## 十二、Matt Pocock 完整工程 skill 家族
 
 当前中央源默认 preset 同时包含 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`。两者合计覆盖 Matt Pocock 原生插件当前声明的 22 个活跃 skills，并同步生成 repo skills、Codex 项目级 skills、支持文件和 `agents/openai.yaml`：
 
@@ -611,7 +640,7 @@ find -L /path/to/project/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
 
 这里的“完整”以 Matt 上游插件 manifest 的 22 个活跃 skills 为边界，不引入 `deprecated`、`in-progress`、`misc` 或 `personal` 目录。skill 文件、支持文件、双根输出和触发元数据完整可用；需要 GitHub/GitLab tracker、浏览器、测试框架或其他外部系统的动作，仍取决于目标项目已经提供相应 CLI/MCP、登录态、权限和运行时，AgentPhilosophy 不会凭 skill 文件自动安装凭据或外部工具。
 
-## 十二、Agent 哲学决策框架
+## 十三、Agent 哲学决策框架
 
 `aphilosophy` 模块会生成一组触发式参考文档。LLM 不需要在每次任务开始时全量读取它们；只有当任务进入对应冲突或权衡场景时，才按需读取。
 
@@ -640,7 +669,7 @@ agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
 ```
 
-## 十三、构建流水线调优 skill
+## 十四、构建流水线调优 skill
 
 当前中央源默认 preset 包含 `skill-optimize-build-pipeline`。它会把完整 Skill、测量合同、优化决策手册和
 时间线分析器同步到：
@@ -680,7 +709,7 @@ find -L /path/to/project/{skills,.codex/skills}/optimize-build-pipeline -type f 
 时间线分析器接受 `stage/start_epoch/end_epoch/lane/category/status` TSV；它会计算真实墙钟、并发重叠、空闲
 间隙和峰值并行度，避免把并行阶段手工相加。它不自动宣称关键路径，仍需结合依赖关系和原始 run evidence。
 
-## 十四、Grok CLI headless 编排 skill
+## 十五、Grok CLI headless 编排 skill
 
 当前中央源默认 preset 包含 `skill-orchestrate-grok-cli`，同步后同时提供：
 
@@ -709,7 +738,7 @@ find -L /path/to/project/{skills,.codex/skills}/orchestrate-grok-cli -type f -pr
 
 自动批准只消除 Grok 自身的交互确认，不扩张用户授权；生产、外部写入、凭据、提交、推送和发布仍受原始任务边界约束。Stop hook 只提供完成信号，最终验收必须由编排者基于现场 diff 和新鲜验证独立完成。
 
-## 十五、Registry 文件
+## 十六、Registry 文件
 
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
@@ -732,7 +761,7 @@ projects:
     path: /absolute/path/to/ExampleProject
 ```
 
-## 十五、新项目接入流程
+## 十七、新项目接入流程
 
 1. 选择 preset。
 2. 生成 `.agentphilosophy.yaml`。
@@ -755,7 +784,7 @@ uv run sync.py status --project /path/to/project
 uv run sync.py init /path/to/project --interactive
 ```
 
-## 十六、老项目迁移流程
+## 十八、老项目迁移流程
 
 `migrate` 只做盘点，不会生成正式 `.agentphilosophy.yaml`，也不会覆盖项目已有文件。
 
@@ -781,7 +810,7 @@ uv run sync.py push /path/to/project --dry-run
 uv run sync.py push /path/to/project --apply
 ```
 
-## 十七、安全边界
+## 十九、安全边界
 
 - `push` 不带 `--apply` 时不写目标项目文件；`--dry-run` 是推荐显式写法。
 - `push --apply` 也不会覆盖未托管的既有文件；遇到冲突会写候选文件到迁移目录。
@@ -792,7 +821,7 @@ uv run sync.py push /path/to/project --apply
 - 不要把 `.agents/migration/proposed.agentphilosophy.yaml` 当成正式配置；`push` 只读取项目根目录 `.agentphilosophy.yaml`。
 - 修改 `modules` 后必须重新运行 `validate` 和 `push --dry-run`。
 
-## 十八、LLM 执行规则
+## 二十、LLM 执行规则
 
 - 操作前先运行 `uv run sync.py validate`，确认中央源有效。
 - 对目标项目写入前必须先运行 `push --dry-run`。

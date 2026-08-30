@@ -42,6 +42,7 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "expected_agentphilosophy_version=" in content
     assert "import agentphilosophy" in content
     assert "agentphilosophy-sync\" --version" in content
+    assert 'code-review-graph" --version | grep -q "2.3.8"' in content
     assert 'push --help | grep -q -- "--project-name"' in content
     assert "agentphilosophy-sync\" llm-usage" in content
     assert "agentphilosophy-sync\" llm-usage --mode auto-config" in content
@@ -60,6 +61,10 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "skills/ponytail/SKILL.md" in content
     assert ".codex/skills/ponytail/SKILL.md" in content
     assert "DietrichGebert/ponytail" in content
+    assert "skills/code-review-graph/SKILL.md" in content
+    assert ".codex/skills/code-review-graph/SKILL.md" in content
+    assert "CODE-REVIEW-GRAPH-LICENSE.txt" in content
+    assert "MCP 是 agent 的主要查询接口" in content
     assert "skills/improve-codebase-architecture/SKILL.md" in content
     assert ".codex/skills/improve-codebase-architecture/SKILL.md" in content
     assert "AgentPhilosophy ArchitectureSpec" in content
