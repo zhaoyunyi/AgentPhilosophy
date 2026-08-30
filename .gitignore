@@ -9,6 +9,7 @@ build/
 .mypy_cache/
 .coverage
 htmlcov/
+.code-review-graph/
 .worktrees/
 .omc/state/
 registry.yaml

@@ -1,7 +1,7 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:xtkytlkkoxmmrmqvnuxlknprpznvrrlp
-source_tree_hash: sha256:e0be5a528529b8a82b3400bed85312ffc0940802be06242bb2c318482c01beb2
+source_revision: jj:yputyxkzptmqtywrvskqytloysopqowm
+source_tree_hash: sha256:b59386e431f05afcf2adfb188af4200ab41be9b6796239aa667e7837a1fd74d9
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.0.0
@@ -20,6 +20,7 @@ modules:
   skill-target-jj: 1.1.0
   skill-coding-standards: 1.1.0
   skill-repo-management: 1.1.0
+  skill-code-review-graph: 1.0.0
   skill-optimize-build-pipeline: 1.0.0
   skill-orchestrate-grok-cli: 1.0.0
   skill-reverse-skill: 1.1.0
@@ -56,6 +57,27 @@ files:
   source_hash: sha256:f957e104465d0d5b5e55277b7d846d4dbf6df17a5c51c13079a3a9484a65c313
   rendered_hash: sha256:f957e104465d0d5b5e55277b7d846d4dbf6df17a5c51c13079a3a9484a65c313
   last_written_hash: sha256:f957e104465d0d5b5e55277b7d846d4dbf6df17a5c51c13079a3a9484a65c313
+- path: .codex/skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt
+  module: skill-code-review-graph
+  output_id: code-review-graph-codex-files:CODE-REVIEW-GRAPH-LICENSE.txt
+  strategy: managed_replace
+  source_hash: sha256:4608284d776c4ca9b88d05c7210f71ab03400520bf7334d72404eba53f56dd4e
+  rendered_hash: sha256:4608284d776c4ca9b88d05c7210f71ab03400520bf7334d72404eba53f56dd4e
+  last_written_hash: sha256:4608284d776c4ca9b88d05c7210f71ab03400520bf7334d72404eba53f56dd4e
+- path: .codex/skills/code-review-graph/SKILL.md
+  module: skill-code-review-graph
+  output_id: code-review-graph-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:d8ee3a0e02307a70cc94cb4bfac1c1755992e6a2817347e84ae32606539f188e
+  rendered_hash: sha256:261f0c25a8d3f6d089e9fc48859b79950a20c33ff2111d0a6ca0b491eb48d283
+  last_written_hash: sha256:261f0c25a8d3f6d089e9fc48859b79950a20c33ff2111d0a6ca0b491eb48d283
+- path: .codex/skills/code-review-graph/agents/openai.yaml
+  module: skill-code-review-graph
+  output_id: code-review-graph-codex-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:95671a5af7f3b2df458ae84633f25d4c966af37d569eb7dd3671335b8a4f4a51
+  rendered_hash: sha256:95671a5af7f3b2df458ae84633f25d4c966af37d569eb7dd3671335b8a4f4a51
+  last_written_hash: sha256:95671a5af7f3b2df458ae84633f25d4c966af37d569eb7dd3671335b8a4f4a51
 - path: .codex/skills/code-review/SKILL.md
   module: skill-mattpocock-engineering
   output_id: code-review-codex-skill
@@ -798,6 +820,27 @@ files:
   source_hash: sha256:f957e104465d0d5b5e55277b7d846d4dbf6df17a5c51c13079a3a9484a65c313
   rendered_hash: sha256:f957e104465d0d5b5e55277b7d846d4dbf6df17a5c51c13079a3a9484a65c313
   last_written_hash: sha256:f957e104465d0d5b5e55277b7d846d4dbf6df17a5c51c13079a3a9484a65c313
+- path: skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt
+  module: skill-code-review-graph
+  output_id: code-review-graph-files:CODE-REVIEW-GRAPH-LICENSE.txt
+  strategy: managed_replace
+  source_hash: sha256:4608284d776c4ca9b88d05c7210f71ab03400520bf7334d72404eba53f56dd4e
+  rendered_hash: sha256:4608284d776c4ca9b88d05c7210f71ab03400520bf7334d72404eba53f56dd4e
+  last_written_hash: sha256:4608284d776c4ca9b88d05c7210f71ab03400520bf7334d72404eba53f56dd4e
+- path: skills/code-review-graph/SKILL.md
+  module: skill-code-review-graph
+  output_id: code-review-graph-skill
+  strategy: managed_replace
+  source_hash: sha256:d8ee3a0e02307a70cc94cb4bfac1c1755992e6a2817347e84ae32606539f188e
+  rendered_hash: sha256:261f0c25a8d3f6d089e9fc48859b79950a20c33ff2111d0a6ca0b491eb48d283
+  last_written_hash: sha256:261f0c25a8d3f6d089e9fc48859b79950a20c33ff2111d0a6ca0b491eb48d283
+- path: skills/code-review-graph/agents/openai.yaml
+  module: skill-code-review-graph
+  output_id: code-review-graph-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:95671a5af7f3b2df458ae84633f25d4c966af37d569eb7dd3671335b8a4f4a51
+  rendered_hash: sha256:95671a5af7f3b2df458ae84633f25d4c966af37d569eb7dd3671335b8a4f4a51
+  last_written_hash: sha256:95671a5af7f3b2df458ae84633f25d4c966af37d569eb7dd3671335b8a4f4a51
 - path: skills/code-review/SKILL.md
   module: skill-mattpocock-engineering
   output_id: code-review-skill
@@ -1484,6 +1527,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-07-30T02:33:14.763446+00:00'
+last_synced: '2026-08-30T01:53:29.601645+00:00'
 source_content_version: 0.7.16
 agentphilosophy_version: 0.7.16

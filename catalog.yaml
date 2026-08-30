@@ -185,6 +185,18 @@ modules:
       - skills/repo-management/SKILL.md
       - .codex/skills/repo-management/SKILL.md
     risk: low
+  - name: skill-code-review-graph
+    category: skill
+    description: code-review-graph 2.3.8 图谱构建、MCP 查询和 CLI 维护项目级 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/code-review-graph/SKILL.md
+      - skills/code-review-graph/agents/openai.yaml
+      - skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt
+      - .codex/skills/code-review-graph/SKILL.md
+      - .codex/skills/code-review-graph/agents/openai.yaml
+      - .codex/skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt
+    risk: low
   - name: skill-optimize-build-pipeline
     category: skill
     description: 完整墙钟、硬件证据、缓存、并行与 registry receipt 驱动的构建流水线调优 skill

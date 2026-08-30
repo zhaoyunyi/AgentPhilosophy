@@ -44,7 +44,10 @@ agentphilosophy-sync llm-usage --mode user-breakpoints
 agentphilosophy-sync init /path/to/project --preset fullstack
 agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
+code-review-graph --version
 ```
+
+AgentPhilosophy 固定依赖 `code-review-graph==2.3.8`，并重新导出同名 CLI。默认 preset 还会同步 `code-review-graph` 项目级 skill，用于让 agent 在审查、影响分析、调试、架构探索和安全重构时优先通过 MCP 获取结构化最小上下文。首次配置、构建、状态、watch 和可视化仍由 CLI 完成，详见 [code-review-graph 使用指南](docs/guides/code-review-graph.md)。
 
 安装 `main` 最新内容后，还可以让 agent 直接读取用户断点结构化数据：
 
@@ -73,7 +76,7 @@ agentphilosophy-sync push /path/to/project --apply
 - [release-notes/README.md](release-notes/README.md)
 - [docs/guides/aphilosophy-methodology.md](docs/guides/aphilosophy-methodology.md)
 
-文档索引记录 `docs/` 下长期文档入口，新增长期文档时必须同步更新。CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、`superpowers-system` 可选的原生 discovery 版本约束、可选安装的 `skill-ponytail` 精简编码 skill、`skill-reverse-skill` 授权逆向路由 skill、Matt Pocock 22 个活跃 skills 的完整工程能力集与 `docs/agents/` 设置目录、默认 preset 内置的完整构建流水线调优、Grok CLI headless 编排审查和 Portless 本地开发入口判断 skill、可选独立 `skill-code-review` 审查 skill、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装；`llm-usage --mode user-breakpoints --format json` 用于 agent 直接读取断点标题、推荐项、选项列表和回复格式。发版文档记录版本口径、外部 skill 上游 revision 检查、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
+文档索引记录 `docs/` 下长期文档入口，新增长期文档时必须同步更新。CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、`superpowers-system` 可选的原生 discovery 版本约束、`code-review-graph` 依赖、MCP 与项目级 skill 的分层用法、可选安装的 `skill-ponytail` 精简编码 skill、`skill-reverse-skill` 授权逆向路由 skill、Matt Pocock 22 个活跃 skills 的完整工程能力集与 `docs/agents/` 设置目录、默认 preset 内置的完整构建流水线调优、Grok CLI headless 编排审查和 Portless 本地开发入口判断 skill、可选独立 `skill-code-review` 审查 skill、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装；`llm-usage --mode user-breakpoints --format json` 用于 agent 直接读取断点标题、推荐项、选项列表和回复格式。发版文档记录版本口径、外部 skill 上游 revision 检查、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
 
 ## 常用命令
 
