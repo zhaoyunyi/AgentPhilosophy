@@ -211,6 +211,10 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
         "grilling",
         "handoff",
         "teach",
+        "to-questionnaire",
+        "wait-what",
+        "wizard",
+        "writing-for-agents",
         "writing-great-skills",
         "domain-modeling",
         "to-spec",
@@ -246,6 +250,9 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
     assert (target / "skills" / "codebase-design" / "DEEPENING.md").is_file()
     assert (target / "skills" / "prototype" / "UI.md").is_file()
     assert (target / "skills" / "teach" / "MISSION-FORMAT.md").is_file()
+    assert (target / "skills" / "ask-matt" / "PHASE-BOUNDARIES.md").is_file()
+    assert (target / "skills" / "wizard" / "template.sh").is_file()
+    assert (target / "skills" / "writing-for-agents" / "SKILL-MECHANICS.md").is_file()
     assert (target / "skills" / "writing-great-skills" / "GLOSSARY.md").is_file()
     for compatibility_name in ("to-prd", "to-issues"):
         compatibility_metadata = (

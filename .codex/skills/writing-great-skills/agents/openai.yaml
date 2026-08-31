@@ -1,5 +1,5 @@
 interface:
-  display_name: "Writing Great Skills"
-  short_description: "编写可预测且可维护的 Agent Skills"
+  display_name: "Writing Great Skills（兼容）"
+  short_description: "旧入口，转向 Writing for Agents"
 policy:
   allow_implicit_invocation: false

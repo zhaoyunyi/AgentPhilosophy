@@ -16,7 +16,7 @@ description: 基于 AgentPhilosophy 的 spec、ticket 或明确任务实施一�
 3. 写出本 slice 的测试 seam；如果 seam 不明确，先和用户确认。
 4. 用 `/tdd` 逐个 vertical slice 实现：一个失败测试、最小实现、局部验证，再进入下一小步。
 5. 定期运行类型检查、相关单测或最小验证命令；完成后运行完整验证命令：`uv run pytest -q`。
-6. 运行 `/code-review`，同时检查项目标准和 PRD/issue 覆盖。
+6. 运行 `/code-review`，同时检查项目标准和 spec/issue 覆盖。
 7. 若用户要求提交或当前任务要求收口提交，在 jj 仓库用 `jj describe` / `jj new` 管理 change；非 jj 仓库按项目规则提交。不要使用 `git add`、`git commit`、`git stash` 管理 jj 仓库。
 
 ## 输出要求

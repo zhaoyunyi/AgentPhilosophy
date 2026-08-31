@@ -28,9 +28,16 @@ disable-model-invocation: true
 - 需要设计深模块、接口或 seam：`/codebase-design`。
 - 需要扫描架构候选：`/improve-codebase-architecture`。
 - merge、rebase 或 jj 冲突正在进行：`/resolving-merge-conflicts`。
-- 需要跨会话保留上下文：`/handoff`。
+- 需要把上下文带到新工具、新目录、新仓库或其他协作者：`/handoff`；同一环境继续下一阶段时按阶段边界优先继续或 compact。
 - 需要长期教学工作区：`/teach`。
-- 需要编写或审查 skill：`/writing-great-skills`。
+- 需要向掌握外部知识的人收集答案：`/to-questionnaire`。
+- 遇到只能由人完成的控制台、密钥、迁移或切换步骤：`/wizard`。
+- 上一句解释没有听懂，需要用更简单语言重述：`/wait-what`。
+- 需要编写或审查 skill、`AGENTS.md`、`CLAUDE.md` 或供 agent 读取的文档：`/writing-for-agents`。
+
+## 会话阶段边界
+
+只有在一个阶段结束、下一个阶段尚未开始时，才决定如何处理上下文。按 [PHASE-BOUNDARIES.md](PHASE-BOUNDARIES.md) 从上到下判断：继续当前会话、清空无关上下文、跨目录/工具/人员 handoff、交给可独立运行的子 agent，最后才 compact。
 
 首次使用工程流程但没有 `docs/agents/issue-tracker.md`、`docs/agents/domain.md` 时，先运行 `/setup-matt-pocock-skills`。
 

@@ -224,7 +224,7 @@ breakpoint:
 
 我需要确认是否只把 `/code-review` 双轴审查流程写成项目级 skill。这个选择会决定是否向 `.agentphilosophy.yaml` 追加 `skill-code-review`。
 
-推荐选择：`add-module`，因为当前只需要快速载入审查入口，不需要同步完整 Matt Pocock 22 个活跃 skills。
+推荐选择：`add-module`，因为当前只需要快速载入审查入口，不需要同步完整 Matt Pocock 25 个活跃 skills。
 
 可选项：
 1. `add-module`：追加 `skill-code-review`。影响：后续 `push --apply` 会同步 `code-review` 的 repo skill 和 Codex 项目级 skill。
@@ -239,12 +239,12 @@ breakpoint:
 ```markdown
 ## 配置断点：是否安装 Matt Pocock 完整工程 skill 家族
 
-我需要确认是否把 Matt Pocock 原生插件的 22 个活跃 skills 及支持文件写成项目级能力集。这个选择会决定是否同时保留或追加 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`。
+我需要确认是否把 Matt Pocock 原生插件的 25 个活跃 skills 及支持文件写成项目级能力集。这个选择会决定是否同时保留或追加 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`。
 
 推荐选择：`add-module`，因为默认 preset 会完整提供路由、设置、澄清、规划、调研、原型、诊断、实现、review、架构和跨会话能力，并保持 repo/Codex 双目标一致。
 
 可选项：
-1. `add-module`：追加完整家族。影响：确认两个 Matt Pocock 模块，后续 `push --apply` 会同步 22 个活跃 skills、兼容入口、支持文件和 `agents/openai.yaml`。
+1. `add-module`：追加完整家族。影响：确认两个 Matt Pocock 模块，后续 `push --apply` 会同步 25 个活跃 skills、兼容入口、支持文件和 `agents/openai.yaml`。
 2. `skip-module`：不修改旧项目配置。影响：本次升级不会新增 Matt Pocock 完整工程 skill 家族。
 3. `minimal-config`：保持极简配置。影响：只保留项目当前显式模块，后续需要时再单独追加。
 

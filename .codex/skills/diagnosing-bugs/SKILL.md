@@ -7,11 +7,17 @@ description: 诊断疑难 bug、偶发失败和性能回归；适用于用户要
 
 改编自 Matt Pocock 的 `diagnosing-bugs` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/diagnosing-bugs
 
+## 0. 脱敏
+
+本流程会展示命令、输出和采集产物。展示前先把密钥、令牌、Cookie、Authorization、连接串和个人数据替换为 `<REDACTED>`。需要凭据的反馈环通过环境变量读取，不把凭据写进命令、日志、fixture 或聊天内容；HAR、trace 和 dump 只引用承载诊断信号的必要行。
+
+脱敏后证据不足以诊断时，明确说明缺少哪类信号并请求安全的临时观测方式，不要求用户粘贴原始秘密。
+
 ## 1. 建立反馈环
 
 先找到一个已经运行过、能够对用户准确症状给出红/绿结果的命令。优先顺序：失败测试、HTTP/CLI 脚本、浏览器脚本、trace 回放、最小 harness、属性循环、版本二分、差分运行。必须尽量快速、确定、聚焦。
 
-无法建立反馈环时，明确列出尝试过的路径，并请求可复现环境、HAR/日志/core dump/带时间戳录屏或临时观测权限；不要在没有反馈环时直接猜修复。
+无法建立反馈环时，明确列出尝试过的路径，并请求可复现环境、已脱敏的 HAR/日志/core dump/带时间戳录屏或临时观测权限；不要在没有反馈环时直接猜修复。
 
 需要人工点击时，以 [scripts/hitl-loop.template.sh](scripts/hitl-loop.template.sh) 为起点，把步骤和证据固定下来。
 
@@ -25,7 +31,7 @@ description: 诊断疑难 bug、偶发失败和性能回归；适用于用户要
 
 ## 4. 修复与回归
 
-在正确 seam 上把最小复现变成失败测试，先看它失败，再实施最小修复并看它通过；随后重跑原始反馈环。没有正确 seam 时，把“架构无法锁定回归”作为发现，修复后交给 `/improve-codebase-architecture`。
+在正确 seam 上把最小复现变成失败测试，先看它失败，再实施最小修复并看它通过；随后重跑原始反馈环。没有正确 seam 时，把“架构无法锁定回归”作为发现，并建议用户后续单独运行 `/improve-codebase-architecture`，不要在诊断流程中自动启动仅用户调用的 skill。
 
 ## 5. 收尾
 

@@ -1,0 +1,5 @@
+interface:
+  display_name: "生成调研问卷"
+  short_description: "把知识缺口整理成给知情人的问题"
+policy:
+  allow_implicit_invocation: false

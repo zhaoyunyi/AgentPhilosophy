@@ -1,0 +1,3 @@
+interface:
+  display_name: "面向 Agent 写作"
+  short_description: "编写 Agent Skills 与项目指令文档"

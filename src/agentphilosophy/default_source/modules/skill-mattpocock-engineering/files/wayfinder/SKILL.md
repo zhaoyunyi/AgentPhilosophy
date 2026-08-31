@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 Wayfinder 默认只规划：每张票解决一个决策，地图完成表示“已知道如何到达终点”，不是已经交付终点。
 
-先读取 `docs/agents/issue-tracker.md`；缺少时运行 `/setup-matt-pocock-skills`。tracker 中 map、子票、阻塞、frontier、claim 与 resolve 的物理实现以该文件为准。
+先读取 `docs/agents/issue-tracker.md`；缺少时停止，并请用户先运行 `/setup-matt-pocock-skills`。tracker 中 map、子票、阻塞、frontier、claim 与 resolve 的物理实现以该文件为准。
 
 ## 地图
 

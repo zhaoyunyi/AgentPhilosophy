@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.8.0
+content_version: 0.9.0
 modules:
   - name: openspec-skills
     category: base
@@ -275,7 +275,7 @@ modules:
     risk: low
   - name: skill-mattpocock-engineering
     category: skill
-    description: Matt Pocock 活跃工程 skill 家族；结合独立架构评审模块覆盖上游原生插件的 22 个活跃 skills
+    description: Matt Pocock 活跃工程 skill 家族；结合独立架构评审模块覆盖上游原生插件的 25 个活跃 skills
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/MATTPOCOCK-SKILLS-LICENSE.txt
@@ -293,6 +293,10 @@ modules:
       - skills/resolving-merge-conflicts/SKILL.md
       - skills/handoff/SKILL.md
       - skills/teach/SKILL.md
+      - skills/to-questionnaire/SKILL.md
+      - skills/wait-what/SKILL.md
+      - skills/wizard/SKILL.md
+      - skills/writing-for-agents/SKILL.md
       - skills/writing-great-skills/SKILL.md
       - skills/domain-modeling/SKILL.md
       - skills/to-spec/SKILL.md
@@ -317,6 +321,10 @@ modules:
       - .codex/skills/resolving-merge-conflicts/SKILL.md
       - .codex/skills/handoff/SKILL.md
       - .codex/skills/teach/SKILL.md
+      - .codex/skills/to-questionnaire/SKILL.md
+      - .codex/skills/wait-what/SKILL.md
+      - .codex/skills/wizard/SKILL.md
+      - .codex/skills/writing-for-agents/SKILL.md
       - .codex/skills/writing-great-skills/SKILL.md
       - .codex/skills/domain-modeling/SKILL.md
       - .codex/skills/to-spec/SKILL.md

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 改编自 Matt Pocock 的 `triage` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/triage
 
-先读取 `docs/agents/issue-tracker.md`、`docs/agents/triage-labels.md` 和 `docs/agents/domain.md`。缺少配置时先运行 `/setup-matt-pocock-skills`。所有由 AI 写入 tracker 的 triage 评论以以下声明开头：
+先读取 `docs/agents/issue-tracker.md`、`docs/agents/triage-labels.md` 和 `docs/agents/domain.md`。缺少配置时停止，并请用户先运行 `/setup-matt-pocock-skills`。所有由 AI 写入 tracker 的 triage 评论以以下声明开头：
 
 ```markdown
 > 此内容由 AI 在需求分流过程中生成。

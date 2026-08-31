@@ -4,7 +4,7 @@
 
 1. `README.md`：产品边界和稳定安装入口。
 2. `docs/cli-usage-for-llm.md`：CLI、模块、同步和兼容合同。
-3. `docs/guides/mattpocock-engineering-flow.md`：Matt 22 个活跃 skills 与 setup 布局。
+3. `docs/guides/mattpocock-engineering-flow.md`：Matt 25 个活跃 skills 与 setup 布局。
 4. `docs/release-process.md`：版本、发布和下游传播边界。
 5. `src/agentphilosophy/`、`modules/`、`templates/` 和对应测试。
 
