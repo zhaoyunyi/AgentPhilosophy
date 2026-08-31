@@ -210,7 +210,7 @@ def test_bdd_default_preset_excludes_optional_ponytail_and_superpowers(tmp_path:
 def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: Path) -> None:
     source = Path(__file__).resolve().parents[2]
     target = tmp_path / "complete-mattpocock-project"
-    active_skills = {
+    upstream_active_skills = {
         "ask-matt",
         "code-review",
         "codebase-design",
@@ -228,12 +228,19 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
         "setup-matt-pocock-skills",
         "tdd",
         "teach",
+        "to-questionnaire",
         "to-spec",
         "to-tickets",
         "triage",
+        "wait-what",
         "wayfinder",
+        "wizard",
+        "writing-for-agents",
+    }
+    compatibility_skills = {
         "writing-great-skills",
     }
+    installed_skills = upstream_active_skills | compatibility_skills
 
     assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
@@ -241,16 +248,16 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
     repo_skills = {
         path.parent.name
         for path in (target / "skills").glob("*/SKILL.md")
-        if path.parent.name in active_skills
+        if path.parent.name in installed_skills
     }
     codex_skills = {
         path.parent.name
         for path in (target / ".codex" / "skills").glob("*/SKILL.md")
-        if path.parent.name in active_skills
+        if path.parent.name in installed_skills
     }
-    assert repo_skills == active_skills
-    assert codex_skills == active_skills
-    for skill_name in active_skills:
+    assert repo_skills == installed_skills
+    assert codex_skills == installed_skills
+    for skill_name in installed_skills:
         assert (target / "skills" / skill_name / "agents" / "openai.yaml").is_file()
         assert (target / ".codex" / "skills" / skill_name / "agents" / "openai.yaml").is_file()
     for compatibility_name in ("to-prd", "to-issues"):
@@ -258,6 +265,58 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
         codex_metadata = target / ".codex" / "skills" / compatibility_name / "agents" / "openai.yaml"
         assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
         assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
+
+    assert (target / "skills" / "ask-matt" / "PHASE-BOUNDARIES.md").is_file()
+    assert (target / "skills" / "wizard" / "template.sh").is_file()
+    assert (target / "skills" / "writing-for-agents" / "SKILL-MECHANICS.md").is_file()
+
+    prototype_text = (target / "skills" / "prototype" / "SKILL.md").read_text(encoding="utf-8")
+    prototype_logic = (target / "skills" / "prototype" / "LOGIC.md").read_text(encoding="utf-8")
+    prototype_ui = (target / "skills" / "prototype" / "UI.md").read_text(encoding="utf-8")
+    assert "prototype/<name>" in prototype_text
+    assert "自包含 HTML" in prototype_logic
+    assert "guided walkthroughs" in prototype_logic
+    assert "?variant=<name>" in prototype_ui
+    assert "真实 header、sidebar、数据、权限" in prototype_ui
+
+    wizard_template = (target / "skills" / "wizard" / "template.sh").read_text(encoding="utf-8")
+    for helper in ("banner()", "pause()", "_existing()", "ask_secret()", "set_secret()", "set_var()"):
+        assert helper in wizard_template
+    assert "wslview" in wizard_template
+    assert "TOTAL_MINUTES" not in wizard_template
+
+    diagnosing_text = (target / "skills" / "diagnosing-bugs" / "SKILL.md").read_text(encoding="utf-8")
+    assert "<REDACTED>" in diagnosing_text
+    assert "环境变量" in diagnosing_text
+    assert "建议用户后续单独运行" in diagnosing_text
+
+    writing_metadata = (
+        target / "skills" / "writing-for-agents" / "agents" / "openai.yaml"
+    ).read_text(encoding="utf-8")
+    assert "allow_implicit_invocation: false" not in writing_metadata
+
+    legacy_writing_text = (
+        target / "skills" / "writing-great-skills" / "SKILL.md"
+    ).read_text(encoding="utf-8")
+    assert "writing-for-agents" in legacy_writing_text
+    legacy_writing_metadata = (
+        target / "skills" / "writing-great-skills" / "agents" / "openai.yaml"
+    ).read_text(encoding="utf-8")
+    assert "allow_implicit_invocation: false" in legacy_writing_metadata
+
+    grilling_text = (target / "skills" / "grilling" / "SKILL.md").read_text(encoding="utf-8")
+    assert "每次只问一个问题" in grilling_text
+
+    ask_matt_text = (target / "skills" / "ask-matt" / "SKILL.md").read_text(encoding="utf-8")
+    assert "新工具、新目录、新仓库或其他协作者" in ask_matt_text
+
+    for active_skill in ("grill-with-docs", "domain-modeling", "implement", "code-review"):
+        active_text = (target / "skills" / active_skill / "SKILL.md").read_text(encoding="utf-8")
+        assert "PRD" not in active_text
+
+    for configured_skill in ("triage", "wayfinder"):
+        configured_text = (target / "skills" / configured_skill / "SKILL.md").read_text(encoding="utf-8")
+        assert "停止，并请用户先运行 `/setup-matt-pocock-skills`" in configured_text
 
 
 def test_bdd_default_preset_installs_code_review_graph_orchestration_skill(tmp_path: Path) -> None:

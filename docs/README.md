@@ -25,7 +25,7 @@
 ## 指南
 
 - [docs/guides/aphilosophy-methodology.md](guides/aphilosophy-methodology.md)：维护或扩展 `aphilosophy/` 决策框架时使用的方法论和成果索引。
-- [docs/guides/mattpocock-engineering-flow.md](guides/mattpocock-engineering-flow.md)：Matt Pocock 22 个活跃 skills 的完整能力集、`docs/agents/` 设置目录、AgentPhilosophy 托管边界和主线/分支用法。
+- [docs/guides/mattpocock-engineering-flow.md](guides/mattpocock-engineering-flow.md)：Matt Pocock 25 个活跃 skills 的完整能力集、`docs/agents/` 设置目录、AgentPhilosophy 托管边界和主线/分支用法。
 - [docs/guides/value-specification-audit.md](guides/value-specification-audit.md)：面向开发者的价值规约审计指南，用于检查规则本身是否可信。
 - [docs/guides/code-review-graph.md](guides/code-review-graph.md)：`code-review-graph` 依赖、Skill、MCP 和 CLI 的职责分层、Codex 配置与常用工作流。
 

@@ -1,13 +1,13 @@
 ---
 name: grill-with-docs
-description: 为 AgentPhilosophy 在需求或设计仍模糊时发起 /grill-with-docs，一问一答澄清方案，并同步沉淀 CONTEXT.md、ADR 和领域语言；适用于开工前需求对齐、设计评审和把想法转成 PRD 之前。
+description: 为 AgentPhilosophy 在需求或设计仍模糊时发起 /grill-with-docs，一问一答澄清方案，并同步沉淀 CONTEXT.md、ADR 和领域语言；适用于开工前需求对齐、设计评审和把想法转成 spec 之前。
 ---
 
 # Grill With Docs
 
 改编自 Matt Pocock 的 `grill-with-docs` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/grill-with-docs
 
-目标：在写 PRD、issue 或代码前，把想法问清楚，并把长期有用的领域词汇和关键决策留在仓库里。
+目标：在写 spec、issue 或代码前，把想法问清楚，并把长期有用的领域词汇和关键决策留在仓库里。
 
 ## 主线位置
 
@@ -26,7 +26,7 @@ description: 为 AgentPhilosophy 在需求或设计仍模糊时发起 /grill-wit
 2. 运行 `/grilling` 的一问一答流程：每次只问一个问题，并给出你的推荐答案。
 3. 能从代码库回答的问题先查代码，不把可验证事实丢给用户猜。
 4. 运行 `/domain-modeling` 的沉淀规则：领域词汇在确认后立即写入 `CONTEXT.md`；难反转、出乎意料且有真实权衡的决策才询问是否写 ADR。
-5. 不把 `CONTEXT.md` 当 PRD、计划或实现记录；它只保存领域语言。
+5. 不把 `CONTEXT.md` 当 spec、计划或实现记录；它只保存领域语言。
 6. 不写实现代码，不生成 ticket，不直接提交。共享理解达成后，建议下一步运行 `/to-spec`。
 
 ## 完成信号
@@ -40,5 +40,5 @@ description: 为 AgentPhilosophy 在需求或设计仍模糊时发起 /grill-wit
 
 - 一次抛出一长串问题，让用户自己排序。
 - 在 grilling 结束后顺手开始实现。
-- 把实现细节、任务清单或 PRD 内容写进 `CONTEXT.md`。
+- 把实现细节、任务清单或 spec 内容写进 `CONTEXT.md`。
 - 为普通、可逆、显然的选择创建 ADR。

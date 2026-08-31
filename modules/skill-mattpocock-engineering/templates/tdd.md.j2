@@ -15,7 +15,8 @@ description: 在 {{ project_name }} 中按 red-green-refactor 实现功能或修
 
 1. 读取 `CONTEXT.md` 和相关 ADR，让测试名、fixture 和断言使用项目领域词。
 2. 明确测试 seam：公共接口、用户流程、CLI、API、service boundary 或其他稳定入口。
-3. 和用户或 PRD 确认 seam；不在未确认 seam 上写测试。
+3. 和用户或 spec 确认 seam；不在未确认 seam 上写测试。
+4. 如果接口形状、模块深度或 seam 放置点本身仍不确定，先读取 `/codebase-design` 的词汇和设计规则，不用测试结构替代接口决策。
 
 ## 循环
 
@@ -31,7 +32,7 @@ description: 在 {{ project_name }} 中按 red-green-refactor 实现功能或修
 ## 好测试
 
 - 穿过公共 seam 验证外部行为。
-- 断言来自 PRD、用户例子、协议或已知正确样例，不复刻实现逻辑。
+- 断言来自 spec、用户例子、协议或已知正确样例，不复刻实现逻辑。
 - 测试名读起来像行为规格。
 - 内部实现重构时测试不需要改。
 
@@ -40,4 +41,4 @@ description: 在 {{ project_name }} 中按 red-green-refactor 实现功能或修
 - mock 私有协作者、测试私有函数或绕过公共接口查内部状态。
 - 断言里重新计算实现逻辑，导致 tautological test。
 - 一口气写完所有测试，再批量实现。
-- 只测 happy path，漏掉 PRD 指定失败路径。
+- 只测 happy path，漏掉 spec 指定失败路径。
