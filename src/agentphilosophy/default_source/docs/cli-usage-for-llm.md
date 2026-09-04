@@ -594,6 +594,18 @@ modules:
 -> 新开会话逐个 ticket 用 /implement
 ```
 
+`to-spec`、`to-tickets` 与 `implement` 默认保持显式调用。需要让模型主动发现这三个核心阶段入口的项目，可在 `.agentphilosophy.yaml` 的 `vars` 中按需配置：
+
+```yaml
+vars:
+  matt_implicit_skills:
+    - to-spec
+    - to-tickets
+    - implement
+```
+
+当前只支持上述三个值；默认空列表不会改变其他项目的调用策略。重流程入口、设置入口、兼容入口和会改变工作阶段的其他 skill 不应因本配置自动转为隐式调用。
+
 使用含义：
 
 - `/ask-matt`：不知道正确入口时只做 skill 路由。
@@ -603,6 +615,7 @@ modules:
 - `/to-spec`：把已经讨论清楚的内容整理成 spec，不重新访谈。
 - `/to-tickets`：把 spec 拆成独立、可验证的 tracer-bullet vertical slice ticket；本地模式按 `.scratch/<feature-slug>/issues/<NN>-<slug>.md` 一票一文件保存。
 - `/implement`：按单个 spec/ticket 实现，内部倾向走 `/tdd`，最后跑 `/code-review`。
+
 - `/triage`、`/wayfinder`：分别处理外部需求队列与超过单会话的决策地图。
 - `/research`、`/prototype`、`/diagnosing-bugs`：分别提供一手资料、可丢弃验证和证据化诊断分支。
 - `/codebase-design` 与 `/improve-codebase-architecture`：前者设计深模块 Interface/seam，后者扫描候选并生成报告。

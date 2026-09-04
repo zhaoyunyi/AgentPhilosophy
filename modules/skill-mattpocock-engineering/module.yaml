@@ -1,9 +1,11 @@
 name: skill-mattpocock-engineering
 description: Matt Pocock 活跃工程 skill 家族；架构评审由独立 skill-improve-codebase-architecture 提供
-version: 1.4.0
+version: 1.5.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
+default_vars:
+  matt_implicit_skills: []
 upstream:
   repository: https://github.com/mattpocock/skills
   ref: main
@@ -125,6 +127,18 @@ outputs:
     target: "{{ skill_targets.codex_project }}/to-spec/SKILL.md"
     strategy: managed_replace
     on_existing_unmanaged: report_only
+  - id: to-spec-openai-metadata
+    type: rendered_file
+    template: templates/to-spec.openai.yaml.j2
+    target: "{{ skill_targets.repo_skills }}/to-spec/agents/openai.yaml"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-spec-codex-openai-metadata
+    type: rendered_file
+    template: templates/to-spec.openai.yaml.j2
+    target: "{{ skill_targets.codex_project }}/to-spec/agents/openai.yaml"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
   - id: to-tickets-skill
     type: rendered_file
     template: templates/to-tickets.md.j2
@@ -135,6 +149,18 @@ outputs:
     type: rendered_file
     template: templates/to-tickets.md.j2
     target: "{{ skill_targets.codex_project }}/to-tickets/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-tickets-openai-metadata
+    type: rendered_file
+    template: templates/to-tickets.openai.yaml.j2
+    target: "{{ skill_targets.repo_skills }}/to-tickets/agents/openai.yaml"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: to-tickets-codex-openai-metadata
+    type: rendered_file
+    template: templates/to-tickets.openai.yaml.j2
+    target: "{{ skill_targets.codex_project }}/to-tickets/agents/openai.yaml"
     strategy: managed_replace
     on_existing_unmanaged: report_only
   - id: to-prd-skill
@@ -171,6 +197,18 @@ outputs:
     type: rendered_file
     template: templates/implement.md.j2
     target: "{{ skill_targets.codex_project }}/implement/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: implement-openai-metadata
+    type: rendered_file
+    template: templates/implement.openai.yaml.j2
+    target: "{{ skill_targets.repo_skills }}/implement/agents/openai.yaml"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: implement-codex-openai-metadata
+    type: rendered_file
+    template: templates/implement.openai.yaml.j2
+    target: "{{ skill_targets.codex_project }}/implement/agents/openai.yaml"
     strategy: managed_replace
     on_existing_unmanaged: report_only
   - id: tdd-skill

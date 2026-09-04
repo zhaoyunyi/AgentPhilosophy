@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from shutil import copyfile
 
+import yaml
+
 from agentphilosophy.cli import main
 
 
@@ -266,6 +268,32 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
         assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
         assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
 
+    default_explicit_core_skills = {"implement", "to-spec", "to-tickets"}
+    explicitly_invocable_skills = {
+        "ask-matt",
+        "grill-me",
+        "grill-with-docs",
+        "handoff",
+        "improve-codebase-architecture",
+        "setup-matt-pocock-skills",
+        "teach",
+        "to-issues",
+        "to-prd",
+        "to-questionnaire",
+        "triage",
+        "wait-what",
+        "wayfinder",
+        "writing-great-skills",
+    }
+    for skill_name in default_explicit_core_skills:
+        repo_metadata = target / "skills" / skill_name / "agents" / "openai.yaml"
+        codex_metadata = target / ".codex" / "skills" / skill_name / "agents" / "openai.yaml"
+        assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
+        assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
+    for skill_name in explicitly_invocable_skills:
+        repo_metadata = target / "skills" / skill_name / "agents" / "openai.yaml"
+        assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
+
     assert (target / "skills" / "ask-matt" / "PHASE-BOUNDARIES.md").is_file()
     assert (target / "skills" / "wizard" / "template.sh").is_file()
     assert (target / "skills" / "writing-for-agents" / "SKILL-MECHANICS.md").is_file()
@@ -317,6 +345,47 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
     for configured_skill in ("triage", "wayfinder"):
         configured_text = (target / "skills" / configured_skill / "SKILL.md").read_text(encoding="utf-8")
         assert "停止，并请用户先运行 `/setup-matt-pocock-skills`" in configured_text
+
+
+def test_bdd_matt_core_workflow_implicit_invocation_is_project_configurable(
+    tmp_path: Path,
+) -> None:
+    source = Path(__file__).resolve().parents[2]
+    default_target = tmp_path / "default-matt-invocation-project"
+    configured_target = tmp_path / "configured-matt-invocation-project"
+    selected_skills = ("to-spec", "to-tickets", "implement")
+
+    assert main(["--source", str(source), "init", str(default_target), "--preset", "orchestrator"]) == 0
+    assert main(["--source", str(source), "push", str(default_target), "--apply"]) == 0
+
+    for skill_name in selected_skills:
+        default_metadata = (
+            default_target / "skills" / skill_name / "agents" / "openai.yaml"
+        ).read_text(encoding="utf-8")
+        assert "allow_implicit_invocation: false" in default_metadata
+
+    assert main(["--source", str(source), "init", str(configured_target), "--preset", "orchestrator"]) == 0
+    config_path = configured_target / ".agentphilosophy.yaml"
+    config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    config.setdefault("vars", {})["matt_implicit_skills"] = list(selected_skills)
+    config_path.write_text(
+        yaml.safe_dump(config, allow_unicode=True, sort_keys=False),
+        encoding="utf-8",
+    )
+    assert main(["--source", str(source), "push", str(configured_target), "--apply"]) == 0
+
+    for skill_name in selected_skills:
+        repo_metadata = configured_target / "skills" / skill_name / "agents" / "openai.yaml"
+        codex_metadata = (
+            configured_target / ".codex" / "skills" / skill_name / "agents" / "openai.yaml"
+        )
+        assert "allow_implicit_invocation: true" in repo_metadata.read_text(encoding="utf-8")
+        assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
+
+    unchanged_metadata = (
+        configured_target / "skills" / "grill-with-docs" / "agents" / "openai.yaml"
+    ).read_text(encoding="utf-8")
+    assert "allow_implicit_invocation: false" in unchanged_metadata
 
 
 def test_bdd_default_preset_installs_code_review_graph_orchestration_skill(tmp_path: Path) -> None:

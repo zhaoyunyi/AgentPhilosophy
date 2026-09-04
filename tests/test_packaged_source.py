@@ -145,7 +145,7 @@ def test_updated_external_skill_modules_lock_reviewed_upstream_revisions() -> No
             "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76",
         ),
         "skill-mattpocock-engineering": (
-            "1.4.0",
+            "1.5.0",
             "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76",
         ),
         "skill-ponytail": ("1.1.0", "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"),

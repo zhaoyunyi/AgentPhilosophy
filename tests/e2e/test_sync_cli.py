@@ -259,6 +259,11 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
             target / "skills" / compatibility_name / "agents" / "openai.yaml"
         ).read_text(encoding="utf-8")
         assert "allow_implicit_invocation: false" in compatibility_metadata
+    for configurable_name in ("implement", "to-spec", "to-tickets"):
+        repo_metadata = target / "skills" / configurable_name / "agents" / "openai.yaml"
+        codex_metadata = target / ".codex" / "skills" / configurable_name / "agents" / "openai.yaml"
+        assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
+        assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
     upstream_license = target / "skills" / "MATTPOCOCK-SKILLS-LICENSE.txt"
     codex_upstream_license = target / ".codex" / "skills" / "MATTPOCOCK-SKILLS-LICENSE.txt"
     assert upstream_license.is_file()
@@ -483,6 +488,58 @@ def test_packaged_fullstack_renders_custom_aggregate_style(tmp_path: Path) -> No
     ddd_text = (target / "spec" / "DDDSpec.md").read_text(encoding="utf-8")
     assert "项目聚合风格" in ddd_text
     assert "事件溯源" in ddd_text
+
+
+@pytest.mark.parametrize("preset", ["fullstack", "mobile-sdk", "orchestrator"])
+def test_packaged_preset_appends_project_bdd_custom_layer(
+    tmp_path: Path, preset: str
+) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    init_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "init",
+            str(target),
+            "--preset",
+            preset,
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert init_result.returncode == 0, init_result.stderr + init_result.stdout
+
+    custom_bdd = target / ".agents" / "custom" / "spec" / "BDDSpec.custom.md"
+    custom_bdd.parent.mkdir(parents=True, exist_ok=True)
+    custom_bdd.write_text(
+        "## 项目行为场景\n\n- Given 项目已有冻结 ticket。\n",
+        encoding="utf-8",
+    )
+
+    push_result = subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "sync.py"),
+            "push",
+            str(target),
+            "--apply",
+        ],
+        cwd=workdir,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert push_result.returncode == 0, push_result.stderr + push_result.stdout
+
+    bdd_text = (target / "spec" / "BDDSpec.md").read_text(encoding="utf-8")
+    assert "# BDD 用户行为验收规范" in bdd_text
+    assert "## 项目行为场景" in bdd_text
+    assert "Given 项目已有冻结 ticket" in bdd_text
 
 
 @pytest.mark.parametrize("preset", ["fullstack", "frontend", "mobile-sdk", "orchestrator"])

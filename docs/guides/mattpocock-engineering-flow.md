@@ -43,6 +43,18 @@ AgentPhilosophy 默认 preset 通过 `skill-mattpocock-engineering` 和独立的
 -> /code-review
 ```
 
+`to-spec`、`to-tickets` 与 `implement` 默认保持显式调用，避免所有项目无条件扩大隐式 skill 集。确实需要模型主动发现这三个核心阶段入口的项目，可以在 `.agentphilosophy.yaml` 中配置：
+
+```yaml
+vars:
+  matt_implicit_skills:
+    - to-spec
+    - to-tickets
+    - implement
+```
+
+当前只支持这三个值；未配置或使用空列表时继续生成 `allow_implicit_invocation: false`。`grill-*`、`triage`、`wayfinder`、`handoff` 和兼容入口仍保持各自既有调用策略，避免隐式改变工作阶段。
+
 常见分支：
 
 - 需要一手资料：`/research` 后回到 `/grill-with-docs`。

@@ -1,6 +1,6 @@
 name: spec-bdd
 description: BDD 用户行为验收规范
-version: 1.0.0
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: [doc-templates]
 conflicts: []
@@ -11,7 +11,7 @@ outputs:
     type: rendered_file
     template: templates/BDDSpec.md.j2
     target: "{{ paths.spec_dir }}/BDDSpec.md"
-    strategy: managed_replace
+    strategy: layered
     on_existing_unmanaged: report_only
   - id: bdd-agents-fragment
     type: fragment
