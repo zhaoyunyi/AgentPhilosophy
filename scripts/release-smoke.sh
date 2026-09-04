@@ -74,6 +74,22 @@ PY
 
 target="$smoke_root/project"
 "$smoke_root/venv/bin/agentphilosophy-sync" init "$target" --preset fullstack >/dev/null
+"$smoke_root/venv/bin/python" - "$target/.agentphilosophy.yaml" <<'PY'
+import sys
+
+import yaml
+
+config_path = sys.argv[1]
+with open(config_path, encoding="utf-8") as handle:
+    config = yaml.safe_load(handle)
+config.setdefault("vars", {})["matt_implicit_skills"] = [
+    "to-spec",
+    "to-tickets",
+    "implement",
+]
+with open(config_path, "w", encoding="utf-8") as handle:
+    yaml.safe_dump(config, handle, allow_unicode=True, sort_keys=False)
+PY
 "$smoke_root/venv/bin/agentphilosophy-sync" validate "$target" >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$target" --apply >/dev/null
@@ -175,6 +191,10 @@ test -f "$target/skills/to-prd/agents/openai.yaml"
 test -f "$target/skills/to-issues/agents/openai.yaml"
 grep -q "allow_implicit_invocation: false" "$target/skills/to-prd/agents/openai.yaml"
 grep -q "allow_implicit_invocation: false" "$target/skills/to-issues/agents/openai.yaml"
+for implicit_skill_name in implement to-spec to-tickets; do
+  grep -q "allow_implicit_invocation: true" \
+    "$target/skills/${implicit_skill_name}/agents/openai.yaml"
+done
 test -f "$target/skills/setup-matt-pocock-skills/issue-tracker-local.md"
 test -f "$target/skills/triage/AGENT-BRIEF.md"
 test -f "$target/skills/diagnosing-bugs/scripts/hitl-loop.template.sh"

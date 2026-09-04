@@ -2,4 +2,4 @@ interface:
   display_name: "Implement"
   short_description: "按单个 spec 或 ticket 实现并验收"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: {{ "true" if "implement" in matt_implicit_skills else "false" }}
