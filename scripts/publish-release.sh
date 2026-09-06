@@ -33,8 +33,9 @@ tag="v${version}"
 wheel="dist/agentphilosophy-${version}-py3-none-any.whl"
 sdist="dist/agentphilosophy-${version}.tar.gz"
 notes="release-notes/v${version}.md"
+receipt="dist/agentphilosophy-${version}.receipt.json"
 
-for path in "$wheel" "$sdist" "$notes"; do
+for path in "$wheel" "$sdist" "$notes" "$receipt"; do
   if [[ ! -f "$path" ]]; then
     echo "Required release artifact missing: $path" >&2
     exit 2
@@ -67,12 +68,34 @@ if [[ -z "$remote_main" || "$local_main" != "$remote_main" ]]; then
   exit 2
 fi
 
+uv run --locked python scripts/release-artifacts.py check "$version" \
+  --revision "$local_main" --receipt "$receipt"
+
+if [[ -n "$(git ls-remote --tags origin "refs/tags/${tag}" "refs/tags/${tag}^{}")" ]]; then
+  echo "Remote tag already exists: $tag" >&2
+  exit 2
+fi
+
 gh release create "$tag" \
   "$sdist" \
   "$wheel" \
-  --target main \
+  "$receipt" \
+  --target "$local_main" \
   --title "AgentPhilosophy ${tag}" \
   --notes-file "$notes"
 
 gh release view "$tag" --json tagName,targetCommitish,url,name,isDraft,isPrerelease,assets
-git ls-remote --tags origin "refs/tags/${tag}"
+published_revision="$(git ls-remote --tags origin "refs/tags/${tag}" "refs/tags/${tag}^{}" | \
+  awk '/\^\{\}$/ {peeled=$1; next} {direct=$1} END {print peeled ? peeled : direct}')"
+if [[ "$published_revision" != "$local_main" ]]; then
+  echo "Published tag does not point to the verified source: $published_revision" >&2
+  exit 2
+fi
+
+readback_dir="$(mktemp -d)"
+trap 'rm -rf "$readback_dir"' EXIT
+gh release download "$tag" --pattern "agentphilosophy-${version}*" --dir "$readback_dir"
+cmp "$receipt" "$readback_dir/$(basename "$receipt")"
+uv run --locked python scripts/release-artifacts.py check "$version" \
+  --revision "$local_main" --receipt "$receipt" --dist "$readback_dir"
+echo "Published and verified ${tag} at ${local_main}."

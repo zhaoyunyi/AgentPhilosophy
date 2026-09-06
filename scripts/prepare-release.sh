@@ -113,6 +113,7 @@ for path, (pattern, replacement) in replacements.items():
 PY
 
 uv lock
+python3 scripts/sync-packaged-source.py --apply
 uv run sync.py push . --apply
 uv run ruff check .
 uv run pytest -q
@@ -128,3 +129,5 @@ uv run sync.py validate
 
 echo "Prepared AgentPhilosophy release v${version} with content_version ${content_version}."
 echo "Review release-notes/v${version}.md before publishing."
+echo "After committing the release change, build immutable artifacts with:"
+echo "uv run --locked python scripts/release-artifacts.py build ${version} --revision main"
