@@ -4,6 +4,8 @@ import hashlib
 import subprocess
 from pathlib import Path
 
+from .content import source_files
+
 
 def sha256_bytes(data: bytes) -> str:
     return "sha256:" + hashlib.sha256(data).hexdigest()
@@ -19,25 +21,7 @@ def sha256_file(path: Path) -> str:
 
 def source_tree_hash(source_root: Path) -> str:
     digest = hashlib.sha256()
-    include_paths = [
-        source_root / "catalog.yaml",
-        source_root / "docs" / "cli-usage-for-llm.md",
-        source_root / "docs" / "llm-usage-auto-config.md",
-        source_root / "docs" / "llm-usage-user-breakpoints.md",
-        source_root / "docs" / "llm-usage-user-breakpoints.json",
-    ]
-    include_dirs = [
-        source_root / "modules",
-        source_root / "presets",
-        source_root / "templates",
-    ]
-
-    files: list[Path] = [path for path in include_paths if path.is_file()]
-    for directory in include_dirs:
-        if directory.is_dir():
-            files.extend(path for path in directory.rglob("*") if path.is_file())
-
-    for path in sorted(files, key=lambda item: item.relative_to(source_root).as_posix()):
+    for path in source_files(source_root):
         rel = path.relative_to(source_root).as_posix().encode("utf-8")
         digest.update(rel)
         digest.update(b"\0")

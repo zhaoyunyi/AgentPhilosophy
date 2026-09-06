@@ -2,14 +2,18 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from jinja2 import Environment, StrictUndefined
-
 from .errors import SyncError
 
 
 def render_inline_template(template: str, context: dict[str, object]) -> str:
-    env = Environment(undefined=StrictUndefined, autoescape=False)
-    return env.from_string(template).render(**context)
+    from jinja2 import StrictUndefined
+    from jinja2.sandbox import SandboxedEnvironment, SecurityError
+
+    env = SandboxedEnvironment(undefined=StrictUndefined, autoescape=False)
+    try:
+        return env.from_string(template).render(**context)
+    except SecurityError as exc:
+        raise SyncError(f"unsafe inline template expression: {exc}") from exc
 
 
 def resolve_inside(root: Path, value: str, *, label: str) -> Path:
