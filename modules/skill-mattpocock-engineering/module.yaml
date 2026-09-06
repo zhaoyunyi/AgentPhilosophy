@@ -1,6 +1,6 @@
 name: skill-mattpocock-engineering
 description: Matt Pocock 活跃工程 skill 家族；架构评审由独立 skill-improve-codebase-architecture 提供
-version: 1.5.0
+version: 1.6.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []

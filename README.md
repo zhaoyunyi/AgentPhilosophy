@@ -2,7 +2,7 @@
 
 AgentPhilosophy 是中央 Agent 协作规范管理仓库，用于把共享的 Agent 文档、Spec 规范和项目级 skills 按配置同步到目标项目。
 
-默认同步会同时写入仓库级 `skills/` 和 Codex 原生项目级 `.codex/skills/`，后者用于让 Codex skill discovery 在进入项目后自动发现并按 frontmatter 触发。
+新项目默认同步到仓库级 `skills/` 和 Codex 项目级 `.agents/skills/`。已有显式 `.codex/skills/` 配置及已托管的历史默认目录继续支持；目录迁移先校验资源、状态和调用策略，见 [目标配置](docs/cli/configuration.md)。
 
 ## 快速开始
 
@@ -70,6 +70,7 @@ agentphilosophy-sync push /path/to/project --apply
 
 让 LLM 或自动化 agent 操作本仓库时，先读：
 
+- [docs/agents/maintenance.md](docs/agents/maintenance.md)
 - [docs/README.md](docs/README.md)
 - [docs/cli-usage-for-llm.md](docs/cli-usage-for-llm.md)
 - [docs/release-process.md](docs/release-process.md)

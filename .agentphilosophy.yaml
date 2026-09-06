@@ -7,7 +7,7 @@ paths:
   spec_dir: spec
 skill_targets:
   repo_skills: skills
-  codex_project: .codex/skills
+  codex_project: .agents/skills
 modules:
 - openspec-skills
 - jj-conventions
@@ -34,6 +34,7 @@ modules:
 - skill-mattpocock-engineering
 - skill-portless-local-dev
 - aphilosophy
+- skill-philosophy-extraction
 vars:
   primary_tool: Codex CLI
   test_command: uv run pytest -q

@@ -3,31 +3,9 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from agentphilosophy.content import source_files
+from agentphilosophy.resources import read_llm_usage
 from agentphilosophy.yamlio import read_yaml
-
-
-def source_files(root: Path) -> list[Path]:
-    def is_source_file(path: Path) -> bool:
-        return path.is_file() and path.name != ".DS_Store"
-
-    include_files = [
-        root / "catalog.yaml",
-        root / "docs" / "cli-usage-for-llm.md",
-        root / "docs" / "llm-usage-auto-config.md",
-        root / "docs" / "llm-usage-user-breakpoints.md",
-        root / "docs" / "llm-usage-user-breakpoints.json",
-        root / "docs" / "guides" / "code-review-graph.md",
-    ]
-    include_dirs = [
-        root / "modules",
-        root / "presets",
-        root / "templates",
-    ]
-
-    files = [path for path in include_files if is_source_file(path)]
-    for directory in include_dirs:
-        files.extend(path for path in directory.rglob("*") if is_source_file(path))
-    return sorted(files, key=lambda path: path.relative_to(root).as_posix())
 
 
 def test_packaged_default_source_matches_repository_source() -> None:
@@ -47,7 +25,7 @@ def test_packaged_default_source_matches_repository_source() -> None:
 
 def test_optional_skill_uninstall_docs_apply_before_prune() -> None:
     root = Path(__file__).resolve().parents[1]
-    usage = (root / "docs" / "cli-usage-for-llm.md").read_text(encoding="utf-8")
+    usage = read_llm_usage(root / "docs" / "cli-usage-for-llm.md")
 
     uninstall_section = usage.split("需要卸载已安装的 Ponytail 时", 1)[1].split("## 八、", 1)[0]
     dry_run_index = uninstall_section.index("`push /path/to/project --dry-run`")
@@ -113,6 +91,7 @@ def test_external_skill_modules_declare_upstream_tracking_metadata() -> None:
     root = Path(__file__).resolve().parents[1]
     external_skill_modules = {
         "skill-code-review-graph",
+        "superpowers-system",
         "skill-code-review",
         "skill-ponytail",
         "skill-portless-local-dev",
@@ -139,18 +118,18 @@ def test_updated_external_skill_modules_lock_reviewed_upstream_revisions() -> No
             "1.0.0",
             "2c6dae32643572ee528eb9b77dbcc17f58f3a8c9",
         ),
-        "skill-code-review": ("1.1.0", "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76"),
+        "skill-code-review": ("1.2.0", "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76"),
         "skill-improve-codebase-architecture": (
             "1.2.0",
             "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76",
         ),
         "skill-mattpocock-engineering": (
-            "1.5.0",
+            "1.6.0",
             "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76",
         ),
         "skill-ponytail": ("1.1.0", "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"),
-        "skill-portless-local-dev": ("1.4.0", "15ef06434c81523b1b24db2d52a17caf31edecf1"),
-        "skill-reverse-skill": ("1.1.0", "b8ae07db073783597b11f60fa2e900e3f9b9163f"),
+        "skill-portless-local-dev": ("1.5.0", "713f84dec04b5328c02ffc62d1937b27a80fbc5f"),
+        "skill-reverse-skill": ("1.2.0", "9c28c6ca1062a1a076e28baf40f241dbb4cf5dc2"),
     }
 
     for module_name, (version, revision) in expected.items():

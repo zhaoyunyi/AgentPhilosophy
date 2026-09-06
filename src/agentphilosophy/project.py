@@ -19,7 +19,7 @@ DEFAULT_PATHS = {
 
 DEFAULT_SKILL_TARGETS = {
     "claude_project": ".claude/skills",
-    "codex_project": ".codex/skills",
+    "codex_project": ".agents/skills",
     "repo_skills": "skills",
 }
 
@@ -44,6 +44,17 @@ def load_project_config(project_root: Path, *, allow_migration_draft: bool = Fal
     config.setdefault("project_type", "unknown")
     config.setdefault("paths", {})
     config.setdefault("skill_targets", {})
+    # 旧配置未显式设置发现目录时，保留其已经托管的历史目标。
+    targets = config.get("skill_targets")
+    state_path = project_root / ".agents/agentphilosophy-state.yaml"
+    if isinstance(targets, dict) and "codex_project" not in targets and state_path.is_file():
+        state = read_yaml(state_path)
+        records = state.get("files") or []
+        if isinstance(records, list) and any(
+            isinstance(record, dict) and str(record.get("path", "")).startswith(".codex/skills/")
+            for record in records
+        ):
+            targets["codex_project"] = ".codex/skills"
     config.setdefault("vars", {})
     config.setdefault("modules", [])
     return config

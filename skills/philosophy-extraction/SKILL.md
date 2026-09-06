@@ -193,13 +193,7 @@ description: 从哲学/概念性文章中提取可操作的 Agent 决策框架�
 
 ## 已有模板索引
 
-| 文件 | 来源 | 冲突数 | 领域 |
-|------|------|--------|------|
-| `meta-decision-principles.md.j2` | 通用提取 | 5 原则 | 元决策锚点 |
-| `architecture-conflict-resolution.md.j2` | 赛博道德经（道家） | 6 类型 | 架构设计 |
-| `governance-conflict-resolution.md.j2` | 赛博儒学（儒家） | 7 类型 | 多主体治理 |
-| `cognitive-conflict-resolution.md.j2` | 赛博佛学（佛家） | 6 类型 | 自我认知/推理 |
-| `authority-conflict-resolution.md.j2` | 赛博神学（一神教） | 6 类型 | 权限/对齐 |
+维护中央源时，以 `modules/aphilosophy/module.yaml` 的 `outputs` 为权威清单；说明与来源映射见 `docs/guides/aphilosophy-methodology.md`。先核对现有元决策、架构、治理、认知、权限、运行态和安全对抗条目，再判断是否需要新增领域；本入口不另存一份易漂移的表格。
 
 ## 注意事项
 

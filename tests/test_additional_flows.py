@@ -909,12 +909,12 @@ def test_migrate_inventory_includes_codex_project_skills(tmp_path: Path) -> None
     source = tmp_path / "source"
     target = tmp_path / "target"
     create_copy_tree_source(source)
-    write(target / ".codex" / "skills" / "legacy-codex" / "SKILL.md", "# Legacy Codex Skill\n")
+    write(target / ".agents" / "skills" / "legacy-codex" / "SKILL.md", "# Legacy Codex Skill\n")
 
     assert main(["--source", str(source), "migrate", str(target)]) == 0
 
     inventory = (target / ".agents" / "migration" / "inventory.md").read_text(encoding="utf-8")
-    assert "`.codex/skills/legacy-codex/SKILL.md`" in inventory
+    assert "`.agents/skills/legacy-codex/SKILL.md`" in inventory
 
 
 def test_migrate_write_config_refuses_to_replace_existing_config(tmp_path: Path) -> None:

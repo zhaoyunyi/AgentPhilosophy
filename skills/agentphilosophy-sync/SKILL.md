@@ -1,16 +1,16 @@
 ---
 name: agentphilosophy-sync
-description: 使用或排查 AgentPhilosophy CLI 同步流程；适用于 agentphilosophy-sync、sync.py、.agentphilosophy.yaml、.agents/agentphilosophy-state.yaml、migrate/adopt/push/status、托管输出漂移和 .codex/skills discovery 收口任务。
+description: 使用或排查 AgentPhilosophy CLI、项目接入、托管输出和 skill 发现目录迁移；适用于配置、state 漂移与 migrate/adopt/push/status 操作。
 ---
 
 # AgentPhilosophy sync
 
-使用规则：
-
-- 只在需要调用或排查 AgentPhilosophy 同步 CLI、托管输出、迁移接管、state 漂移或 `.codex/skills` discovery 收口时使用；普通 AGENTS、Spec 或 skill 内容审查优先按目标文件自己的规则处理。
-- 如果当前目录是 AgentPhilosophy 源码仓库，先读 `docs/cli-usage-for-llm.md`，以当前已实现 CLI 为准。
-- 如果在目标项目中，优先使用已安装的 `agentphilosophy-sync`；需要指定中央源码时使用 `uv run /path/to/AgentPhilosophy/sync.py --source /path/to/AgentPhilosophy ...`。
-- 写入目标项目前必须先执行中央源校验和 dry-run：`validate` -> `validate /path/to/project` -> `push /path/to/project --dry-run` -> `push /path/to/project --apply`。
-- 老项目先走 `migrate /path/to/project` 或 `migrate /path/to/project --write-config`，再检查迁移产物，随后 `adopt --from-report .agents/migration/adopt-plan.yaml`。
-- 不要手工编辑 `.agents/agentphilosophy-state.yaml`；状态漂移通过 `push --dry-run`、`push --apply` 或 `status --project` 收口。
-- 需要让 Codex 原生 skill discovery 自动触发时，确认 `skill_targets.codex_project` 指向 `.codex/skills`，并在 apply 后用 `find -L .codex/skills -name SKILL.md` 验证。
+- 普通内容审查按目标文件规则进行；需要同步或迁移时才进入本流程。
+- 中央维护者按 `docs/agents/maintenance.md` 的任务入口读取；目标项目优先使用已安装的 `agentphilosophy-sync`。
+- 跨目录调用中央源码使用 `uv run --project /path/to/AgentPhilosophy /path/to/AgentPhilosophy/sync.py --source /path/to/AgentPhilosophy ...`；`--source` 不选择 Python 依赖环境。
+- 写入前依次执行 `validate`、`validate /path/to/project`、`push /path/to/project --dry-run`；检查计划后 `push /path/to/project --apply`，再 `status --project /path/to/project`。
+- 老项目先走 `migrate` 或 `migrate --write-config`，检查报告后再 `adopt --from-report .agents/migration/adopt-plan.yaml`。
+- state 由同步器维护，不手工编辑 `.agents/agentphilosophy-state.yaml`。
+- 新项目 Codex 默认使用 `.agents/skills`；既有显式 `.codex/skills` 配置及已托管的历史默认目录继续支持。迁移前检查旧文件漂移与新目录冲突；先 apply 新输出并验证支持文件和调用策略，再用 `--prune-managed` 清理未被手改的旧托管输出。失败时停止清理。
+- 当前项目实际 Codex 目标为 `.agents/skills`；应用后验证其中的 SKILL.md、支持文件、metadata 及宿主发现结果，不能仅凭文件存在宣称宿主验收通过。
+- 内置模块输出到 `repo_skills` 与 `codex_project`。需要 Claude 原生 skills 时可设置 `repo_skills: .claude/skills`；`claude_project` 仅供显式引用它的自定义模块使用。

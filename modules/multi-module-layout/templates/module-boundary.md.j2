@@ -1,4 +1,4 @@
-- 进入子目录前先读取该目录内的 `AGENTS.md`、`CLAUDE.md` 或 README。
+- 处理子目录任务前，读取其中存在的 `AGENTS.md`、`CLAUDE.md` 或 README；缺失时继承适用的上级规则，已读且未变化的内容可复用。
 - 跨仓搜索默认只读；除非任务明确要求，不修改兄弟仓或外部项目文件。
 {% for item in sub_directories | default([], true) %}
 - `{{ item.name }}`：{{ item.description }}

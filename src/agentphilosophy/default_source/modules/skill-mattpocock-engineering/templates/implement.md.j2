@@ -13,7 +13,7 @@ description: 基于 {{ project_name }} 的 spec、ticket 或明确任务实施�
 
 1. 读取 spec 和当前 ticket。确认范围、acceptance criteria、非目标、阻塞项和验证命令。
 2. 读取 `AGENTS.md`、相关 spec、`CONTEXT.md`、ADR 和既有测试模式。
-3. 写出本 slice 的测试 seam；如果 seam 不明确，先和用户确认。
+3. 写出本 slice 的测试 seam；从已确认任务与现有公共接口确定；只有影响验收契约的歧义才向用户确认。
 4. 用 `/tdd` 逐个 vertical slice 实现：一个失败测试、最小实现、局部验证，再进入下一小步。
 5. 定期运行类型检查、相关单测或最小验证命令；完成后运行完整验证命令：`{{ test_command | default("pytest -q") }}`。
 6. 运行 `/code-review`，同时检查项目标准和 spec/issue 覆盖。

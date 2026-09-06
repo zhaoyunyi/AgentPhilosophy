@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.10.0
+content_version: 0.11.0
 modules:
   - name: openspec-skills
     category: base
@@ -7,7 +7,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/openspec-skills/
-      - .codex/skills/openspec-skills/
+      - .agents/skills/openspec-skills/
     risk: low
   - name: jj-conventions
     category: base
@@ -151,7 +151,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/agentphilosophy-sync/SKILL.md
-      - .codex/skills/agentphilosophy-sync/SKILL.md
+      - .agents/skills/agentphilosophy-sync/SKILL.md
     risk: low
   - name: skill-jj-management
     category: skill
@@ -159,7 +159,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/jj-management/SKILL.md
-      - .codex/skills/jj-management/SKILL.md
+      - .agents/skills/jj-management/SKILL.md
     risk: low
   - name: skill-target-jj
     category: skill
@@ -167,7 +167,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/target-jj/SKILL.md
-      - .codex/skills/target-jj/SKILL.md
+      - .agents/skills/target-jj/SKILL.md
     risk: low
   - name: skill-coding-standards
     category: skill
@@ -175,7 +175,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/coding-standards/SKILL.md
-      - .codex/skills/coding-standards/SKILL.md
+      - .agents/skills/coding-standards/SKILL.md
     risk: low
   - name: skill-repo-management
     category: skill
@@ -183,7 +183,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/repo-management/SKILL.md
-      - .codex/skills/repo-management/SKILL.md
+      - .agents/skills/repo-management/SKILL.md
     risk: low
   - name: skill-code-review-graph
     category: skill
@@ -193,9 +193,9 @@ modules:
       - skills/code-review-graph/SKILL.md
       - skills/code-review-graph/agents/openai.yaml
       - skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt
-      - .codex/skills/code-review-graph/SKILL.md
-      - .codex/skills/code-review-graph/agents/openai.yaml
-      - .codex/skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt
+      - .agents/skills/code-review-graph/SKILL.md
+      - .agents/skills/code-review-graph/agents/openai.yaml
+      - .agents/skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt
     risk: low
   - name: skill-optimize-build-pipeline
     category: skill
@@ -203,7 +203,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/optimize-build-pipeline/
-      - .codex/skills/optimize-build-pipeline/
+      - .agents/skills/optimize-build-pipeline/
     risk: medium
   - name: skill-orchestrate-grok-cli
     category: skill
@@ -211,7 +211,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/orchestrate-grok-cli/
-      - .codex/skills/orchestrate-grok-cli/
+      - .agents/skills/orchestrate-grok-cli/
     risk: medium
   - name: skill-philosophy-extraction
     category: skill
@@ -219,19 +219,19 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/philosophy-extraction/SKILL.md
-      - .codex/skills/philosophy-extraction/SKILL.md
+      - .agents/skills/philosophy-extraction/SKILL.md
     risk: low
   - name: skill-portless-local-dev
     category: skill
-    description: Portless 0.15.4 稳定本地 URL、诊断、安全监听和本地验收入口 skill
+    description: Portless 0.15.6 稳定本地 URL、诊断、安全监听和本地验收入口 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/portless-local-dev/SKILL.md
       - skills/portless-local-dev/agents/openai.yaml
       - skills/portless-local-dev/PORTLESS-LICENSE.txt
-      - .codex/skills/portless-local-dev/SKILL.md
-      - .codex/skills/portless-local-dev/agents/openai.yaml
-      - .codex/skills/portless-local-dev/PORTLESS-LICENSE.txt
+      - .agents/skills/portless-local-dev/SKILL.md
+      - .agents/skills/portless-local-dev/agents/openai.yaml
+      - .agents/skills/portless-local-dev/PORTLESS-LICENSE.txt
     risk: low
   - name: skill-ponytail
     category: skill
@@ -241,21 +241,21 @@ modules:
       - skills/ponytail/SKILL.md
       - skills/ponytail/agents/openai.yaml
       - skills/ponytail/PONYTAIL-LICENSE.txt
-      - .codex/skills/ponytail/SKILL.md
-      - .codex/skills/ponytail/agents/openai.yaml
-      - .codex/skills/ponytail/PONYTAIL-LICENSE.txt
+      - .agents/skills/ponytail/SKILL.md
+      - .agents/skills/ponytail/agents/openai.yaml
+      - .agents/skills/ponytail/PONYTAIL-LICENSE.txt
     risk: low
   - name: skill-reverse-skill
     category: skill
-    description: reverse-skill 1.0.0 Scope 门禁、证据链和扩展安全领域路由项目级 skill
+    description: reverse-skill v1.0.1 快照筛选 Scope 门禁、证据链和扩展安全领域路由项目级 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/reverse-skill/SKILL.md
       - skills/reverse-skill/agents/openai.yaml
       - skills/reverse-skill/REVERSE-SKILL-LICENSE.txt
-      - .codex/skills/reverse-skill/SKILL.md
-      - .codex/skills/reverse-skill/agents/openai.yaml
-      - .codex/skills/reverse-skill/REVERSE-SKILL-LICENSE.txt
+      - .agents/skills/reverse-skill/SKILL.md
+      - .agents/skills/reverse-skill/agents/openai.yaml
+      - .agents/skills/reverse-skill/REVERSE-SKILL-LICENSE.txt
     risk: medium
   - name: skill-improve-codebase-architecture
     category: skill
@@ -263,7 +263,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/improve-codebase-architecture/SKILL.md
-      - .codex/skills/improve-codebase-architecture/SKILL.md
+      - .agents/skills/improve-codebase-architecture/SKILL.md
     risk: low
   - name: skill-code-review
     category: skill
@@ -271,7 +271,7 @@ modules:
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/code-review/SKILL.md
-      - .codex/skills/code-review/SKILL.md
+      - .agents/skills/code-review/SKILL.md
     risk: low
   - name: skill-mattpocock-engineering
     category: skill
@@ -306,34 +306,34 @@ modules:
       - skills/implement/SKILL.md
       - skills/tdd/SKILL.md
       - skills/code-review/SKILL.md
-      - .codex/skills/MATTPOCOCK-SKILLS-LICENSE.txt
-      - .codex/skills/grill-me/SKILL.md
-      - .codex/skills/grill-with-docs/SKILL.md
-      - .codex/skills/grilling/SKILL.md
-      - .codex/skills/ask-matt/SKILL.md
-      - .codex/skills/triage/SKILL.md
-      - .codex/skills/setup-matt-pocock-skills/SKILL.md
-      - .codex/skills/wayfinder/SKILL.md
-      - .codex/skills/prototype/SKILL.md
-      - .codex/skills/diagnosing-bugs/SKILL.md
-      - .codex/skills/research/SKILL.md
-      - .codex/skills/codebase-design/SKILL.md
-      - .codex/skills/resolving-merge-conflicts/SKILL.md
-      - .codex/skills/handoff/SKILL.md
-      - .codex/skills/teach/SKILL.md
-      - .codex/skills/to-questionnaire/SKILL.md
-      - .codex/skills/wait-what/SKILL.md
-      - .codex/skills/wizard/SKILL.md
-      - .codex/skills/writing-for-agents/SKILL.md
-      - .codex/skills/writing-great-skills/SKILL.md
-      - .codex/skills/domain-modeling/SKILL.md
-      - .codex/skills/to-spec/SKILL.md
-      - .codex/skills/to-tickets/SKILL.md
-      - .codex/skills/to-prd/SKILL.md
-      - .codex/skills/to-issues/SKILL.md
-      - .codex/skills/implement/SKILL.md
-      - .codex/skills/tdd/SKILL.md
-      - .codex/skills/code-review/SKILL.md
+      - .agents/skills/MATTPOCOCK-SKILLS-LICENSE.txt
+      - .agents/skills/grill-me/SKILL.md
+      - .agents/skills/grill-with-docs/SKILL.md
+      - .agents/skills/grilling/SKILL.md
+      - .agents/skills/ask-matt/SKILL.md
+      - .agents/skills/triage/SKILL.md
+      - .agents/skills/setup-matt-pocock-skills/SKILL.md
+      - .agents/skills/wayfinder/SKILL.md
+      - .agents/skills/prototype/SKILL.md
+      - .agents/skills/diagnosing-bugs/SKILL.md
+      - .agents/skills/research/SKILL.md
+      - .agents/skills/codebase-design/SKILL.md
+      - .agents/skills/resolving-merge-conflicts/SKILL.md
+      - .agents/skills/handoff/SKILL.md
+      - .agents/skills/teach/SKILL.md
+      - .agents/skills/to-questionnaire/SKILL.md
+      - .agents/skills/wait-what/SKILL.md
+      - .agents/skills/wizard/SKILL.md
+      - .agents/skills/writing-for-agents/SKILL.md
+      - .agents/skills/writing-great-skills/SKILL.md
+      - .agents/skills/domain-modeling/SKILL.md
+      - .agents/skills/to-spec/SKILL.md
+      - .agents/skills/to-tickets/SKILL.md
+      - .agents/skills/to-prd/SKILL.md
+      - .agents/skills/to-issues/SKILL.md
+      - .agents/skills/implement/SKILL.md
+      - .agents/skills/tdd/SKILL.md
+      - .agents/skills/code-review/SKILL.md
     risk: low
   - name: aphilosophy
     category: philosophy

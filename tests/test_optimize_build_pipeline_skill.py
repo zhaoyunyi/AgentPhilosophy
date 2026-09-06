@@ -14,15 +14,8 @@ MODULE_ROOT = ROOT / "modules" / MODULE_NAME
 SKILL_ROOT = MODULE_ROOT / SKILL_NAME
 
 
-def test_optimize_build_pipeline_skill_passes_skill_creator_validation() -> None:
-    validator = Path.home() / ".codex" / "skills" / ".system" / "skill-creator" / "scripts" / "quick_validate.py"
-    result = subprocess.run(
-        [sys.executable, str(validator), str(SKILL_ROOT)],
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    assert result.returncode == 0, result.stderr + result.stdout
+def test_optimize_build_pipeline_skill_passes_skill_contract_validation(validate_skill_contract) -> None:
+    validate_skill_contract(SKILL_ROOT, SKILL_NAME)
 
     skill_text = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
     assert "TODO" not in skill_text

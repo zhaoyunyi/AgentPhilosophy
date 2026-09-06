@@ -1,14 +1,8 @@
-## Superpowers System
+## Superpowers 可选工作流
 
-<EXTREMELY_IMPORTANT>
-Superpowers 已通过 **Codex 原生 skill discovery** 安装；当前项目要求的 Superpowers skill 版本为 `{{ superpowers_version }}`，无需再使用旧版 `superpowers-codex bootstrap`。
+当前项目参考 Superpowers `{{ superpowers_version }}`。仅在用户明确点名 Superpowers、superpowers-cn 或其所属的具体技能时进入相应流程。选择本模块只分发说明，不表示本机已安装，也不表示本轮自动启用。
 
-固定安装位置：
-
-- Superpowers 仓库：`{{ superpowers_repository_path }}`
-- Skills 入口（symlink）：`{{ superpowers_skills_symlink }}` -> `{{ superpowers_skills_target }}`
-
-如果需要升级或校准 Superpowers，先确认上述 symlink 指向正确，再把 `{{ superpowers_repository_path }}` 更新到项目要求的 `{{ superpowers_version }}` 对应版本，并重启 Codex CLI 让原生 skill discovery 重新扫描。
-
-如果某次会话中技能未出现：先确认上述 symlink 存在，再重启 Codex CLI。
-</EXTREMELY_IMPORTANT>
+- 启用前核对实际安装渠道、技能位置和版本。上游 Codex 安装说明使用插件市场；`{{ superpowers_repository_path }}` 只是已有 clone 的候选路径。
+- 不因旧说明提及 `{{ superpowers_skills_symlink }}` 就自动创建或恢复全局技能入口。
+- 遵循宿主指令优先级、当前用户授权范围和项目版本控制约定；上游 skill 不新增授权、不强制替换 jj 工作区管理方式。
+- 已有明确且覆盖当前动作的授权直接沿用；确实需要用户选择或新增授权时，再说明具体缺口并询问。

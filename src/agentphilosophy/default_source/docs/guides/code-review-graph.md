@@ -1,6 +1,6 @@
 # code-review-graph 使用指南
 
-AgentPhilosophy 从 v0.8.0 起固定依赖 [`code-review-graph`](https://github.com/tirth8205/code-review-graph) `2.3.8`，并重新导出同名 `code-review-graph` 命令。默认 preset 同时包含 `skill-code-review-graph`，把使用规则同步到仓库级 `skills/code-review-graph/` 和 Codex 项目级 `.codex/skills/code-review-graph/`。
+AgentPhilosophy 从 v0.8.0 起固定依赖 [`code-review-graph`](https://github.com/tirth8205/code-review-graph) `2.3.8`，并重新导出同名 `code-review-graph` 命令。默认 preset 同时包含 `skill-code-review-graph`，把使用规则同步到仓库级 `skills/code-review-graph/` 和 Codex 项目级 `.agents/skills/code-review-graph/`。
 
 ## 到底使用 Skill、CLI 还是 MCP
 

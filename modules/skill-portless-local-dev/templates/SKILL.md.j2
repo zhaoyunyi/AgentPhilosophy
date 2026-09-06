@@ -7,7 +7,7 @@ description: 为 {{ project_name }} 判断、按需安装和改造 Portless 本�
 
 Portless 官方仓库：https://github.com/vercel-labs/portless
 
-本封装已审阅并锁定 Portless 上游 revision `15ef06434c81523b1b24db2d52a17caf31edecf1`，其 package version 仍为 `0.15.4`：项目内安装需要 Node.js 24+。该 revision 在非 LAN 模式下只监听 `127.0.0.1` 和 `::1`，显式启用 LAN 时才监听所有网卡；同时包含 `portless doctor`、HTTP/2 Host 转发、WebSocket、IPv6 upstream、worktree 前缀、多 TLD、多段自定义 TLD、sudo 状态目录，以及 Windows/WSL 双侧 CA 信任修复。
+本封装已审阅并锁定 Portless 上游 revision `713f84dec04b5328c02ffc62d1937b27a80fbc5f`，对应正式标签 `v0.15.6`、package version `0.15.6`：项目内安装需要 Node.js 24+。该 revision 在非 LAN 模式下只监听 `127.0.0.1` 和 `::1`，显式启用 LAN 时才监听所有网卡；同时包含 `portless doctor`、HTTP/2 Host 转发、WebSocket、IPv6 upstream、worktree 前缀、多 TLD、多段自定义 TLD、sudo 状态目录，以及 Windows/WSL 双侧 CA 信任修复。
 
 ## 何时使用
 
@@ -46,10 +46,17 @@ Portless 官方仓库：https://github.com/vercel-labs/portless
 6. 写改造前先保留一个无 Portless 的直接启动路径，便于 `PORTLESS=0`、`pnpm run dev:app` 或 `pnpm run dev:raw` 回退。
 7. 排障先运行只读的 `portless doctor`，再根据它报告的 Node、状态目录、代理、路由、域名解析、CA 信任或 LAN 前置条件处理，不先做提权或清理。
 
+## 服务命令与退出边界
+
+- 0.15.6 可为以框架或已知 runner 开头的 package 服务脚本注入端口参数，如 `dev: vite`、`dev: bunx vite`；只针对 dev/serve/preview/start 等服务命令，不给 build/test/check 注入。
+- 复合命令、尾部注释、自有 `--`、环境变量前缀、委托其他 script、script 前 runner flags 和未知 CLI 语法不保证自动注入；这些场景显式传递端口。Expo 的 localhost/lan/tunnel 模式仍需保留。
+- 第一次 Ctrl+C 等待服务进程树退出，后续中断继续转发；验收时检查后代进程退出和端口释放。
+- Windows startup service 无执行时限，已有 Task Scheduler 定义通过原子替换更新；执行此类系统配置前说明实际影响并沿用当前授权。
+
 ## 安装策略
 
-- 全局安装适合个人机器和多项目协作：`npm install -g portless`。
-- 项目内安装适合团队锁版本：使用项目包管理器添加 dev dependency，例如 `npm install -D portless`、`pnpm add -D portless`、`yarn add -D portless` 或 `bun add -d portless`。
+- 全局安装适合个人机器和多项目协作：`npm install -g portless@0.15.6`。
+- 项目内安装适合团队锁版本：使用项目包管理器添加 dev dependency，例如 `npm install -D -E portless@0.15.6`、`pnpm add -D -E portless@0.15.6`、`yarn add -D -E portless@0.15.6` 或 `bun add -d --exact portless@0.15.6`。
 - Portless 需要 Node.js 24+，且仍是 pre-1.0；项目内安装时应锁版本并记录升级影响。
 - 不使用一次性的 `npx portless`、`pnpm dlx portless` 或类似远程临时执行方式；如果是项目依赖里的本地二进制，可通过 package script 调用。
 

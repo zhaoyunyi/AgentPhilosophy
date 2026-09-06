@@ -227,7 +227,7 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
     ]
     for skill_name in expected_skills:
         repo_dir = target / "skills" / skill_name
-        codex_dir = target / ".codex" / "skills" / skill_name
+        codex_dir = target / ".agents" / "skills" / skill_name
         repo_skill = repo_dir / "SKILL.md"
         codex_skill = codex_dir / "SKILL.md"
         assert repo_skill.is_file()
@@ -261,11 +261,11 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
         assert "allow_implicit_invocation: false" in compatibility_metadata
     for configurable_name in ("implement", "to-spec", "to-tickets"):
         repo_metadata = target / "skills" / configurable_name / "agents" / "openai.yaml"
-        codex_metadata = target / ".codex" / "skills" / configurable_name / "agents" / "openai.yaml"
+        codex_metadata = target / ".agents" / "skills" / configurable_name / "agents" / "openai.yaml"
         assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
         assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
     upstream_license = target / "skills" / "MATTPOCOCK-SKILLS-LICENSE.txt"
-    codex_upstream_license = target / ".codex" / "skills" / "MATTPOCOCK-SKILLS-LICENSE.txt"
+    codex_upstream_license = target / ".agents" / "skills" / "MATTPOCOCK-SKILLS-LICENSE.txt"
     assert upstream_license.is_file()
     assert codex_upstream_license.read_bytes() == upstream_license.read_bytes()
     assert "Copyright (c) 2026 Matt Pocock" in upstream_license.read_text(encoding="utf-8")
@@ -347,8 +347,8 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     assert "SuperAgentAI" not in spec_text
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
-    assert "用户可见文案不得解释内部实现、上游供应商或产品内部边界" in agents_text
-    assert "组织访问密钥用于服务端集成" in agents_text
+    assert "终端用户界面、开发者集成文档与内部诊断" in agents_text
+    assert "公开接口、依赖名称、认证方式及参数" in agents_text
     assert "Cadraq gateway key" not in agents_text
     assert "Customer gateway key" not in agents_text
     assert "SuperAgentAI" not in agents_text
@@ -405,7 +405,7 @@ def test_packaged_fullstack_without_superpowers_has_no_blank_section(tmp_path: P
     project_config = config_path.read_text(encoding="utf-8")
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "- superpowers-system" not in project_config
-    assert "Superpowers System" not in agents_text
+    assert "Superpowers 可选工作流" not in agents_text
     assert "\n\n\n## 工程规范" not in agents_text
 
 
@@ -562,8 +562,8 @@ def test_packaged_preset_does_not_enable_superpowers_by_default(tmp_path: Path, 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "- model-constraints" in project_config
     assert "- superpowers-system" not in project_config
-    assert "Superpowers System" not in agents_text
-    assert "Superpowers skill 版本为 `6.1.1`" not in agents_text
+    assert "Superpowers 可选工作流" not in agents_text
+    assert "当前项目参考 Superpowers `6.3.0`" not in agents_text
 
 
 def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> None:
@@ -604,8 +604,8 @@ def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> N
     assert push_result.returncode == 0, push_result.stderr + push_result.stdout
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
-    assert "Superpowers System" in agents_text
-    assert "Superpowers skill 版本为 `6.1.1`" in agents_text
+    assert "Superpowers 可选工作流" in agents_text
+    assert "当前项目参考 Superpowers `6.3.0`" in agents_text
     assert "~/.codex/superpowers" in agents_text
     assert "~/.agents/skills/superpowers" in agents_text
 
@@ -636,7 +636,7 @@ def test_packaged_preset_does_not_install_optional_ponytail_skill(tmp_path: Path
 
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     repo_skill = target / "skills" / "ponytail" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "ponytail" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "ponytail" / "SKILL.md"
 
     assert "- skill-ponytail" not in project_config
     assert not repo_skill.exists()
@@ -681,7 +681,7 @@ def test_packaged_project_can_explicitly_enable_ponytail(tmp_path: Path) -> None
     assert push_result.returncode == 0, push_result.stderr + push_result.stdout
 
     repo_skill = target / "skills" / "ponytail" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "ponytail" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "ponytail" / "SKILL.md"
     assert repo_skill.is_file()
     assert codex_skill.is_file()
     assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
@@ -732,7 +732,7 @@ def test_packaged_preset_installs_reverse_skill_by_default(tmp_path: Path, prese
 
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     repo_skill = target / "skills" / "reverse-skill" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "reverse-skill" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "reverse-skill" / "SKILL.md"
 
     assert "- skill-reverse-skill" in project_config
     assert repo_skill.is_file()
@@ -743,7 +743,9 @@ def test_packaged_preset_installs_reverse_skill_by_default(tmp_path: Path, prese
     assert "zhaoxuya520/reverse-skill" in repo_skill_text
     assert "授权逆向、安全研究、CTF 或自有资产分析" in repo_skill_text
     assert "不要把上游仓库整包复制进目标项目" in repo_skill_text
-    assert "上游 `1.0.0`" in repo_skill_text
+    assert "上游 `v1.0.1`" in repo_skill_text
+    assert "VERSION` 写为 `1.1.0`" in repo_skill_text
+    assert "禁止用 `--force` / `-Force` 绕过 scope" in repo_skill_text
     assert "MASTER-ROUTING" in repo_skill_text
     assert "network_profile" in repo_skill_text
     assert "Evidence -> Finding -> Path" in repo_skill_text
@@ -786,7 +788,7 @@ def test_packaged_preset_installs_portless_skill_by_default(tmp_path: Path, pres
 
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     repo_skill = target / "skills" / "portless-local-dev" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "portless-local-dev" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "portless-local-dev" / "SKILL.md"
 
     assert "- skill-portless-local-dev" in project_config
     assert repo_skill.is_file()
@@ -796,7 +798,7 @@ def test_packaged_preset_installs_portless_skill_by_default(tmp_path: Path, pres
     assert "Portless 官方仓库" in repo_skill_text
     assert "接入深度决策" in repo_skill_text
     assert "不要把 Portless 改造成唯一启动方式" in repo_skill_text
-    assert "0.15.4" in repo_skill_text
+    assert "0.15.6" in repo_skill_text
     assert "portless doctor" in repo_skill_text
     assert "127.0.0.1" in repo_skill_text
     assert "::1" in repo_skill_text
@@ -952,7 +954,7 @@ modules:
         assert result.returncode == 0, result.stderr + result.stdout
 
     repo_skill = target / "skills" / "portless-local-dev" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "portless-local-dev" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "portless-local-dev" / "SKILL.md"
     assert repo_skill.is_file()
     assert codex_skill.is_file()
     assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
@@ -998,7 +1000,7 @@ modules:
         assert result.returncode == 0, result.stderr + result.stdout
 
     repo_dir = target / "skills" / "optimize-build-pipeline"
-    codex_dir = target / ".codex" / "skills" / "optimize-build-pipeline"
+    codex_dir = target / ".agents" / "skills" / "optimize-build-pipeline"
     repo_files = sorted(path.relative_to(repo_dir) for path in repo_dir.rglob("*") if path.is_file())
     codex_files = sorted(path.relative_to(codex_dir) for path in codex_dir.rglob("*") if path.is_file())
     assert repo_files == codex_files
@@ -1049,7 +1051,7 @@ modules:
         assert result.returncode == 0, result.stderr + result.stdout
 
     repo_skill = target / "skills" / "philosophy-extraction" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "philosophy-extraction" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "philosophy-extraction" / "SKILL.md"
     assert repo_skill.is_file()
     assert codex_skill.is_file()
     assert (target / "aphilosophy" / "meta-decision-principles.md").is_file()
@@ -1095,7 +1097,7 @@ modules:
         assert result.returncode == 0, result.stderr + result.stdout
 
     repo_skill = target / "skills" / "improve-codebase-architecture" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "improve-codebase-architecture" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "improve-codebase-architecture" / "SKILL.md"
     assert repo_skill.is_file()
     assert codex_skill.is_file()
     assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")
@@ -1140,7 +1142,7 @@ modules:
         assert result.returncode == 0, result.stderr + result.stdout
 
     repo_skill = target / "skills" / "code-review" / "SKILL.md"
-    codex_skill = target / ".codex" / "skills" / "code-review" / "SKILL.md"
+    codex_skill = target / ".agents" / "skills" / "code-review" / "SKILL.md"
     assert repo_skill.is_file()
     assert codex_skill.is_file()
     assert repo_skill.read_text(encoding="utf-8") == codex_skill.read_text(encoding="utf-8")

@@ -4,7 +4,7 @@ AgentPhilosophy 默认 preset 通过 `skill-mattpocock-engineering` 和独立的
 
 上游来源：https://github.com/mattpocock/skills
 
-上游采用 MIT License。许可文本随主模块写入 `skills/MATTPOCOCK-SKILLS-LICENSE.txt` 与 `.codex/skills/MATTPOCOCK-SKILLS-LICENSE.txt`；可独立选择的 `code-review` 和 `improve-codebase-architecture` 模块也会在各自目录保留同一文本。
+上游采用 MIT License。许可文本随主模块写入 `skills/MATTPOCOCK-SKILLS-LICENSE.txt` 与 `.agents/skills/MATTPOCOCK-SKILLS-LICENSE.txt`；可独立选择的 `code-review` 和 `improve-codebase-architecture` 模块也会在各自目录保留同一文本。
 
 ## 完整能力集
 
@@ -25,7 +25,7 @@ AgentPhilosophy 默认 preset 通过 `skill-mattpocock-engineering` 和独立的
 
 1. 25 个活跃 skills 全部有项目级入口；`to-prd`、`to-issues`、`writing-great-skills` 另作为兼容入口保留。
 2. 上游随 skill 使用的模板、脚本和说明文件按需一并带入，例如 `triage/AGENT-BRIEF.md`、`prototype/UI.md`、`diagnosing-bugs/scripts/hitl-loop.template.sh`；不是只复制一份 `SKILL.md`。
-3. 每个目录同时写入 `skills/` 与 `.codex/skills/`，内容逐字节一致，并通过 `agents/openai.yaml` 声明展示信息和隐式触发策略。
+3. 每个目录同时写入 `skills/` 与 `.agents/skills/`，内容逐字节一致，并通过 `agents/openai.yaml` 声明展示信息和隐式触发策略。
 
 “完整”不包含上游明确放在 `deprecated`、`in-progress`、`misc`、`personal` 下的非活跃内容，也不表示自动安装 GitHub/GitLab issue tracker、浏览器、测试框架或其他外部工具。需要外部系统的 skill 会正常被发现和读取，但真正执行仍取决于目标项目已有 CLI、MCP、登录态、权限与运行时依赖。
 
@@ -129,7 +129,7 @@ agentphilosophy-sync push /path/to/project --apply
 
 ```bash
 find -L /path/to/project/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
-find -L /path/to/project/.codex/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
+find -L /path/to/project/.agents/skills -mindepth 2 -maxdepth 2 -name SKILL.md | sort
 ```
 
 每个 skill 的支持文件与 `agents/openai.yaml` 也应在两个目标目录逐字节一致；同名未托管文件存在时同步必须拒绝覆盖。
