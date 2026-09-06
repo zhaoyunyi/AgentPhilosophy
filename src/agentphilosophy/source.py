@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .content import is_content_path, source_files
 from .errors import Report, SyncError
 from .yamlio import read_yaml
 
@@ -34,13 +35,23 @@ class Module:
 def load_modules(source_root: Path, report: Report | None = None) -> dict[str, Module]:
     modules_dir = source_root / "modules"
     modules: dict[str, Module] = {}
+    if modules_dir.is_symlink():
+        raise SyncError(f"module directory symlink is not supported: {modules_dir}")
     if not modules_dir.is_dir():
         if report:
             report.error(f"missing modules directory: {modules_dir}")
             return {}
         raise SyncError(f"missing modules directory: {modules_dir}")
 
-    for module_dir in sorted(path for path in modules_dir.iterdir() if path.is_dir()):
+    for module_dir in sorted(
+        path for path in modules_dir.iterdir() if path.is_dir() and is_content_path(Path(path.name))
+    ):
+        if module_dir.is_symlink():
+            message = f"module directory symlink is not supported: {module_dir}"
+            if report is not None:
+                report.error(message)
+                continue
+            raise SyncError(message)
         module_yaml = module_dir / "module.yaml"
         if not module_yaml.exists():
             if report:
@@ -48,7 +59,8 @@ def load_modules(source_root: Path, report: Report | None = None) -> dict[str, M
                 continue
             raise SyncError(f"missing module.yaml: {module_dir}")
         try:
-            data = read_yaml(module_yaml)
+            manifest = resolve_module_source(Module(module_dir.name, module_dir, {}), "module.yaml")
+            data = read_yaml(manifest)
         except SyncError as exc:
             if report:
                 report.error(str(exc))
@@ -72,13 +84,33 @@ def unmanaged_policy(output: dict[str, Any]) -> str:
     return str(output.get("on_existing_unmanaged") or "fail")
 
 
-def _source_inside_module(module: Module, value: str) -> Path | None:
-    source_path = (module.root / value).resolve(strict=False)
+def resolve_module_source(module: Module, value: str) -> Path:
     try:
-        source_path.relative_to(module.root.resolve())
-    except ValueError:
-        return None
+        raw = module.root / value
+        source_path = raw.resolve(strict=False)
+        relative = source_path.relative_to(module.root.resolve())
+    except ValueError as exc:
+        raise SyncError(f"{module.name} source escapes module: {value}") from exc
+    except (OSError, RuntimeError) as exc:
+        raise SyncError(f"{module.name} cannot resolve source: {value}") from exc
+    if not is_content_path(relative) or not is_content_path(Path(value)):
+        raise SyncError(f"{module.name} source is excluded from the content manifest: {value}")
     return source_path
+
+
+def module_tree_files(module: Module, source_dir: Path) -> list[Path]:
+    if not source_dir.is_dir():
+        raise SyncError(f"copy_tree source is not a directory: {source_dir}")
+    files = []
+    for path in sorted(source_dir.rglob("*")):
+        if not is_content_path(path.relative_to(module.root)):
+            continue
+        resolve_module_source(module, path.relative_to(module.root).as_posix())
+        if path.is_symlink() and path.is_dir():
+            raise SyncError(f"module directory symlink is not supported: {path}")
+        if path.is_file():
+            files.append(path)
+    return files
 
 
 def validate_module_shape(module: Module, all_modules: set[str], report: Report) -> None:
@@ -125,22 +157,28 @@ def validate_module_shape(module: Module, all_modules: set[str], report: Report)
             template = output.get("template")
             if not template:
                 report.error(f"module {module.name} output {output_id} missing template")
-            elif not (module.root / str(template)).is_file():
-                report.error(f"module {module.name} output {output_id} template not found: {template}")
+            else:
+                try:
+                    template_path = resolve_module_source(module, str(template))
+                    if not template_path.is_file():
+                        report.error(f"module {module.name} output {output_id} template not found: {template}")
+                except SyncError as exc:
+                    report.error(str(exc))
         if output_type in {"copy_file", "copy_tree"}:
             source = output.get("source")
             if not source:
                 report.error(f"module {module.name} output {output_id} missing source")
             else:
-                source_path = _source_inside_module(module, str(source))
-                if source_path is None:
-                    report.error(
-                        f"module {module.name} output {output_id} source escapes module: {source}"
-                    )
-                elif not source_path.exists():
-                    report.error(
-                        f"module {module.name} output {output_id} source not found: {source}"
-                    )
+                try:
+                    source_path = resolve_module_source(module, str(source))
+                    if not source_path.exists():
+                        report.error(f"module {module.name} output {output_id} source not found: {source}")
+                    elif output_type == "copy_tree":
+                        module_tree_files(module, source_path)
+                    elif not source_path.is_file():
+                        report.error(f"module {module.name} copy_file source is not a regular file: {source}")
+                except SyncError as exc:
+                    report.error(str(exc))
 
     for required in data.get("requires") or []:
         if required not in all_modules:
@@ -255,7 +293,12 @@ def validate_presets(source_root: Path, modules: dict[str, Module], report: Repo
 
 def validate_source(source_root: Path) -> Report:
     report = Report()
-    modules = load_modules(source_root, report)
+    try:
+        source_files(source_root)
+        modules = load_modules(source_root, report)
+    except SyncError as exc:
+        report.error(str(exc))
+        return report
     names = set(modules)
     for module in modules.values():
         validate_module_shape(module, names, report)
