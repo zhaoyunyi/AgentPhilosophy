@@ -31,12 +31,24 @@ if [[ ! -f "$wheel" ]]; then
   echo "Wheel not found: $wheel" >&2
   exit 2
 fi
+wheel="$(cd "$(dirname "$wheel")" && pwd)/$(basename "$wheel")"
 
 smoke_root="$(mktemp -d)"
 trap 'rm -rf "$smoke_root"' EXIT
 
-uv venv --python 3.12 "$smoke_root/venv" >/dev/null
+uv venv --python "${AGENTPHILOSOPHY_SMOKE_PYTHON:-3.12}" "$smoke_root/venv" >/dev/null
 uv pip install --python "$smoke_root/venv/bin/python" "$wheel" >/dev/null
+
+# 从中立目录验证包内内容源，避免源码 checkout 掩盖漏打包资源。
+cd "$smoke_root"
+"$smoke_root/venv/bin/python" - <<'PY'
+from importlib.resources import files
+
+from agentphilosophy.resources import resolve_source_root
+
+with resolve_source_root(None) as source:
+    assert source == files("agentphilosophy").joinpath("default_source")
+PY
 
 expected_agentphilosophy_version="$("$smoke_root/venv/bin/python" - <<'PY'
 import agentphilosophy
@@ -97,13 +109,13 @@ PY
 ! grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"
 grep -q "model-constraints" "$target/.agentphilosophy.yaml"
 grep -q "选择合适的模型与推理强度" "$target/AGENTS.md"
-! grep -q "Superpowers System" "$target/AGENTS.md"
+! grep -q "Superpowers 可选工作流" "$target/AGENTS.md"
 test ! -e "$target/skills/ponytail/SKILL.md"
-test ! -e "$target/.codex/skills/ponytail/SKILL.md"
+test ! -e "$target/.agents/skills/ponytail/SKILL.md"
 test -f "$target/skills/code-review-graph/SKILL.md"
-test -f "$target/.codex/skills/code-review-graph/SKILL.md"
+test -f "$target/.agents/skills/code-review-graph/SKILL.md"
 test -f "$target/skills/code-review-graph/CODE-REVIEW-GRAPH-LICENSE.txt"
-diff -qr "$target/skills/code-review-graph" "$target/.codex/skills/code-review-graph"
+diff -qr "$target/skills/code-review-graph" "$target/.agents/skills/code-review-graph"
 grep -q "MCP 是 agent 的主要查询接口" "$target/skills/code-review-graph/SKILL.md"
 grep -q "detect_changes_tool" "$target/skills/code-review-graph/SKILL.md"
 
@@ -120,7 +132,7 @@ YAML
 "$smoke_root/venv/bin/agentphilosophy-sync" validate "$superpowers_target" >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --apply >/dev/null
-grep -q "Superpowers skill 版本为 \`6.1.1\`" "$superpowers_target/AGENTS.md"
+grep -q "当前项目参考 Superpowers \`6.3.0\`" "$superpowers_target/AGENTS.md"
 grep -q "~/.agents/skills/superpowers" "$superpowers_target/AGENTS.md"
 
 ponytail_target="$smoke_root/project-with-ponytail"
@@ -136,37 +148,37 @@ YAML
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$ponytail_target" --apply >/dev/null
 grep -q "skill-ponytail" "$ponytail_target/.agentphilosophy.yaml"
 test -f "$ponytail_target/skills/ponytail/SKILL.md"
-test -f "$ponytail_target/.codex/skills/ponytail/SKILL.md"
+test -f "$ponytail_target/.agents/skills/ponytail/SKILL.md"
 cmp -s \
   "$ponytail_target/skills/ponytail/SKILL.md" \
-  "$ponytail_target/.codex/skills/ponytail/SKILL.md"
+  "$ponytail_target/.agents/skills/ponytail/SKILL.md"
 grep -q "DietrichGebert/ponytail" "$ponytail_target/skills/ponytail/SKILL.md"
 grep -q "lite|full|ultra" "$ponytail_target/skills/ponytail/SKILL.md"
 test -f "$ponytail_target/skills/ponytail/agents/openai.yaml"
 test -f "$ponytail_target/skills/ponytail/PONYTAIL-LICENSE.txt"
-diff -qr "$ponytail_target/skills/ponytail" "$ponytail_target/.codex/skills/ponytail"
+diff -qr "$ponytail_target/skills/ponytail" "$ponytail_target/.agents/skills/ponytail"
 grep -q "allow_implicit_invocation: true" "$ponytail_target/skills/ponytail/agents/openai.yaml"
 test -f "$target/skills/portless-local-dev/PORTLESS-LICENSE.txt"
 test -f "$target/skills/portless-local-dev/agents/openai.yaml"
-diff -qr "$target/skills/portless-local-dev" "$target/.codex/skills/portless-local-dev"
-grep -q "0.15.4" "$target/skills/portless-local-dev/SKILL.md"
+diff -qr "$target/skills/portless-local-dev" "$target/.agents/skills/portless-local-dev"
+grep -q "0.15.6" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "portless doctor" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "dev.example.com" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "最长后缀" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "不能与 LAN 模式组合" "$target/skills/portless-local-dev/SKILL.md"
 test -f "$target/skills/reverse-skill/REVERSE-SKILL-LICENSE.txt"
 test -f "$target/skills/reverse-skill/agents/openai.yaml"
-diff -qr "$target/skills/reverse-skill" "$target/.codex/skills/reverse-skill"
+diff -qr "$target/skills/reverse-skill" "$target/.agents/skills/reverse-skill"
 grep -q "MASTER-ROUTING" "$target/skills/reverse-skill/SKILL.md"
 grep -q "Evidence -> Finding -> Path" "$target/skills/reverse-skill/SKILL.md"
 test -f "$target/skills/improve-codebase-architecture/SKILL.md"
-test -f "$target/.codex/skills/improve-codebase-architecture/SKILL.md"
+test -f "$target/.agents/skills/improve-codebase-architecture/SKILL.md"
 cmp -s \
   "$target/skills/improve-codebase-architecture/SKILL.md" \
-  "$target/.codex/skills/improve-codebase-architecture/SKILL.md"
+  "$target/.agents/skills/improve-codebase-architecture/SKILL.md"
 diff -qr \
   "$target/skills/improve-codebase-architecture" \
-  "$target/.codex/skills/improve-codebase-architecture"
+  "$target/.agents/skills/improve-codebase-architecture"
 grep -q "Copyright (c) 2026 Matt Pocock" \
   "$target/skills/improve-codebase-architecture/MATTPOCOCK-SKILLS-LICENSE.txt"
 grep -q "AgentPhilosophy ArchitectureSpec" "$target/skills/improve-codebase-architecture/SKILL.md"
@@ -176,17 +188,17 @@ for skill_name in \
   codebase-design resolving-merge-conflicts grill-me grill-with-docs grilling handoff teach \
   writing-great-skills domain-modeling to-spec to-tickets to-prd to-issues implement tdd code-review; do
   test -f "$target/skills/${skill_name}/SKILL.md"
-  test -f "$target/.codex/skills/${skill_name}/SKILL.md"
-  diff -qr "$target/skills/${skill_name}" "$target/.codex/skills/${skill_name}"
+  test -f "$target/.agents/skills/${skill_name}/SKILL.md"
+  diff -qr "$target/skills/${skill_name}" "$target/.agents/skills/${skill_name}"
 done
 cmp -s \
   "$target/skills/MATTPOCOCK-SKILLS-LICENSE.txt" \
-  "$target/.codex/skills/MATTPOCOCK-SKILLS-LICENSE.txt"
+  "$target/.agents/skills/MATTPOCOCK-SKILLS-LICENSE.txt"
 grep -q "Copyright (c) 2026 Matt Pocock" "$target/skills/MATTPOCOCK-SKILLS-LICENSE.txt"
 test -f "$target/skills/grill-me/SKILL.md"
-test -f "$target/.codex/skills/grill-me/SKILL.md"
-test -f "$target/.codex/skills/to-spec/SKILL.md"
-test -f "$target/.codex/skills/to-prd/SKILL.md"
+test -f "$target/.agents/skills/grill-me/SKILL.md"
+test -f "$target/.agents/skills/to-spec/SKILL.md"
+test -f "$target/.agents/skills/to-prd/SKILL.md"
 test -f "$target/skills/to-prd/agents/openai.yaml"
 test -f "$target/skills/to-issues/agents/openai.yaml"
 grep -q "allow_implicit_invocation: false" "$target/skills/to-prd/agents/openai.yaml"
@@ -228,10 +240,10 @@ YAML
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$optional_target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$optional_target" --apply >/dev/null
 test -f "$optional_target/skills/philosophy-extraction/SKILL.md"
-test -f "$optional_target/.codex/skills/philosophy-extraction/SKILL.md"
+test -f "$optional_target/.agents/skills/philosophy-extraction/SKILL.md"
 cmp -s \
   "$optional_target/skills/philosophy-extraction/SKILL.md" \
-  "$optional_target/.codex/skills/philosophy-extraction/SKILL.md"
+  "$optional_target/.agents/skills/philosophy-extraction/SKILL.md"
 grep -q "不要直接改托管的 \`aphilosophy/\`" "$optional_target/skills/philosophy-extraction/SKILL.md"
 
 expected_content_version="$("$smoke_root/venv/bin/python" - <<'PY'

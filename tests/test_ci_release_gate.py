@@ -24,9 +24,9 @@ def test_ci_workflow_runs_release_gate_commands() -> None:
     content = workflow.read_text(encoding="utf-8")
 
     assert "fetch-depth: 0" in content
-    assert "uv run ruff check ." in content
-    assert "uv run pytest -q" in content
-    assert "uv run sync.py validate" in content
+    assert "uv run --locked ruff check ." in content
+    assert "uv run --locked pytest -q" in content
+    assert "uv run --locked sync.py validate" in content
     assert "uv build" in content
     assert "bash scripts/release-smoke.sh" in content
 
@@ -37,7 +37,7 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
 
     content = script.read_text(encoding="utf-8")
 
-    assert "uv venv --python 3.12" in content
+    assert "AGENTPHILOSOPHY_SMOKE_PYTHON:-3.12" in content
     assert "uv pip install --python" in content
     assert "expected_agentphilosophy_version=" in content
     assert "import agentphilosophy" in content
@@ -54,34 +54,34 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert '! grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"' in content
     assert 'grep -q "选择合适的模型与推理强度" "$target/AGENTS.md"' in content
     assert 'superpowers_target="$smoke_root/project-with-superpowers"' in content
-    assert "Superpowers skill 版本为 \\`6.1.1\\`" in content
+    assert "当前项目参考 Superpowers \\`6.3.0\\`" in content
     assert "~/.agents/skills/superpowers" in content
     assert 'ponytail_target="$smoke_root/project-with-ponytail"' in content
     assert "skill-ponytail" in content
     assert "skills/ponytail/SKILL.md" in content
-    assert ".codex/skills/ponytail/SKILL.md" in content
+    assert ".agents/skills/ponytail/SKILL.md" in content
     assert "DietrichGebert/ponytail" in content
     assert "skills/code-review-graph/SKILL.md" in content
-    assert ".codex/skills/code-review-graph/SKILL.md" in content
+    assert ".agents/skills/code-review-graph/SKILL.md" in content
     assert "CODE-REVIEW-GRAPH-LICENSE.txt" in content
     assert "MCP 是 agent 的主要查询接口" in content
     assert "skills/improve-codebase-architecture/SKILL.md" in content
-    assert ".codex/skills/improve-codebase-architecture/SKILL.md" in content
+    assert ".agents/skills/improve-codebase-architecture/SKILL.md" in content
     assert "AgentPhilosophy ArchitectureSpec" in content
     assert "skill-mattpocock-engineering" in content
     assert "skills/grill-me/SKILL.md" in content
-    assert ".codex/skills/grill-me/SKILL.md" in content
+    assert ".agents/skills/grill-me/SKILL.md" in content
     assert "grill-with-docs" in content
     assert "skills/to-spec/SKILL.md" in content
-    assert ".codex/skills/to-spec/SKILL.md" in content
+    assert ".agents/skills/to-spec/SKILL.md" in content
     assert "/to-tickets" in content
     assert "skills/to-prd/SKILL.md" in content
-    assert ".codex/skills/to-prd/SKILL.md" in content
+    assert ".agents/skills/to-prd/SKILL.md" in content
     assert "/to-issues" in content
     assert "/code-review" in content
     assert "skill-philosophy-extraction" in content
     assert "skills/philosophy-extraction/SKILL.md" in content
-    assert ".codex/skills/philosophy-extraction/SKILL.md" in content
+    assert ".agents/skills/philosophy-extraction/SKILL.md" in content
     assert 'test -f "$target/release-notes/README.md"' in content
     assert 'grep -q "MAJOR.MINOR.PATCH" "$target/AGENTS.md"' in content
     assert 'grep -q "发布回执" "$target/AGENTS.md"' in content

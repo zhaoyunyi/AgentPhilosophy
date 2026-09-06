@@ -8,27 +8,45 @@ on:
 
 jobs:
   test-and-package:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            python: "3.12"
+          - os: ubuntu-latest
+            python: "3.12"
+          - os: ubuntu-latest
+            python: "3.14"
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    env:
+      UV_PYTHON: ${{ matrix.python }}
+      AGENTPHILOSOPHY_SMOKE_PYTHON: ${{ matrix.python }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
 
       - name: Set up Python
-        run: uv python install 3.12
+        run: uv python install "${{ matrix.python }}"
+
+      - name: Check packaged source
+        run: python3 scripts/sync-packaged-source.py --check
 
       - name: Lint
-        run: uv run ruff check .
+        run: uv run --locked ruff check .
 
       - name: Test
-        run: uv run pytest -q
+        run: uv run --locked pytest -q
 
       - name: Validate central source
-        run: uv run sync.py validate
+        run: uv run --locked sync.py validate
 
       - name: Build package
         run: uv build
