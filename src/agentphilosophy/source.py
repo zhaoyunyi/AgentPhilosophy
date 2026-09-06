@@ -102,10 +102,12 @@ def module_tree_files(module: Module, source_dir: Path) -> list[Path]:
     if not source_dir.is_dir():
         raise SyncError(f"copy_tree source is not a directory: {source_dir}")
     files = []
+    module_root = module.root.resolve()
     for path in sorted(source_dir.rglob("*")):
-        if not is_content_path(path.relative_to(module.root)):
+        relative = path.relative_to(module_root)
+        if not is_content_path(relative):
             continue
-        resolve_module_source(module, path.relative_to(module.root).as_posix())
+        resolve_module_source(module, relative.as_posix())
         if path.is_symlink() and path.is_dir():
             raise SyncError(f"module directory symlink is not supported: {path}")
         if path.is_file():
