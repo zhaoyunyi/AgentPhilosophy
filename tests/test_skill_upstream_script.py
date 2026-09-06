@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import subprocess
 import sys
@@ -158,7 +159,7 @@ print("fedcba9876543210fedcba9876543210fedcba98\\t" + sys.argv[-1])
     env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
     env["FAKE_GIT_REF_LOG"] = str(ref_log)
 
-    result = run_script_with_env(source, env=env)
+    result = run_script_with_env(source, "--refs-only", env=env)
 
     assert result.returncode == 2, result.stderr + result.stdout
     assert (
@@ -185,7 +186,7 @@ sys.exit(128)
     env = os.environ.copy()
     env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
 
-    result = run_script_with_env(source, env=env)
+    result = run_script_with_env(source, "--refs-only", env=env)
 
     assert result.returncode == 1
     assert "[error] skill-demo: network unavailable" in result.stderr
@@ -199,3 +200,44 @@ def test_skill_upstream_script_rejects_non_positive_timeout(tmp_path: Path) -> N
 
     assert result.returncode == 1
     assert "[error] --timeout must be greater than 0" in result.stderr
+
+
+def test_upstream_audit_distinguishes_unrelated_commits(tmp_path, monkeypatch, capsys) -> None:
+    source = tmp_path / "source"
+    write_upstream_source(source)
+    module = load_script_module()
+    monkeypatch.setattr(module, "latest_revision", lambda *_: LATEST_REVISION)
+
+    def github_data(_repository, endpoint, _timeout):
+        if endpoint == "releases/latest":
+            return {"tag_name": "v1.0.0"}
+        return {"truncated": False, "tree": [
+            {"path": "skills/SKILL.md", "type": "blob", "sha": LOCKED_REVISION},
+            {"path": "UNRELATED.md", "type": "blob", "sha": endpoint},
+        ]}
+
+    monkeypatch.setattr(module, "github_data", github_data, raising=False)
+    assert module.main(["--source", str(source), "--format", "json"]) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result[0]["status"] == "ref_changed"
+    assert result[0]["changed_paths"] == []
+    assert result[0]["latest_release"] == "v1.0.0"
+
+
+def test_upstream_audit_continues_after_one_source_fails(tmp_path, monkeypatch, capsys) -> None:
+    source = tmp_path / "source"
+    write_upstream_source(source)
+    text = (source / "modules/skill-demo/module.yaml").read_text()
+    write(source / "modules/skill-second/module.yaml", text.replace("skill-demo", "skill-second")
+          .replace("example/demo", "example/second"))
+    module = load_script_module()
+
+    def latest(repository, *_):
+        if repository.endswith("demo"):
+            raise RuntimeError("network unavailable")
+        return LOCKED_REVISION
+
+    monkeypatch.setattr(module, "latest_revision", latest)
+    assert module.main(["--source", str(source), "--refs-only", "--format", "json"]) == 1
+    result = json.loads(capsys.readouterr().out)
+    assert [entry["status"] for entry in result] == ["error", "current"]
