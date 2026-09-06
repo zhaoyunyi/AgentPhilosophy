@@ -4,6 +4,7 @@ import pytest
 import yaml
 
 from agentphilosophy.cli import main
+from agentphilosophy.commands import command_push, command_validate
 
 
 def seed_module(source: Path, target: Path, output: dict[str, str]) -> Path:
@@ -76,6 +77,23 @@ def test_cli_keeps_valid_references_inside_the_module(tmp_path: Path) -> None:
 
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
     assert (target / "skills/probe/reference.md").read_text() == "Shared module reference\n"
+
+
+def test_packaged_source_under_a_directory_alias_keeps_module_paths_consistent(tmp_path: Path) -> None:
+    source, target = tmp_path / "source", tmp_path / "target"
+    module = seed_module(source, target, {
+        "id": "probe", "type": "copy_tree", "source": "files", "target": "skills/probe",
+    })
+    (module / "files").mkdir()
+    (module / "files/SKILL.md").write_text("# Packaged skill\n")
+    alias = tmp_path / "source-alias"
+    alias.symlink_to(source, target_is_directory=True)
+
+    report = command_validate(alias, target)
+    assert report.ok, report.format()
+    report = command_push(alias, target, apply=True)
+    assert report.ok, report.format()
+    assert (target / "skills/probe/SKILL.md").read_text() == "# Packaged skill\n"
 
 
 def test_template_expressions_cannot_read_arbitrary_local_files(tmp_path: Path, capsys) -> None:
