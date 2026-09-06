@@ -13,9 +13,9 @@ description: 在 {{ project_name }} 中按 red-green-refactor 实现功能或修
 
 ## 执行前
 
-1. 读取 `CONTEXT.md` 和相关 ADR，让测试名、fixture 和断言使用项目领域词。
+1. 读取存在的 `CONTEXT.md` 和相关 ADR；缺失时按 `docs/agents/domain.md` 或项目领域导航读取 spec、代码和测试，不创建空上下文。让测试名、fixture 和断言使用项目领域词。
 2. 明确测试 seam：公共接口、用户流程、CLI、API、service boundary 或其他稳定入口。
-3. 和用户或 spec 确认 seam；不在未确认 seam 上写测试。
+3. 从已授权任务、spec、用户例子和现有公共接口确定 seam；已有明确依据时直接沿用，只有影响行为契约的歧义才向用户确认。
 4. 如果接口形状、模块深度或 seam 放置点本身仍不确定，先读取 `/codebase-design` 的词汇和设计规则，不用测试结构替代接口决策。
 
 ## 循环

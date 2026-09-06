@@ -600,6 +600,7 @@ def command_migrate(source_root: Path, project_root: Path, *, write_config: bool
         "spec/**/*.md",
         "docs/guides/**/*.md",
         "docs/guide/**/*.md",
+        ".agents/skills/**/SKILL.md",
         ".codex/skills/**/SKILL.md",
         ".claude/skills/**/SKILL.md",
         "skills/**/SKILL.md",

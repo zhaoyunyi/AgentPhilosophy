@@ -1,6 +1,7 @@
 name: release-conventions
 description: 发布说明目录、SemVer 版本口径和发布回执规则
-version: 1.0.0
+source_kind: internal
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: [doc-templates]
 conflicts: []

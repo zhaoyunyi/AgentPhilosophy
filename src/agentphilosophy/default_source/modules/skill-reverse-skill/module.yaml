@@ -1,13 +1,13 @@
 name: skill-reverse-skill
 description: reverse-skill 授权逆向、安全研究、CTF 和本机工具链路由项目级 skill
-version: 1.1.0
+version: 1.2.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
 upstream:
   repository: https://github.com/zhaoxuya520/reverse-skill
-  ref: main
-  revision: b8ae07db073783597b11f60fa2e900e3f9b9163f
+  ref: refs/tags/v1.0.1
+  revision: 9c28c6ca1062a1a076e28baf40f241dbb4cf5dc2
   tracked_paths:
     - CHANGELOG.md
     - LICENSE
@@ -38,6 +38,16 @@ upstream:
     - skills/radio-sdr
     - skills/reverse-engineering/SKILL.md
     - skills/js-reverse/SKILL.md
+    - RULES.md
+    - skills/config/routing.json
+    - skills/INDEX.md
+    - skills/routing.md
+    - skills/scripts/master-route.ps1
+    - skills/scripts/case-guard.sh
+    - skills/scripts/case-guard.ps1
+    - skills/case-review/SKILL.md
+    - skills/case-review/scripts/review_case.py
+    - skills/field-journal/precedent-auth.md
 provides:
   - skill:reverse-skill
 outputs:

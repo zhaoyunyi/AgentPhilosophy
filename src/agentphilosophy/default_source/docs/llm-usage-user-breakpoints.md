@@ -106,7 +106,7 @@ breakpoint:
 2. preset：`fullstack`、`frontend`、`mobile-sdk`、`orchestrator` 或暂不写入。
 3. 项目基础信息：`project_name`、`project_type`、`description`。
 4. 目录路径：`paths.docs_guide_dir`、`paths.spec_dir`、`paths.philosophy_dir`。
-5. skill 输出位置：`skill_targets.repo_skills`、`skill_targets.codex_project`、`skill_targets.claude_project`。
+5. skill 输出位置：内置模块的 `skill_targets.repo_skills` 与 `skill_targets.codex_project`；`claude_project` 仅供自定义模块引用。
 6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-code-review`、`skill-mattpocock-engineering`、`skill-portless-local-dev`、`skill-optimize-build-pipeline` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
 7. 验证命令：`vars.test_command`。
 8. 老文件接管：是否按 `adopt-plan.yaml` 接管已有文件。

@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: 对 AgentPhilosophy 的分支、PR 或工作区改动做双轴 review；适用于用户输入 /code-review、要求 review since 某个固定点，或 /implement 完成后需要检查标准和 spec 覆盖。
+description: 对 AgentPhilosophy 的当前快照、分支、PR 或工作区改动做双轴 review；适用于用户输入 /code-review、要求 review since 某个固定点，或 /implement 完成后需要检查标准和 spec 覆盖。
 ---
 
 # Code Review
@@ -16,8 +16,8 @@ description: 对 AgentPhilosophy 的分支、PR 或工作区改动做双轴 revi
 
 ## 流程
 
-1. 固定比较点。用户没给时先问；可用 `main`、tag、change id、commit 或 PR base。
-2. 确认 diff 非空。jj 仓库优先用 `jj diff -r <base>..@` 或项目推荐 revset；普通 git 仓库用 `git diff <fixed-point>...HEAD`。
+1. 先识别审查模式。全仓或指定文件现状审查以当前快照为准；变更审查优先使用用户给出的比较点，其次采用当前 PR base、任务起点或已明确的工作区基线。只有比较范围无法确定时才问用户。
+2. 快照审查直接检查现状并声明覆盖范围；变更审查确认 diff，空 diff 时如实报告，不要求用户制造改动。jj 仓库优先用 `jj diff -r <base>..@` 或项目推荐 revset；普通 git 仓库用 `git diff <fixed-point>...HEAD`。
 3. 找 spec 来源：commit/change 描述、issue、OpenSpec、用户传入路径或 docs/spec 文件。没有 spec 时明确标记 Spec 轴无法完整判断。
 4. 找 standards 来源：`AGENTS.md`、`CLAUDE.md`、`spec/`、`CONTRIBUTING.md`、测试策略和项目内 skill。
 5. 如果工具支持并行子 agent，Standards 与 Spec 分开审；否则自己分两段审，避免混合排序。

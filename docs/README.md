@@ -10,6 +10,9 @@
 - [docs/agents/domain.md](agents/domain.md)：领域、架构和代码的读取顺序。
 - [docs/agents/out-of-scope/README.md](agents/out-of-scope/README.md)：明确排除项的记录边界。
 
+- [docs/agents/maintenance.md](agents/maintenance.md)：中央源修改、镜像刷新、验证与兼容边界。
+- [docs/agents/skill-routing.md](agents/skill-routing.md)：技能选择的正例、反例、相似任务与验收边界。
+
 ## CLI 与同步说明
 
 - [docs/cli-usage-for-llm.md](cli-usage-for-llm.md)：给 LLM 或自动化 agent 的完整 CLI 操作说明，覆盖接入、迁移、同步、可选模块和写入前校验。
@@ -37,3 +40,28 @@
 - [docs/superpowers/plans/2026-07-13-flexible-multi-agent-and-optional-superpowers.md](superpowers/plans/2026-07-13-flexible-multi-agent-and-optional-superpowers.md)：按测试先行拆分多 Agent 规则、Superpowers 可选默认、LLM 合同和 0.7.7 本地 release 的实施步骤。
 - [docs/superpowers/specs/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-design.md](superpowers/specs/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-design.md)：AgentPhilosophy 0.7.5 模板发布、默认 preset skill 刷新与 dependent-project 无漂移同步设计。
 - [docs/superpowers/plans/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-implementation.md](superpowers/plans/2026-07-10-agentphilosophy-0.7.5-dependent-project-sync-implementation.md)：AgentPhilosophy 0.7.5 模板扩展、发布、dependent-project 同步与验证执行计划。
+
+## CLI 按任务读取
+
+- [docs/cli/agent-execution.md](cli/agent-execution.md)：LLM 执行规则。
+- [docs/cli/architecture-review.md](cli/architecture-review.md)：架构加深评审 skill。
+- [docs/cli/build-pipeline.md](cli/build-pipeline.md)：构建流水线调优 skill。
+- [docs/cli/code-review-graph.md](cli/code-review-graph.md)：code-review-graph 结构图谱依赖。
+- [docs/cli/code-review.md](cli/code-review.md)：独立 code-review 审查 skill。
+- [docs/cli/commands.md](cli/commands.md)：真实可用命令。
+- [docs/cli/configuration.md](cli/configuration.md)：目标项目配置。
+- [docs/cli/grok-cli.md](cli/grok-cli.md)：Grok CLI headless 编排 skill。
+- [docs/cli/matt-skills.md](cli/matt-skills.md)：Matt Pocock 完整工程 skill 家族。
+- [docs/cli/migration.md](cli/migration.md)：老项目迁移流程。
+- [docs/cli/new-project.md](cli/new-project.md)：新项目接入流程。
+- [docs/cli/philosophy.md](cli/philosophy.md)：Agent 哲学决策框架。
+- [docs/cli/ponytail.md](cli/ponytail.md)：Ponytail 精简编码 skill。
+- [docs/cli/portless.md](cli/portless.md)：Portless 本地开发入口。
+- [docs/cli/registry.md](cli/registry.md)：Registry 文件。
+- [docs/cli/reverse-skill.md](cli/reverse-skill.md)：Reverse Skill 授权逆向路由 skill。
+- [docs/cli/runtime.md](cli/runtime.md)：运行前提。
+- [docs/cli/safety.md](cli/safety.md)：安全边界。
+- [docs/cli/superpowers.md](cli/superpowers.md)：Superpowers 显式可选合同。
+- [docs/cli/versions.md](cli/versions.md)：版本与更新判断。
+
+- [docs/plans/2026-09-06-audit-remediation.md](plans/2026-09-06-audit-remediation.md)：本轮审查修复合同、上游筛选与验证结果。

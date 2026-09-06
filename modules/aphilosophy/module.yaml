@@ -1,6 +1,7 @@
 name: aphilosophy
 description: Agent 哲学决策框架——元决策原则、架构、治理、认知、权限对齐、运行态与安全对抗冲突解决协议
-version: 1.6.0
+source_kind: internal
+version: 1.7.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []

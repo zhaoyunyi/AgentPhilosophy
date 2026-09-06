@@ -5,7 +5,7 @@
 ## 推荐读取顺序
 
 1. 根 `AGENTS.md`、`CLAUDE.md`、`README.md`。
-2. `docs/README.md` 与 `docs/cli-usage-for-llm.md`。
+2. 中央维护任务读 `docs/agents/maintenance.md`；CLI 操作从 `docs/cli-usage-for-llm.md` 选择相关单页。
 3. 当前任务相关的模块资源、skill、CLI 实现和测试。
 4. 涉及版本传播时再读 `docs/release-process.md` 与本机 `registry.yaml`。
 
@@ -15,6 +15,7 @@
 - [Triage 标签](triage-labels.md)
 - [领域资料](domain.md)
 - [明确排除项](out-of-scope/README.md)
+- [Skill 路由验收](skill-routing.md)
 
 ## 实现直达
 
@@ -23,5 +24,5 @@
 - 项目模板：`templates/`
 - CLI 与回归测试：`tests/`
 - Matt skills 原始导入与包装：`modules/skill-mattpocock-engineering/`
-- 项目级 skills：`skills/`、`.codex/skills/`
+- 项目级 skills：`skills/`、`.agents/skills/`
 - 依赖项目注册表：本机 `registry.yaml`（忽略提交，只作为本机同步真值）。

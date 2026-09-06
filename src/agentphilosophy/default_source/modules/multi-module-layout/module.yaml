@@ -1,6 +1,7 @@
 name: multi-module-layout
 description: 多子目录入口、跨仓只读搜索和目录边界规范
-version: 1.0.0
+source_kind: internal
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: [doc-templates]
 conflicts: []

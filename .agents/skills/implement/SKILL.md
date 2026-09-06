@@ -1,0 +1,33 @@
+---
+name: implement
+description: 基于 AgentPhilosophy 的 spec、ticket 或明确任务实施一个 vertical slice；适用于用户输入 /implement、要求实现某个已拆 ticket，或要求从单个 spec/ticket 开始编码。
+---
+
+# Implement
+
+改编自 Matt Pocock 的 `implement` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/implement
+
+目标：一次实现一个 spec/ticket 范围，用 `/tdd` 做红绿循环，最后用 `/code-review` 收口。
+
+## 流程
+
+1. 读取 spec 和当前 ticket。确认范围、acceptance criteria、非目标、阻塞项和验证命令。
+2. 读取 `AGENTS.md`、相关 spec、`CONTEXT.md`、ADR 和既有测试模式。
+3. 写出本 slice 的测试 seam；从已确认任务与现有公共接口确定；只有影响验收契约的歧义才向用户确认。
+4. 用 `/tdd` 逐个 vertical slice 实现：一个失败测试、最小实现、局部验证，再进入下一小步。
+5. 定期运行类型检查、相关单测或最小验证命令；完成后运行完整验证命令：`uv run pytest -q`。
+6. 运行 `/code-review`，同时检查项目标准和 spec/issue 覆盖。
+7. 若用户要求提交或当前任务要求收口提交，在 jj 仓库用 `jj describe` / `jj new` 管理 change；非 jj 仓库按项目规则提交。不要使用 `git add`、`git commit`、`git stash` 管理 jj 仓库。
+
+## 输出要求
+
+- 引用完成的 spec/ticket。
+- 列出实现了哪些 acceptance criteria。
+- 列出执行过的验证命令和结果。
+- 说明 `/code-review` 的发现和修复情况。
+
+## 禁止
+
+- 不把多个独立 ticket 混在一个实现会话里。
+- 不跳过失败测试直接实现，除非任务只是文档、配置或生成物同步；此时说明为什么不适用。
+- 不在没有 spec/ticket 的情况下扩范围。

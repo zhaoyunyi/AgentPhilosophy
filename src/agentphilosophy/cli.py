@@ -17,8 +17,8 @@ from .commands import (
     command_status,
     command_validate,
 )
-from .errors import Report
-from .resources import LLM_USAGE_MODE_REL_PATHS, llm_usage_path, resolve_source_root
+from .errors import Report, SyncError
+from .resources import LLM_USAGE_MODE_REL_PATHS, llm_usage_path, read_llm_usage, resolve_source_root
 
 
 def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
@@ -129,7 +129,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                 report.error(f"LLM usage document not found: {path}")
                 print(report.format())
                 return 1
-            print(path.read_text(encoding="utf-8"), end="")
+            try:
+                text = read_llm_usage(path)
+            except (OSError, SyncError) as exc:
+                report = Report()
+                report.error(str(exc))
+                print(report.format())
+                return 1
+            print(text, end="")
             return 0
 
         if args.command == "validate":

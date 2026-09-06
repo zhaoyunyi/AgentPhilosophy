@@ -1,6 +1,7 @@
 name: jj-conventions
 description: jj colocated git、bookmark 和中文 change 描述规范
-version: 1.0.0
+source_kind: internal
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: [doc-templates]
 conflicts: []

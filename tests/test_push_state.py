@@ -187,11 +187,11 @@ def test_fullstack_preset_defaults_to_jj_management_with_install_guidance(tmp_pa
 
     project_config = (target / ".agentphilosophy.yaml").read_text(encoding="utf-8")
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
-    agentphilosophy_skill_text = (target / ".codex" / "skills" / "agentphilosophy-sync" / "SKILL.md").read_text(
+    agentphilosophy_skill_text = (target / ".agents" / "skills" / "agentphilosophy-sync" / "SKILL.md").read_text(
         encoding="utf-8"
     )
     jj_skill_text = (target / "skills" / "jj-management" / "SKILL.md").read_text(encoding="utf-8")
-    codex_jj_skill_text = (target / ".codex" / "skills" / "jj-management" / "SKILL.md").read_text(
+    codex_jj_skill_text = (target / ".agents" / "skills" / "jj-management" / "SKILL.md").read_text(
         encoding="utf-8"
     )
     philosophy_text = (target / "aphilosophy" / "meta-decision-principles.md").read_text(encoding="utf-8")
@@ -200,12 +200,12 @@ def test_fullstack_preset_defaults_to_jj_management_with_install_guidance(tmp_pa
     assert "- skill-agentphilosophy-sync" in project_config
     assert "- skill-jj-management" in project_config
     assert "- aphilosophy" in project_config
-    assert "codex_project: .codex/skills" in project_config
+    assert "codex_project: .agents/skills" in project_config
     assert "默认使用 jj colocated git 管理当前仓库" in agents_text
     assert "command -v jj" in agents_text
     assert "jj git init --colocate" in agents_text
     assert "AgentPhilosophy" in agentphilosophy_skill_text
-    assert ".codex/skills" in agentphilosophy_skill_text
+    assert ".agents/skills" in agentphilosophy_skill_text
     assert "安装 jj CLI" in jj_skill_text
     assert "jj git init --colocate" in jj_skill_text
     assert codex_jj_skill_text == jj_skill_text
@@ -223,7 +223,7 @@ def test_current_source_does_not_keep_stale_migration_candidates() -> None:
 
 def test_current_codex_skills_have_valid_unique_frontmatter() -> None:
     source = Path(__file__).resolve().parents[1]
-    skill_files = sorted((source / ".codex" / "skills").glob("**/SKILL.md"))
+    skill_files = sorted((source / ".agents" / "skills").glob("**/SKILL.md"))
 
     assert skill_files
     names: set[str] = set()

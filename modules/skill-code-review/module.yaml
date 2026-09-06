@@ -1,6 +1,6 @@
 name: skill-code-review
 description: 独立 code-review 双轴审查项目级 skill
-version: 1.1.0
+version: 1.2.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts:

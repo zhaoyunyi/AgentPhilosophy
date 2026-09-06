@@ -11,7 +11,7 @@ MODULE_NAME = "release-conventions"
 def test_release_conventions_module_is_available_in_all_default_presets() -> None:
     module = read_yaml(ROOT / "modules" / MODULE_NAME / "module.yaml")
     assert module["name"] == MODULE_NAME
-    assert module["version"] == "1.0.0"
+    assert module["version"] == "1.1.0"
     assert module["requires"] == ["doc-templates"]
     assert {output["target"] for output in module["outputs"]} == {
         "AGENTS.md",
