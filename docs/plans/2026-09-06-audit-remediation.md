@@ -1,6 +1,6 @@
 # 2026-09-06 审查问题修复与验收
 
-用户已授权按全仓审查建议优化。基线为 `125abbd3`；范围包括当前仓库与审查中明确指出的用户级 Superpowers 说明，不同步兄弟项目，不执行真实发布。
+用户已授权按全仓审查建议优化。基线为 `125abbd3`；实现阶段范围包括当前仓库与审查中明确指出的用户级 Superpowers 说明，不同步兄弟项目。2026-09-07 用户进一步授权推进主线、推送和正式发布。
 
 ## 行为验收合同
 
@@ -28,9 +28,9 @@
 
 ## 验证状态
 
-本轮本地验证完成：
+实现与发布验证完成：
 
-- `uv run --locked --offline pytest -q`：221 passed，105.30 秒；覆盖新增负向边界、发布模拟、目录兼容、文档组装和实际 wheel 资源清单。
+- `uv run --locked --offline pytest -q`：222 passed，93.33 秒（2026-09-07 发布前复验）；覆盖新增负向边界、发布模拟、目录兼容、文档组装和实际 wheel 资源清单。
 - lint、中央/目标 validate、镜像 check 通过；本仓 dry-run 幂等，status 无漂移警告。
 - 仓库 skills 与 Codex 目标共 111 个有效资源文件逐字节一致；旧目录剩余 SKILL.md 为 0，未删除用户自有文件。
 - Codex CLI 0.149.1 的原生 `skills/list` 强制回读发现 43 个项目技能，无重复、无解析错误，路径均为 `.agents/skills`。
@@ -38,8 +38,8 @@
 - 上游现场回读：Portless/reverse/Superpowers/graph 锁定引用及正式版本匹配；Matt 仅 ref 漂移且跟踪内容未变；Ponytail 的 README 变化被准确报告，未机械更新封装。
 - 增加了 [skill 路由验收场景](../agents/skill-routing.md)，没有把元数据/发现检查宣称为付费模型路由评测。
 
-验证边界：上述执行发生在本机 macOS；Linux/Python 3.12/3.14 的 CI 矩阵已配置，尚未通过远端工作流执行。未安装升级 Portless/reverse/Superpowers 的系统工具，未执行真实发布。
+远端验收：[CI 34046345789](https://github.com/zhaoyunyi/AgentPhilosophy/actions/runs/34046345789) 的 macOS/Python 3.12、Linux/Python 3.12/3.14 三组均通过。首轮远端 smoke 暴露 `/var` 与 `/private/var` 路径别名问题，已用最小复现补充回归并统一真实路径。未安装升级 Portless/reverse/Superpowers 的系统工具，也未运行付费模型路由评测。
 
-## 发布边界
+## 发布收口
 
-本轮准备本地候选内容和回归证据。正式发布必须从已确认提交重新构建制品、生成 receipt，并按发布脚本完成远端回读；本地测试或候选版本号不等于已发布。
+`v0.11.0` 已从源码 `aa7cddead2fbfbc51a9be66ea1fffa84b89489b4` 发布，tag、Release、制品摘要和远端 tag 安装均回读通过。主线已包含本轮功能修复及发布回执文档；详情见 [v0.11.0 发布说明](../../release-notes/v0.11.0.md)。
