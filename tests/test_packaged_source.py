@@ -72,6 +72,7 @@ def test_optimize_build_pipeline_module_is_packaged_with_complete_resources() ->
         "references/measurement-contract.md",
         "references/optimization-playbook.md",
         "scripts/analyze_timeline.py",
+        "scripts/compare_test_runs.py",
     }
     repository_files = {
         path.relative_to(repository_skill).as_posix()
