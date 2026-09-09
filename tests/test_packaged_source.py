@@ -69,8 +69,11 @@ def test_optimize_build_pipeline_module_is_packaged_with_complete_resources() ->
     expected = {
         "SKILL.md",
         "agents/openai.yaml",
+        "references/case-study-videoagentteam.md",
+        "references/integration-testing.md",
         "references/measurement-contract.md",
         "references/optimization-playbook.md",
+        "references/runner-image-cache.md",
         "scripts/analyze_timeline.py",
         "scripts/compare_test_runs.py",
     }

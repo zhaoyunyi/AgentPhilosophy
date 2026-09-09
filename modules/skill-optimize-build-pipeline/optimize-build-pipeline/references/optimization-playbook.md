@@ -22,6 +22,7 @@
 | 多 job 各自 checkout | 隔离粒度过细 | 可信单 runner 一次物化、Pod 内并行 gate |
 | Pod Pending 且节点 CPU 空闲 | request 保留量过高 | 校准 request，保留足够 limit |
 | CPU throttle 高且耗时随 CPU 下降 | CPU cap | 增加 limit/request 或 VM CPU |
+| 测试fixture慢、CPU低、数据库sync等待高 | 临时库落盘成本 | 按测试持久性合同评估受限临时卷，见[集成测试](integration-testing.md) |
 | CPU 低、写入巨大 | layer export/rewrite | 减少 layer 失效、撤销高成本重写 |
 | registry task 短、controller 长 | 控制面 overhead | 缩轮询/事件等待/并行 execution |
 | CI wait 后才复制 | 独立阶段串行 | 后台 wait，与 registry validation 重叠后 join |
@@ -35,6 +36,8 @@
 3. 从 mirror 创建不可变浅快照；快照只读挂给正式构建。
 4. 把固定版本 Go/Node/pnpm/linter/scanner/browser 预装到 runner image。
 5. 避免每个 job 下载相同 Action package 或 artifact。
+
+预装镜像必须现场验证被采用；PATH/HOME探测、缓存保存成本与跨项目镜像权限见 [Runner与缓存](runner-image-cache.md)。
 
 mirror 不是新的 source of truth。远端 revision 仍是权威，mirror 只提供经过 SHA 校验的传输优化。不可信 PR 不复用高权限默认分支 runner。
 
@@ -101,7 +104,7 @@ CPU A/B 必须固定 source、cache 和并发负载。至少测试 2～3 档，�
 
 ## 6. Registry 和最终控制器
 
-四组件/多仓库复制优先并行，digest pull smoke 也可并行。进一步缩短完整链路时，把同 revision CI wait 作为后台分支：
+资源与权限隔离、容量允许时，可试验多组件/多仓库复制及digest pull smoke并行，以完整墙钟决定是否保留。进一步缩短完整链路时，把同 revision CI wait 作为后台分支：
 
 ```text
 验证内部 receipt

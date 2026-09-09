@@ -1,7 +1,7 @@
 name: skill-optimize-build-pipeline
-description: 完整墙钟、硬件证据、缓存、并行与 registry receipt 驱动的构建流水线调优 skill
+description: 完整墙钟、测试隔离、I/O、缓存与预装工具驱动的构建流水线调优 skill
 source_kind: internal
-version: 1.0.0
+version: 1.1.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []

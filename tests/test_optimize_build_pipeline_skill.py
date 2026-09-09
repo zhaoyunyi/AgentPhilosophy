@@ -32,7 +32,7 @@ def test_optimize_build_pipeline_skill_passes_skill_contract_validation(validate
 def test_optimize_build_pipeline_module_is_available_in_all_default_presets() -> None:
     module = read_yaml(MODULE_ROOT / "module.yaml")
     assert module["name"] == MODULE_NAME
-    assert module["version"] == "1.0.0"
+    assert module["version"] == "1.1.0"
     assert module["provides"] == ["skill:optimize-build-pipeline"]
     assert len(module["outputs"]) == 2
 

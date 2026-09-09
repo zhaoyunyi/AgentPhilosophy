@@ -1007,8 +1007,11 @@ modules:
     assert repo_files == [
         Path("SKILL.md"),
         Path("agents/openai.yaml"),
+        Path("references/case-study-videoagentteam.md"),
+        Path("references/integration-testing.md"),
         Path("references/measurement-contract.md"),
         Path("references/optimization-playbook.md"),
+        Path("references/runner-image-cache.md"),
         Path("scripts/analyze_timeline.py"),
         Path("scripts/compare_test_runs.py"),
     ]

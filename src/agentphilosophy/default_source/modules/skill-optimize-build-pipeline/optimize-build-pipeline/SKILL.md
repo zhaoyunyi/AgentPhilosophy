@@ -1,138 +1,75 @@
 ---
 name: optimize-build-pipeline
-description: 以完整墙钟、阶段时间线、CPU/RSS/I/O、调度与缓存证据诊断和优化 CI、CD、Docker/BuildKit 镜像构建及 registry 供应链。用于构建太慢、self-hosted runner 利用率、缓存分层、并行/串行关键路径、CPU/VM 扩容、GitHub 与自建 GitLab 往返、Harbor/ACR 复制波动、完整 refs receipt 或优化前后 A/B 验收；要求不削弱测试、安全、source revision、digest 和发布门禁。
+description: 用完整墙钟、测试与 fixture、CPU/I/O、缓存和制品回执定位并优化 CI/CD 瓶颈。适用于流水线慢、集成测试并行、临时数据库、Runner 工具预装、Docker/BuildKit 分层及 registry 等待；保留测试、扫描和发布身份门禁，以真实新 revision 与热缓存对照验收。
 ---
 
 # 构建流水线调优
 
-把目标定义为“缩短从可信 source revision 进入流水线到最终可消费 receipt 的完整墙钟”，而不是只让某个 build step 看起来更快。保留所有质量与供应链门禁，用一次只改变一个主要变量的 A/B 证据决定是否保留优化。
+目标是缩短可信 source revision 进入流水线到约定完成点的完整墙钟。阈值来自当前任务；历史案例的40分钟不是其他工程的默认SLO。通过一次只改一个主要变量的对照决定是否保留优化。
 
-## 读取路由
+## 按问题读取
 
-- 开始测量或定义 evidence 时读取 [measurement-contract.md](references/measurement-contract.md)。
-- 选择优化目标、判断是否加 CPU、迁 GitLab 或改 cache 时读取 [optimization-playbook.md](references/optimization-playbook.md)。
-- 已有阶段开始/结束 epoch 时运行 `scripts/analyze_timeline.py`，不要手工相加并行阶段。
+- 定义时间、资源与证据口径：[measurement-contract.md](references/measurement-contract.md)。
+- 判断瓶颈优先级、CPU/调度或托管平台迁移：[optimization-playbook.md](references/optimization-playbook.md)。
+- 测试/fixture/数据库/Temporal慢，或准备并行测试：[integration-testing.md](references/integration-testing.md)。
+- 缓存分层、预装工具、镜像复制或并发取消：[runner-image-cache.md](references/runner-image-cache.md)。
+- 需要完整执行案例、失败修正和决策依据：[case-study-videoagentteam.md](references/case-study-videoagentteam.md)。案例含已冻结证据，不是当前基础设施配置。
 
-## 1. 锁定边界
+## 1. 固定范围与完成点
 
-先写清以下合同：
+记录当前仓库/WIP、主线完整revision、构建context、CI入口、Runner实际imageID和资源、发布入口及各自owner。跨仓配置按现场值读取，不从最近使用的checkout推断当前项目。
 
-1. source of truth：仓库、分支、完整 revision、构建 context hash。
-2. 完成点：CI 绿、镜像构建完成、registry digest 可拉取、最终 refs receipt，或产品 rollout。
-3. 必须保留的 gate：测试、lint、coverage、扫描、smoke、digest equality、独立拉取。
-4. 变更授权：只读诊断、流水线修改、集群资源修改和产品发布分别处理。
-5. 不变量：是否允许修改 Deployment、tag、schema、Secret、runner trust boundary。
+将代码/CI配置、Runner或集群资源、镜像复制、产品部署的授权范围分开记录；已有覆盖当前动作的授权直接沿用。没有产品发布授权时保留 `product_image_refs_mutated=false`，快照生产镜像引用并在最后比较。
 
-没有产品发布授权时，把 `product_image_refs_mutated=false` 作为验收不变量。供应链可用不等于产品已经上线。
+冻结保留门禁：测试集合/断言/coverage、锁文件、类型/格式、迁移、扫描、组件smoke、source/digest绑定及独立读取。完成点若只到制品回执，不得报告产品已经上线。
 
-## 2. 建立完整基线
+## 2. 先测量，再修改
 
-至少采集一个自然新 revision 和一个同 revision 热缓存样本。不要把热缓存结果写成首次构建，也不要把多个 run 的最快阶段拼成一次不存在的墙钟。
+先获取一个真实通过的完整参考run；失败run可用于根因分析，不能作为通过样本。测量改动先跑一条窄的真实CI路径，确认插件导入、日志持久化与失败退出再跑全套，避免本机环境掩盖Runner差异。
 
-统一记录：
+分别采集workflow创建/排队/job/step与receipt时间；测试setup/call/teardown及fixture明细；CPU/throttle/RSS/I/O等待；缓存命中、下载和保存；run/attempt/source/制品摘要。共享节点负载、采样缺口与诊断任务重叠必须标注。
 
-- workflow create、queue、runner start、setup、source materialization；
-- 每个测试/构建/smoke 的 start/end，不只记录 step 显示时长；
-- artifact 上传/下载、CI wait、registry 复制、digest pull、receipt、cleanup；
-- 组件或 job 的并行关系；
-- runner/BuildKit/节点的 CPU、throttle、RSS、读写字节和峰值；
-- cache scope、cache cold/warm、toolchain/base image/lockfile revision；
-- run ID、attempt、source revision、最终 digest 与产品 refs 前后快照。
-
-把数据写成 `measurement-contract.md` 定义的 TSV 后运行：
+已有完整时间线时使用技能目录下的脚本（安装路径由当前宿主确定）：
 
 ```bash
-python skills/optimize-build-pipeline/scripts/analyze_timeline.py timeline.tsv --format markdown
-python skills/optimize-build-pipeline/scripts/analyze_timeline.py timeline.tsv --format json --require-passed
+python <skill-dir>/scripts/analyze_timeline.py timeline.tsv --format json --require-passed
+python <skill-dir>/scripts/compare_test_runs.py baseline-tests.tsv db-tests.tsv serial-tests.tsv --require-preserved
 ```
 
-## 3. 找关键路径而非最高峰
+比较器只检查清单/结果和阶段工作量，不能证明断言、覆盖率或发布门禁保留。fixture是测试阶段的子集，worker副本也不能与master汇总再次累加。
 
-按墙钟贡献排序：
+## 3. 按瓶颈走分支
 
-1. queue/调度等待；
-2. checkout、Action/toolchain、module/package 下载；
-3. 最慢的串行 gate；
-4. 冷编译、链接、镜像 export/push；
-5. CI wait、registry 复制和 digest smoke；
-6. artifact/summary/cleanup 固定开销。
+| 证据 | 先验证的假设 |
+|---|---|
+| 测试setup/teardown很慢、CPU低、数据库sync等待高 | 临时库初始化/克隆/清理的存储成本；先查测试持久性合同，再评估受限临时内存卷 |
+| 测试超时但队列已唯一 | 检查下载、I/O、外部服务等待和资源竞争，不能直接断言“worker互抢” |
+| 大部分时间在工具/依赖下载或缓存保存 | 确認预装工具被实际使用，并比较缓存恢复+保存与重新下载成本 |
+| 源码变动就重装所有依赖 | 调整COPY/ARG顺序、安装ownership、cache scope和构建context |
+| 多组件串行且资源有余量 | 隔离输出后试验并行，全部join成功才允许回执 |
+| 持续CPU饱和或throttle高 | 固定其他变量后做CPU档位对照 |
+| 排队或registry控制面耗时主导 | 分拆调度、轮询与实际传输，再选择对应优化 |
 
-并行阶段不能相加。CPU 峰值低也不能直接推断“应加 CPU”：缓存命中可能已经消除了工作，外网等待和 export I/O 也会让 CPU 空闲。
+不得通过删除测试、降低coverage、缩短超时掩盖失败、关闭事务/安全设置、使用mutable tag或绕过digest读取取得速度。
 
-## 4. 按价值顺序实施
+## 4. 可归因实验与恢复
 
-依次评估，前一档没有足够收益再进入后一档：
+每个实验记录假设、主要变量、固定source、配置差异、缓存状态、并发负载、各gate、完整墙钟和回滚入口。允许预先准备后续候选，但不要在当前基线运行中改变它的输入或环境；如果构建器要求远端主线保持exact SHA，也不能提前推进主线。
 
-1. 自动记录完整时间线与最终 receipt，先消除口径误差。
-2. 消除重复 checkout、Action package、toolchain 和依赖下载；可信 runner 可使用按 SHA 校验的近端 mirror/snapshot。
-3. 建立持久依赖缓存与编译缓存；cache key 必须绑定架构、toolchain、lockfile 和必要的 build flags。
-4. 优化 Docker context、layer 顺序、`.dockerignore` 和 BuildKit cache mount；固定 base image digest。
-5. 删除同一 revision 的重复 build/test，或在一个可信 runner 内共享 source/cache 后并行独立 gate。
-6. 校准 Kubernetes `request` 与 `limit`：request 是调度保证，limit 才是上限。避免 request 过高导致并发工作被 scheduler 串行化。
-7. 将 CI wait 与 registry 复制、digest smoke 等相互独立的最终验证重叠；最终 receipt 必须 join 全部分支并 fail closed。
-8. 分离 registry task 时间、controller 建立/轮询 overhead 和实际传输字节，再决定轮询、事件驱动或网络治理。
-9. 只有证据显示持续 CPU 饱和、throttle 或关键路径随 CPU 增加而缩短时，才扩 runner/VM CPU。
-10. 只有剩余墙钟主要是代码托管往返，或另有主权/离线/可用性目标时，才把 GitLab 迁移列为速度优先项。
+比较同revision的串行/并行时，同时拆job与step：独立工具下载变慢不能全归因于并行。缓存或资源状态无法固定时说明局限；多轮才可估计中位数/分位数。没有证明收益的选项保留原默认或撤销；不要为已写代码寻找必须启用的理由。
 
-不得通过删除测试、降低 coverage、跳过扫描、使用 mutable tag、弱化 digest pull 或绕过 source binding 换取时间。
+异步实现需证明：任一分支失败/缺结果阻断receipt；独立日志和元数据可定位组件；一次或连续取消均有界清理进程树和临时资源。重跑必须是授权内、无新增副作用的CI；付费生成、迁移或部署不能套用“自动重试构建”的规则。
 
-## 5. 做单变量 A/B
+## 5. 正式验收与收口
 
-每项优化都记录：
+在最终配置下运行自然新revision和同revision热缓存完整入口，记录所有项目实际需要的gate：source物化、全测试、组件构建/smoke、registry push/scan、目标复制、各digest独立pull、source/context/digest对应、最终回执和cleanup。无需复制的项目不人为增设复制链路。
 
-- 假设和主要变量；
-- 固定 revision、runner/节点、并发负载、cache 状态；
-- baseline run ID 与 candidate run ID；
-- 完整墙钟和受影响阶段；
-- CPU/RSS/I/O/传输字节变化；
-- 所有 gate、digest、receipt 和产品 refs 不变量；
-- 保留或撤销阈值。
+独立拉取检查用最终非root身份验证包导入、版本、必需静态文件/CLI，而不只检查镜像存在。结果保存实际命令语义、输出、退出码和imageID；按测试合同避免触发业务写入。校验索引引用、未被gitignore吞掉的证据文件与manifest。
 
-至少区分：
+同步项目文档和当前规格；完成或撤销候选后清理临时Pod、采样进程、导出文件与临时凭据。核对生产引用不变及工作区WIP。提交/推送/发布按当前任务授权执行，文档回执提交与已验证制品source分别报告。
 
-- 冷缓存/自然新 revision；
-- 热缓存/同 revision 重建；
-- 空闲 runner；
-- CI 与正式构建真实并发。
+## 6. 输出结果
 
-外部服务有明显波动时用多轮中位数与范围，不用单轮最快值。优化使完整墙钟变差、I/O 暴增或失去确定性时立即撤销，并把失败方案固化为边界，防止以后重复试错。
+给出自然新revision、同revision热缓存的完整墙钟，基线run与差值；再列阶段/并发关系、测试集合和coverage、关键资源与缓存证据、制品/回执、保留与撤销的方案。区分首次缓存建立和热命中、实测和预测、制品就绪和产品上线。
 
-## 6. 验收完整链路
-
-最终至少跑一次当前正式入口，覆盖：
-
-1. exact revision source materialization；
-2. 全部 CI gate；
-3. 所有组件构建与组件 smoke；
-4. 内部 registry push/scan；
-5. 所有目标仓库复制；
-6. 每个最终 digest 的独立 pull/smoke；
-7. source revision/context、Harbor/目标 registry digest equality；
-8. refs receipt、secret scan、产品 refs 前后对照；
-9. workflow 从创建到完成的真实墙钟。
-
-异步优化必须证明：任一后台分支失败都会阻止 receipt；cleanup 会终止残留 waiter/pod；receipt 只在 join 后生成。
-
-## 7. 报告结果
-
-先给结果，再给阶段表：
-
-```text
-完整 workflow：<秒>
-最终 receipt：第 <秒>
-自然新 revision：<秒>
-同 revision 热缓存：<秒>
-相对 baseline：减少 <秒>/<百分比>
-```
-
-阶段表必须包含“阶段、耗时、串行/并行、证据 run”。同时报告：
-
-- 当前关键路径和下一档最高价值目标；
-- CPU 是否打满、增加 CPU 是否可能有效；
-- cache 命中与首次构建的区别；
-- 外部时延中可控 overhead 与不可控波动；
-- 最终 digest/receipt；
-- 产品是否真正 rollout；
-- 被撤销方案及原因。
-
-不要把预测值写成实测值。没有在最终配置下跑过自然新 revision 时，明确标记“未直接测量”。
+不要把预测值写成实测值。未在最终配置跑过自然新revision时明确写“未直接测量”；单轮结果不声称P95/P99。优化任务本身的调查与多轮验收用时也不能算成一次日常流水线耗时。

@@ -8,6 +8,7 @@
 4. Cache 与 source 合同
 5. Registry 与 receipt 合同
 6. Evidence 目录
+7. 测试阶段与归因边界
 
 ## 1. 时间口径
 
@@ -158,3 +159,13 @@ evidence/<UTC>-run-<id>/
 ```
 
 在 `result.env` 中区分：`measured`、`counterfactual`、`estimated`。只有平台原始时间戳或当前 run receipt 支持的值才标 `measured`。
+
+## 7. 测试阶段与归因边界
+
+- 用例导出使用 `nodeid/setup_seconds/call_seconds/teardown_seconds/outcome` TSV（LF）。fixture另表保存名称、scope、phase、时间及CPU；fixture属于用例阶段子集，不再相加。合并worker数据只取master或互不重叠的分组；不要静默去重掩盖错误分片。
+- 测试清单可用 `scripts/compare_test_runs.py` 检查丢失、重复、新skip和失败；断言/coverage/skip条件与测试选择还需独立核对。详见 [集成测试](integration-testing.md)。
+- job时间包含setup工具与cleanup；对照差异应先拆step，不能把ORAS/SDK下载波动全部归因于并发。失败测量可定位瓶颈，只有全部门禁通过的run才能作为成功验收。
+- 记录平台run与attempt。rerun的初始created时间可能属于首次尝试，不能把中间人工等待当作新attempt队列时间；需要完整create→complete对照时优先使用新run ID、相同source的手动运行，记录输入。
+- 固定source同时记录每组件context路径、提交tree或实际传输context摘要及排除规则；git tree不等于过滤后的context哈希。
+- 硬件摘要附采样窗口/间隔、缺口和共享负载；checkpoint计数带进程/Pod、字段名与单位。独立smoke保存退出码、实际命令语义和输出，三个无键名的on或一个passed不足以复算结论。
+- 时间线输入须覆盖约定的起点和完成点；分析器只对提供的区间求墙钟，不会自动补足漏掉的队列/receipt。
