@@ -1010,6 +1010,7 @@ modules:
         Path("references/measurement-contract.md"),
         Path("references/optimization-playbook.md"),
         Path("scripts/analyze_timeline.py"),
+        Path("scripts/compare_test_runs.py"),
     ]
     for relative in repo_files:
         assert (repo_dir / relative).read_bytes() == (codex_dir / relative).read_bytes()
