@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:tzuvvmpotnwzpqvzslorvtopnpmluyox
-source_tree_hash: sha256:a7c432a2d11f4cf41fed8ee4805c6de1db60126bd7fcfc0c9ec36bff30cde44b
+source_revision: jj:ktwqvwxmuprwnxllzvoruvwytskuopmp
+source_tree_hash: sha256:0d8e973f619b5ef2118328223cc5929964059c6bddf0453dfe4d8d994d7caf15
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.1.0
@@ -21,7 +21,7 @@ modules:
   skill-coding-standards: 1.1.0
   skill-repo-management: 1.1.0
   skill-code-review-graph: 1.0.0
-  skill-optimize-build-pipeline: 1.0.0
+  skill-optimize-build-pipeline: 1.1.0
   skill-orchestrate-grok-cli: 1.0.0
   skill-reverse-skill: 1.2.0
   skill-improve-codebase-architecture: 1.2.0
@@ -321,30 +321,51 @@ files:
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-codex-files:SKILL.md
   strategy: managed_replace
-  source_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
-  rendered_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
-  last_written_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+  source_hash: sha256:fc812613cbb4c6c250e23d112d58afeda8cbe58a5a1283a36974f671cca75fcc
+  rendered_hash: sha256:fc812613cbb4c6c250e23d112d58afeda8cbe58a5a1283a36974f671cca75fcc
+  last_written_hash: sha256:fc812613cbb4c6c250e23d112d58afeda8cbe58a5a1283a36974f671cca75fcc
 - path: .agents/skills/optimize-build-pipeline/agents/openai.yaml
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-codex-files:agents/openai.yaml
   strategy: managed_replace
-  source_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
-  rendered_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
-  last_written_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+  source_hash: sha256:06a56ae2ebc59204699bb797661eb96d29cf2a310170114b2f64ac60d9681094
+  rendered_hash: sha256:06a56ae2ebc59204699bb797661eb96d29cf2a310170114b2f64ac60d9681094
+  last_written_hash: sha256:06a56ae2ebc59204699bb797661eb96d29cf2a310170114b2f64ac60d9681094
+- path: .agents/skills/optimize-build-pipeline/references/case-study-build-pipeline.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:references/case-study-build-pipeline.md
+  strategy: managed_replace
+  source_hash: sha256:4c3c59f933b85ea69dc14d15151db1e9a612d5b22248e909911fbbb64724ed3b
+  rendered_hash: sha256:4c3c59f933b85ea69dc14d15151db1e9a612d5b22248e909911fbbb64724ed3b
+  last_written_hash: sha256:4c3c59f933b85ea69dc14d15151db1e9a612d5b22248e909911fbbb64724ed3b
+- path: .agents/skills/optimize-build-pipeline/references/integration-testing.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:references/integration-testing.md
+  strategy: managed_replace
+  source_hash: sha256:6d3f0bee40cac8d81ade940866bb136f4ebbbf6ef2cee4a712c84ae8c3955265
+  rendered_hash: sha256:6d3f0bee40cac8d81ade940866bb136f4ebbbf6ef2cee4a712c84ae8c3955265
+  last_written_hash: sha256:6d3f0bee40cac8d81ade940866bb136f4ebbbf6ef2cee4a712c84ae8c3955265
 - path: .agents/skills/optimize-build-pipeline/references/measurement-contract.md
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-codex-files:references/measurement-contract.md
   strategy: managed_replace
-  source_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
-  rendered_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
-  last_written_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+  source_hash: sha256:081ef348b0d550e8c854eb5e908282723fd94ddbd46beb6cabca9791acea5d1f
+  rendered_hash: sha256:081ef348b0d550e8c854eb5e908282723fd94ddbd46beb6cabca9791acea5d1f
+  last_written_hash: sha256:081ef348b0d550e8c854eb5e908282723fd94ddbd46beb6cabca9791acea5d1f
 - path: .agents/skills/optimize-build-pipeline/references/optimization-playbook.md
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-codex-files:references/optimization-playbook.md
   strategy: managed_replace
-  source_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
-  rendered_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
-  last_written_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+  source_hash: sha256:1deda5d96535636d1bdae5be785c908a1bc75c0a408f020070fbe03ddaa8678d
+  rendered_hash: sha256:1deda5d96535636d1bdae5be785c908a1bc75c0a408f020070fbe03ddaa8678d
+  last_written_hash: sha256:1deda5d96535636d1bdae5be785c908a1bc75c0a408f020070fbe03ddaa8678d
+- path: .agents/skills/optimize-build-pipeline/references/runner-image-cache.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:references/runner-image-cache.md
+  strategy: managed_replace
+  source_hash: sha256:8df5ddadbd6c3b20706280d3d8717bcd8e2cb7c289871c1aab252373a94fe38f
+  rendered_hash: sha256:8df5ddadbd6c3b20706280d3d8717bcd8e2cb7c289871c1aab252373a94fe38f
+  last_written_hash: sha256:8df5ddadbd6c3b20706280d3d8717bcd8e2cb7c289871c1aab252373a94fe38f
 - path: .agents/skills/optimize-build-pipeline/scripts/analyze_timeline.py
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-codex-files:scripts/analyze_timeline.py
@@ -352,6 +373,13 @@ files:
   source_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   rendered_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   last_written_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+- path: .agents/skills/optimize-build-pipeline/scripts/compare_test_runs.py
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-codex-files:scripts/compare_test_runs.py
+  strategy: managed_replace
+  source_hash: sha256:4cad56cd9afb02172c96d3c9d40d9fb9f4ad72d6739507bf10f62e206f7cd749
+  rendered_hash: sha256:4cad56cd9afb02172c96d3c9d40d9fb9f4ad72d6739507bf10f62e206f7cd749
+  last_written_hash: sha256:4cad56cd9afb02172c96d3c9d40d9fb9f4ad72d6739507bf10f62e206f7cd749
 - path: .agents/skills/orchestrate-grok-cli/SKILL.md
   module: skill-orchestrate-grok-cli
   output_id: orchestrate-grok-cli-codex-files:SKILL.md
@@ -1168,30 +1196,51 @@ files:
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-files:SKILL.md
   strategy: managed_replace
-  source_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
-  rendered_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
-  last_written_hash: sha256:5d36a424105edc34c195373735af248b5902d5a3d7a57d120f62d28c98c245f4
+  source_hash: sha256:fc812613cbb4c6c250e23d112d58afeda8cbe58a5a1283a36974f671cca75fcc
+  rendered_hash: sha256:fc812613cbb4c6c250e23d112d58afeda8cbe58a5a1283a36974f671cca75fcc
+  last_written_hash: sha256:fc812613cbb4c6c250e23d112d58afeda8cbe58a5a1283a36974f671cca75fcc
 - path: skills/optimize-build-pipeline/agents/openai.yaml
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-files:agents/openai.yaml
   strategy: managed_replace
-  source_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
-  rendered_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
-  last_written_hash: sha256:f11d5405825c095eece3c91e4f440cd0b223b8ff508372904cd18637a5ac7c80
+  source_hash: sha256:06a56ae2ebc59204699bb797661eb96d29cf2a310170114b2f64ac60d9681094
+  rendered_hash: sha256:06a56ae2ebc59204699bb797661eb96d29cf2a310170114b2f64ac60d9681094
+  last_written_hash: sha256:06a56ae2ebc59204699bb797661eb96d29cf2a310170114b2f64ac60d9681094
+- path: skills/optimize-build-pipeline/references/case-study-build-pipeline.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:references/case-study-build-pipeline.md
+  strategy: managed_replace
+  source_hash: sha256:4c3c59f933b85ea69dc14d15151db1e9a612d5b22248e909911fbbb64724ed3b
+  rendered_hash: sha256:4c3c59f933b85ea69dc14d15151db1e9a612d5b22248e909911fbbb64724ed3b
+  last_written_hash: sha256:4c3c59f933b85ea69dc14d15151db1e9a612d5b22248e909911fbbb64724ed3b
+- path: skills/optimize-build-pipeline/references/integration-testing.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:references/integration-testing.md
+  strategy: managed_replace
+  source_hash: sha256:6d3f0bee40cac8d81ade940866bb136f4ebbbf6ef2cee4a712c84ae8c3955265
+  rendered_hash: sha256:6d3f0bee40cac8d81ade940866bb136f4ebbbf6ef2cee4a712c84ae8c3955265
+  last_written_hash: sha256:6d3f0bee40cac8d81ade940866bb136f4ebbbf6ef2cee4a712c84ae8c3955265
 - path: skills/optimize-build-pipeline/references/measurement-contract.md
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-files:references/measurement-contract.md
   strategy: managed_replace
-  source_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
-  rendered_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
-  last_written_hash: sha256:2e5a6a116e3976893633a5b59631f2b19c2a580c3d1e7566a0d975927ec48c14
+  source_hash: sha256:081ef348b0d550e8c854eb5e908282723fd94ddbd46beb6cabca9791acea5d1f
+  rendered_hash: sha256:081ef348b0d550e8c854eb5e908282723fd94ddbd46beb6cabca9791acea5d1f
+  last_written_hash: sha256:081ef348b0d550e8c854eb5e908282723fd94ddbd46beb6cabca9791acea5d1f
 - path: skills/optimize-build-pipeline/references/optimization-playbook.md
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-files:references/optimization-playbook.md
   strategy: managed_replace
-  source_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
-  rendered_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
-  last_written_hash: sha256:a00e995d2257721007db7806765bdbb8787b2381da2f21ff386286bd1016e2c4
+  source_hash: sha256:1deda5d96535636d1bdae5be785c908a1bc75c0a408f020070fbe03ddaa8678d
+  rendered_hash: sha256:1deda5d96535636d1bdae5be785c908a1bc75c0a408f020070fbe03ddaa8678d
+  last_written_hash: sha256:1deda5d96535636d1bdae5be785c908a1bc75c0a408f020070fbe03ddaa8678d
+- path: skills/optimize-build-pipeline/references/runner-image-cache.md
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:references/runner-image-cache.md
+  strategy: managed_replace
+  source_hash: sha256:8df5ddadbd6c3b20706280d3d8717bcd8e2cb7c289871c1aab252373a94fe38f
+  rendered_hash: sha256:8df5ddadbd6c3b20706280d3d8717bcd8e2cb7c289871c1aab252373a94fe38f
+  last_written_hash: sha256:8df5ddadbd6c3b20706280d3d8717bcd8e2cb7c289871c1aab252373a94fe38f
 - path: skills/optimize-build-pipeline/scripts/analyze_timeline.py
   module: skill-optimize-build-pipeline
   output_id: optimize-build-pipeline-files:scripts/analyze_timeline.py
@@ -1199,6 +1248,13 @@ files:
   source_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   rendered_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
   last_written_hash: sha256:2f0e7ec63a834c480e32277354722af6edc4250d8c9a933cdd7f24d6361bb324
+- path: skills/optimize-build-pipeline/scripts/compare_test_runs.py
+  module: skill-optimize-build-pipeline
+  output_id: optimize-build-pipeline-files:scripts/compare_test_runs.py
+  strategy: managed_replace
+  source_hash: sha256:4cad56cd9afb02172c96d3c9d40d9fb9f4ad72d6739507bf10f62e206f7cd749
+  rendered_hash: sha256:4cad56cd9afb02172c96d3c9d40d9fb9f4ad72d6739507bf10f62e206f7cd749
+  last_written_hash: sha256:4cad56cd9afb02172c96d3c9d40d9fb9f4ad72d6739507bf10f62e206f7cd749
 - path: skills/orchestrate-grok-cli/SKILL.md
   module: skill-orchestrate-grok-cli
   output_id: orchestrate-grok-cli-files:SKILL.md
@@ -1696,6 +1752,6 @@ files:
   source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
   rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
   last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-09-06T16:52:38.102257+00:00'
+last_synced: '2026-09-09T09:47:38.848950+00:00'
 source_content_version: 0.11.0
 agentphilosophy_version: 0.11.0

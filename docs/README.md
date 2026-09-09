@@ -45,7 +45,7 @@
 
 - [docs/cli/agent-execution.md](cli/agent-execution.md)：LLM 执行规则。
 - [docs/cli/architecture-review.md](cli/architecture-review.md)：架构加深评审 skill。
-- [docs/cli/build-pipeline.md](cli/build-pipeline.md)：构建流水线调优 skill。
+- [docs/cli/build-pipeline.md](cli/build-pipeline.md)：构建流水线调优 skill 1.1.0：测试隔离、I/O/缓存、预装工具、完整案例及只读比较器。
 - [docs/cli/code-review-graph.md](cli/code-review-graph.md)：code-review-graph 结构图谱依赖。
 - [docs/cli/code-review.md](cli/code-review.md)：独立 code-review 审查 skill。
 - [docs/cli/commands.md](cli/commands.md)：真实可用命令。
