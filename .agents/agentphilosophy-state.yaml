@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:ktwqvwxmuprwnxllzvoruvwytskuopmp
-source_tree_hash: sha256:0d8e973f619b5ef2118328223cc5929964059c6bddf0453dfe4d8d994d7caf15
+source_revision: jj:spyqoyskrnozxlnwwmkylskkkvpqmpww
+source_tree_hash: sha256:539242e7bb0965f36a651d34ba2fa867ce048d6db082e59414e78241574af7fa
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.1.0
@@ -11,8 +11,8 @@ modules:
   release-conventions: 1.1.0
   spec-program: 1.0.0
   spec-ddd: 1.2.0
-  spec-bdd: 1.1.0
-  spec-test-general: 1.1.0
+  spec-bdd: 1.2.0
+  spec-test-general: 1.2.0
   spec-product-copy: 1.2.0
   spec-architecture: 1.0.0
   skill-agentphilosophy-sync: 1.1.0
@@ -840,8 +840,8 @@ files:
   output_id: agents-md
   strategy: layered
   source_hash: sha256:c89a2b6693b686ab33c7a5851256c831d69ae86ac084f20c629a2af435d4427c
-  rendered_hash: sha256:0db4c3a208b9993b1f9eeb55ba802e2ee77add16ce14c81a61d85a69e02e53c9
-  last_written_hash: sha256:0db4c3a208b9993b1f9eeb55ba802e2ee77add16ce14c81a61d85a69e02e53c9
+  rendered_hash: sha256:7d45cf39b2b1ae76cb3fd1a40029a512a2047a75631871e2b7e2a9f8eccf5daf
+  last_written_hash: sha256:7d45cf39b2b1ae76cb3fd1a40029a512a2047a75631871e2b7e2a9f8eccf5daf
 - path: CLAUDE.md
   module: doc-templates
   output_id: claude-md
@@ -1721,9 +1721,9 @@ files:
   module: spec-bdd
   output_id: bdd-spec
   strategy: layered
-  source_hash: sha256:10d16bd91b8537370f2ff6b1312a195e88716163c0ac8a7acaa2d57f67c3a922
-  rendered_hash: sha256:10d16bd91b8537370f2ff6b1312a195e88716163c0ac8a7acaa2d57f67c3a922
-  last_written_hash: sha256:10d16bd91b8537370f2ff6b1312a195e88716163c0ac8a7acaa2d57f67c3a922
+  source_hash: sha256:20b703eb08674c24d79d40fc72c322f10ce9af3330f8af376dcdbeb008c22c2e
+  rendered_hash: sha256:20b703eb08674c24d79d40fc72c322f10ce9af3330f8af376dcdbeb008c22c2e
+  last_written_hash: sha256:20b703eb08674c24d79d40fc72c322f10ce9af3330f8af376dcdbeb008c22c2e
 - path: spec/DDDSpec.md
   module: spec-ddd
   output_id: ddd-spec
@@ -1749,9 +1749,9 @@ files:
   module: spec-test-general
   output_id: test-strategy
   strategy: managed_replace
-  source_hash: sha256:156b96238b484f0ffa30f0d81038886923a5e98bd3eea8cce6c7d10658ac7cf3
-  rendered_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-  last_written_hash: sha256:95223888bef96a5c7914bc71c7dfb210c6bf19d8c4f1a9dcf137f08a4f336c9e
-last_synced: '2026-09-09T09:47:38.848950+00:00'
+  source_hash: sha256:be986b98ee03d61ed0bdfc9a67941ccc4612c6a5e6d4bf6cfdc6dd61326a0ae7
+  rendered_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
+  last_written_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
+last_synced: '2026-09-18T14:10:12.708458+00:00'
 source_content_version: 0.11.0
 agentphilosophy_version: 0.11.0
