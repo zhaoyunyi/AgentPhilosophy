@@ -1,6 +1,6 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:qsmqyqurrvunxlkvwxvpowplyyulopqr
+source_revision: jj:ztuvpxrlqrpqnxvmnyvltwulnsvqutzx
 source_tree_hash: sha256:2936e8b5cf49490dcdc97e0835a74ca296749eb27b0c7c966191ef30840994b5
 modules:
   openspec-skills: 1.1.0
@@ -903,8 +903,8 @@ files:
   output_id: release-notes-index
   strategy: layered
   source_hash: sha256:eb1657de1ecd4064fab7d5591e85e3bb858208d9581e2082a7adc117eb929c3f
-  rendered_hash: sha256:7b5b1e8985b64688d2ffc04e017a230162f97962f93bee2bd89a81a8a7df80a5
-  last_written_hash: sha256:7b5b1e8985b64688d2ffc04e017a230162f97962f93bee2bd89a81a8a7df80a5
+  rendered_hash: sha256:00b3d0af24c9e7c9b195dc0fc7d3def997b7084862bf9899a5d90e5647ace887
+  last_written_hash: sha256:00b3d0af24c9e7c9b195dc0fc7d3def997b7084862bf9899a5d90e5647ace887
 - path: skills/MATTPOCOCK-SKILLS-LICENSE.txt
   module: skill-mattpocock-engineering
   output_id: mattpocock-skill-files:MATTPOCOCK-SKILLS-LICENSE.txt
@@ -1752,6 +1752,6 @@ files:
   source_hash: sha256:be986b98ee03d61ed0bdfc9a67941ccc4612c6a5e6d4bf6cfdc6dd61326a0ae7
   rendered_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
   last_written_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
-last_synced: '2026-09-24T03:07:41.739408+00:00'
+last_synced: '2026-09-24T03:16:21.349982+00:00'
 source_content_version: 0.13.0
 agentphilosophy_version: 0.13.0
