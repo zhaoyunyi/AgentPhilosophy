@@ -2,7 +2,9 @@
 
 Ponytail 上游仓库：https://github.com/DietrichGebert/ponytail
 
-`skill-ponytail` 是显式可选模块，不包含在中央源默认 preset 中。项目选择该模块后，会把 Ponytail `4.8.4` 适配版的 `SKILL.md`、`agents/openai.yaml` 与 MIT 许可证同时生成到 `skills/ponytail/` 和 `.agents/skills/ponytail/`，用于让 agent 在新增功能、修 bug、重构、review、设计或选择依赖前先追踪真实调用链，再按 `lite|full|ultra` 模式判断是否真的需要写代码、能否复用代码库、标准库、平台能力或既有依赖，并避免过度工程。
+`skill-ponytail` 是显式可选模块，不包含在中央源默认 preset 中。项目选择该模块后，会把 Ponytail `4.10.0` 适配版的 `SKILL.md`、`agents/openai.yaml` 与 MIT 许可证同时生成到 `skills/ponytail/` 和 `.agents/skills/ponytail/`，用于让 agent 在新增功能、修 bug、重构、review、设计或选择依赖前先追踪真实调用链，再按 `lite|full|ultra` 模式判断是否真的需要写代码、能否复用代码库、标准库、平台能力或既有依赖，并避免过度工程。
+
+本轮上游的 `skills/ponytail/SKILL.md` 与此前锁定内容一致；4.10.0 的主要变化在 Cursor、Grok Build 等插件适配。本模块仅更新来源版本，不引入全局 hook。
 
 该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装上游 Codex 插件或全局 hook。目标项目只要通过 AgentPhilosophy 同步拿到 `skills/ponytail` 和 `.agents/skills/ponytail`，Codex 原生 skill discovery 就能在项目内触发；如果用户明确要求使用上游插件能力，再按上游仓库说明单独安装。
 

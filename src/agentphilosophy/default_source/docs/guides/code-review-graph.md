@@ -1,6 +1,6 @@
 # code-review-graph 使用指南
 
-AgentPhilosophy 从 v0.8.0 起固定依赖 [`code-review-graph`](https://github.com/tirth8205/code-review-graph) `2.3.8`，并重新导出同名 `code-review-graph` 命令。默认 preset 同时包含 `skill-code-review-graph`，把使用规则同步到仓库级 `skills/code-review-graph/` 和 Codex 项目级 `.agents/skills/code-review-graph/`。
+AgentPhilosophy 从 v0.8.0 起固定依赖 [`code-review-graph`](https://github.com/tirth8205/code-review-graph) `2.3.9`，并重新导出同名 `code-review-graph` 命令。默认 preset 同时包含 `skill-code-review-graph`，把使用规则同步到仓库级 `skills/code-review-graph/` 和 Codex 项目级 `.agents/skills/code-review-graph/`。
 
 ## 到底使用 Skill、CLI 还是 MCP
 
@@ -14,7 +14,13 @@ AgentPhilosophy 从 v0.8.0 起固定依赖 [`code-review-graph`](https://github.
 
 因此，日常让 Codex 审查代码时，推荐路径是：**Skill 触发 → MCP 查询 → agent 阅读图谱选中的源码和测试**。CLI 主要负责初始化和维护；MCP 不可用时，CLI 也可以作为人工或自动化兜底。
 
-上游 `2.3.8` 的 Codex 安装器会注册 MCP、安装 hooks 并向 `AGENTS.md` 注入图谱使用指令，但不会生成 Codex 原生 skill。AgentPhilosophy 的 `skill-code-review-graph` 补上了项目级 skill discovery 入口。
+上游 `2.3.9` 的 Codex 安装器会注册 MCP、安装 hooks 并向 `AGENTS.md` 注入图谱使用指令，但不会生成 Codex 原生 skill。AgentPhilosophy 的 `skill-code-review-graph` 补上了项目级 skill discovery 入口。
+
+## 从 2.3.8 升级
+
+2.3.9 首次打开旧图谱时会自动把数据库 schema 从 9 迁移到 13，其中全文索引会完整重建。迁移前备份项目的 `.code-review-graph/graph.db`；大仓库首次打开可能较慢，且迁移不能中途恢复。若需要回退到 2.3.8，应删除新图谱并用旧版 `code-review-graph build` 重建，不能让旧版直接读取新数据库。
+
+升级后运行一次 `code-review-graph build --repo .`，使未改动的源码也获得新版解析结果。若已安装 Codex MCP 和 hook，再运行 `code-review-graph install --platform codex --repo . --dry-run` 检查变更，随后按项目授权重新安装。另有 VS Code 扩展时需单独升级到支持 schema 13 的版本；升级 Python 包不会更新扩展。
 
 ## 安装与配置 Codex
 

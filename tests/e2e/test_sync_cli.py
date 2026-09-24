@@ -563,7 +563,7 @@ def test_packaged_preset_does_not_enable_superpowers_by_default(tmp_path: Path, 
     assert "- model-constraints" in project_config
     assert "- superpowers-system" not in project_config
     assert "Superpowers 可选工作流" not in agents_text
-    assert "当前项目参考 Superpowers `6.3.0`" not in agents_text
+    assert "当前项目参考 Superpowers `6.4.1`" not in agents_text
 
 
 def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> None:
@@ -605,7 +605,7 @@ def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> N
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers 可选工作流" in agents_text
-    assert "当前项目参考 Superpowers `6.3.0`" in agents_text
+    assert "当前项目参考 Superpowers `6.4.1`" in agents_text
     assert "~/.codex/superpowers" in agents_text
     assert "~/.agents/skills/superpowers" in agents_text
 

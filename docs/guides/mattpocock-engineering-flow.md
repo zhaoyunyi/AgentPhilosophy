@@ -4,6 +4,8 @@ AgentPhilosophy 默认 preset 通过 `skill-mattpocock-engineering` 和独立的
 
 上游来源：https://github.com/mattpocock/skills
 
+当前跟踪上游 `main` 的提交 `c55ee46073ed923f86ce59a5eb3b6d895095d1b7`。相较此前锁定提交，本仓跟踪的活跃 skill 文件未变化；本轮只更新来源 revision 和模块补丁版本，项目适配与显式调用策略保持原样。
+
 上游采用 MIT License。许可文本随主模块写入 `skills/MATTPOCOCK-SKILLS-LICENSE.txt` 与 `.agents/skills/MATTPOCOCK-SKILLS-LICENSE.txt`；可独立选择的 `code-review` 和 `improve-codebase-architecture` 模块也会在各自目录保留同一文本。
 
 ## 完整能力集

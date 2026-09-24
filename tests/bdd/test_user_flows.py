@@ -436,7 +436,7 @@ def test_bdd_explicit_superpowers_selection_is_preserved(tmp_path: Path) -> None
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers 可选工作流" in agents_text
-    assert "当前项目参考 Superpowers `6.3.0`" in agents_text
+    assert "当前项目参考 Superpowers `6.4.1`" in agents_text
 
 
 def test_bdd_installed_optional_ponytail_and_superpowers_can_be_removed(tmp_path: Path) -> None:

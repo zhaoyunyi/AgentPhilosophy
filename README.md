@@ -47,7 +47,7 @@ agentphilosophy-sync push /path/to/project --apply
 code-review-graph --version
 ```
 
-AgentPhilosophy 固定依赖 `code-review-graph==2.3.8`，并重新导出同名 CLI。默认 preset 还会同步 `code-review-graph` 项目级 skill，用于让 agent 在审查、影响分析、调试、架构探索和安全重构时优先通过 MCP 获取结构化最小上下文。首次配置、构建、状态、watch 和可视化仍由 CLI 完成，详见 [code-review-graph 使用指南](docs/guides/code-review-graph.md)。
+AgentPhilosophy 固定依赖 `code-review-graph==2.3.9`，并重新导出同名 CLI。默认 preset 还会同步 `code-review-graph` 项目级 skill，用于让 agent 在审查、影响分析、调试、架构探索和安全重构时优先通过 MCP 获取结构化最小上下文。首次配置、构建、状态、watch 和可视化仍由 CLI 完成，详见 [code-review-graph 使用指南](docs/guides/code-review-graph.md)。
 
 安装 `main` 最新内容后，还可以让 agent 直接读取用户断点结构化数据：
 

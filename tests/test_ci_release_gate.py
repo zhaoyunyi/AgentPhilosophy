@@ -42,7 +42,7 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "expected_agentphilosophy_version=" in content
     assert "import agentphilosophy" in content
     assert "agentphilosophy-sync\" --version" in content
-    assert 'code-review-graph" --version | grep -q "2.3.8"' in content
+    assert 'code-review-graph" --version | grep -q "2.3.9"' in content
     assert 'push --help | grep -q -- "--project-name"' in content
     assert "agentphilosophy-sync\" llm-usage" in content
     assert "agentphilosophy-sync\" llm-usage --mode auto-config" in content
@@ -54,7 +54,7 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert '! grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"' in content
     assert 'grep -q "选择合适的模型与推理强度" "$target/AGENTS.md"' in content
     assert 'superpowers_target="$smoke_root/project-with-superpowers"' in content
-    assert "当前项目参考 Superpowers \\`6.3.0\\`" in content
+    assert "当前项目参考 Superpowers \\`6.4.1\\`" in content
     assert "~/.agents/skills/superpowers" in content
     assert 'ponytail_target="$smoke_root/project-with-ponytail"' in content
     assert "skill-ponytail" in content
