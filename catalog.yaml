@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 0.12.0
+content_version: 0.13.0
 modules:
   - name: openspec-skills
     category: base
@@ -187,7 +187,7 @@ modules:
     risk: low
   - name: skill-code-review-graph
     category: skill
-    description: code-review-graph 2.3.8 图谱构建、MCP 查询和 CLI 维护项目级 skill
+    description: code-review-graph 2.3.9 图谱构建、MCP 查询和 CLI 维护项目级 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/code-review-graph/SKILL.md
@@ -235,7 +235,7 @@ modules:
     risk: low
   - name: skill-ponytail
     category: skill
-    description: Ponytail 4.8.4 三级精简编码、根因修复和复用优先项目级 skill
+    description: Ponytail 4.10.0 三级精简编码、根因修复和复用优先项目级 skill
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - skills/ponytail/SKILL.md

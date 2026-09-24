@@ -58,7 +58,7 @@ PY
 )"
 
 "$smoke_root/venv/bin/agentphilosophy-sync" --version | grep -q "${expected_agentphilosophy_version}"
-"$smoke_root/venv/bin/code-review-graph" --version | grep -q "2.3.8"
+"$smoke_root/venv/bin/code-review-graph" --version | grep -q "2.3.9"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--update-docs"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--llm-command"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--project-name"
@@ -132,7 +132,7 @@ YAML
 "$smoke_root/venv/bin/agentphilosophy-sync" validate "$superpowers_target" >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --apply >/dev/null
-grep -q "当前项目参考 Superpowers \`6.3.0\`" "$superpowers_target/AGENTS.md"
+grep -q "当前项目参考 Superpowers \`6.4.1\`" "$superpowers_target/AGENTS.md"
 grep -q "~/.agents/skills/superpowers" "$superpowers_target/AGENTS.md"
 
 ponytail_target="$smoke_root/project-with-ponytail"

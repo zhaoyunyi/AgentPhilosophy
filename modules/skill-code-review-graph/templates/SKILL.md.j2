@@ -5,7 +5,9 @@ description: 为 {{ project_name }} 构建和查询 code-review-graph；适用�
 
 # Code Review Graph
 
-本 skill 对接 [code-review-graph](https://github.com/tirth8205/code-review-graph) `2.3.8`。它负责告诉 agent 何时以及怎样使用图谱；真正的解析、存储和查询由 `code-review-graph` 依赖提供。
+本 skill 对接 [code-review-graph](https://github.com/tirth8205/code-review-graph) `2.3.9`。它负责告诉 agent 何时以及怎样使用图谱；真正的解析、存储和查询由 `code-review-graph` 依赖提供。
+
+从 2.3.8 升级前备份 `.code-review-graph/graph.db`：2.3.9 首次打开会迁移到 schema 13，回退旧版须重建图谱。升级后运行一次全量 `build`，使未改动文件也获得新版解析结果；已安装 MCP 或 hook 时先预览再重新运行 `install`。
 
 ## 三层入口
 
