@@ -1,7 +1,7 @@
 name: skill-repo-management
 description: 仓库状态、文档索引、提交边界和清理规则 skill
 source_kind: internal
-version: 1.1.0
+version: 1.2.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []

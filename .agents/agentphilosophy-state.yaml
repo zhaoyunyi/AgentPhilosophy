@@ -1,12 +1,12 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:ztuvpxrlqrpqnxvmnyvltwulnsvqutzx
-source_tree_hash: sha256:2936e8b5cf49490dcdc97e0835a74ca296749eb27b0c7c966191ef30840994b5
+source_revision: jj:usqmxzluskqmrzwvvpskwqqoooozlwmq
+source_tree_hash: sha256:4aa8fea8daeadcf5f0d64609250b52944ef15db0dc18a678e86cea959b431428
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.1.0
   model-constraints: 1.2.0
-  doc-templates: 1.1.0
+  doc-templates: 1.2.0
   multi-module-layout: 1.1.0
   release-conventions: 1.1.0
   spec-program: 1.0.0
@@ -19,7 +19,7 @@ modules:
   skill-jj-management: 1.2.0
   skill-target-jj: 1.1.0
   skill-coding-standards: 1.1.0
-  skill-repo-management: 1.1.0
+  skill-repo-management: 1.2.0
   skill-code-review-graph: 1.1.0
   skill-optimize-build-pipeline: 1.1.0
   skill-orchestrate-grok-cli: 1.0.0
@@ -468,9 +468,9 @@ files:
   module: skill-repo-management
   output_id: repo-management-codex-skill
   strategy: managed_replace
-  source_hash: sha256:4305361e9f94beb3dad1c6d93e804711f25043f40aae15054538439265fd0063
-  rendered_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
-  last_written_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
+  source_hash: sha256:b87f8670f6abb6ef65b042f8a1668be679c4e92b586d56bf067eabbec40f16c5
+  rendered_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
+  last_written_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
 - path: .agents/skills/research/SKILL.md
   module: skill-mattpocock-engineering
   output_id: mattpocock-codex-skill-files:research/SKILL.md
@@ -839,9 +839,9 @@ files:
   module: doc-templates
   output_id: agents-md
   strategy: layered
-  source_hash: sha256:c89a2b6693b686ab33c7a5851256c831d69ae86ac084f20c629a2af435d4427c
-  rendered_hash: sha256:7d45cf39b2b1ae76cb3fd1a40029a512a2047a75631871e2b7e2a9f8eccf5daf
-  last_written_hash: sha256:7d45cf39b2b1ae76cb3fd1a40029a512a2047a75631871e2b7e2a9f8eccf5daf
+  source_hash: sha256:17e0da36b714f5bd8e482ae1110c1be6ca93bfe6e2d11733af27cd3103557779
+  rendered_hash: sha256:fc093864a6f8cf8d88f0b3e24a507b925e271185f4f15643d61a40c9499ebaa5
+  last_written_hash: sha256:fc093864a6f8cf8d88f0b3e24a507b925e271185f4f15643d61a40c9499ebaa5
 - path: CLAUDE.md
   module: doc-templates
   output_id: claude-md
@@ -1343,9 +1343,9 @@ files:
   module: skill-repo-management
   output_id: repo-management-skill
   strategy: managed_replace
-  source_hash: sha256:4305361e9f94beb3dad1c6d93e804711f25043f40aae15054538439265fd0063
-  rendered_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
-  last_written_hash: sha256:76421437c840a734e534b546acb5f4267ed0ecb446edbd72ed0911e8c71929aa
+  source_hash: sha256:b87f8670f6abb6ef65b042f8a1668be679c4e92b586d56bf067eabbec40f16c5
+  rendered_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
+  last_written_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
 - path: skills/research/SKILL.md
   module: skill-mattpocock-engineering
   output_id: mattpocock-skill-files:research/SKILL.md
@@ -1752,6 +1752,6 @@ files:
   source_hash: sha256:be986b98ee03d61ed0bdfc9a67941ccc4612c6a5e6d4bf6cfdc6dd61326a0ae7
   rendered_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
   last_written_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
-last_synced: '2026-09-24T03:16:21.349982+00:00'
+last_synced: '2026-10-03T12:45:21.450115+00:00'
 source_content_version: 0.13.0
 agentphilosophy_version: 0.13.0
