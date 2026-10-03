@@ -54,7 +54,7 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert '! grep -q "skill-ponytail" "$target/.agentphilosophy.yaml"' in content
     assert 'grep -q "选择合适的模型与推理强度" "$target/AGENTS.md"' in content
     assert 'superpowers_target="$smoke_root/project-with-superpowers"' in content
-    assert "当前项目参考 Superpowers \\`6.4.1\\`" in content
+    assert "当前项目参考 Superpowers \\`6.4.2\\`" in content
     assert "~/.agents/skills/superpowers" in content
     assert 'ponytail_target="$smoke_root/project-with-ponytail"' in content
     assert "skill-ponytail" in content
@@ -75,9 +75,9 @@ def test_release_smoke_script_checks_installed_cli_and_state_versions() -> None:
     assert "skills/to-spec/SKILL.md" in content
     assert ".agents/skills/to-spec/SKILL.md" in content
     assert "/to-tickets" in content
-    assert "skills/to-prd/SKILL.md" in content
-    assert ".agents/skills/to-prd/SKILL.md" in content
-    assert "/to-issues" in content
+    assert "skills/implement-spec/SKILL.md" in content
+    assert "skills/pr/SKILL.md" in content
+    assert "skills/retro/SKILL.md" in content
     assert "/code-review" in content
     assert "skill-philosophy-extraction" in content
     assert "skills/philosophy-extraction/SKILL.md" in content

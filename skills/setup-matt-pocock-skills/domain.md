@@ -2,7 +2,7 @@
 
 探索代码前按需读取：
 
-- 根 `CONTEXT.md`，或 `CONTEXT-MAP.md` 指向的相关上下文。
+- 根 `GLOSSARY.md`，或 `GLOSSARY-MAP.md` 指向的相关上下文。
 - `docs/adr/` 与相关上下文内部 ADR。
 - AgentPhilosophy 项目的 `spec/DDDSpec.md`、`spec/ArchitectureSpec.md` 及相关 feature spec。
 
@@ -13,7 +13,7 @@
 单上下文默认：
 
 ```text
-CONTEXT.md
+GLOSSARY.md
 docs/adr/
 spec/
 ```
@@ -21,9 +21,9 @@ spec/
 多上下文仅在边界真实存在时使用：
 
 ```text
-CONTEXT-MAP.md
+GLOSSARY-MAP.md
 docs/adr/                  # 系统级决策
-src/<context>/CONTEXT.md
+src/<context>/GLOSSARY.md
 src/<context>/docs/adr/   # 上下文决策
 ```
 

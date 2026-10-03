@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: 为 AgentPhilosophy 主动构建和修正领域语言；适用于澄清术语、维护 CONTEXT.md、记录 ADR、处理领域概念冲突，或 /grill-with-docs 需要沉淀 glossary 与决策时。
+description: 为 AgentPhilosophy 主动构建和修正领域语言；适用于澄清术语、维护 GLOSSARY.md、记录 ADR、处理领域概念冲突，或 /grill-with-docs 需要沉淀 glossary 与决策时。
 ---
 
 # Domain Modeling
@@ -9,17 +9,17 @@ description: 为 AgentPhilosophy 主动构建和修正领域语言；适用于�
 
 目标：让 agent、开发者和领域专家使用同一套词，减少实现和沟通漂移。
 
-需要新建或修正领域文档时，先读取本 skill 同目录的 `CONTEXT-FORMAT.md` 与 `ADR-FORMAT.md`；项目存在 `docs/agents/domain.md` 时以其中布局为准。
+需要新建或修正领域文档时，先读取本 skill 同目录的 `GLOSSARY-FORMAT.md` 与 `ADR-FORMAT.md`；项目存在 `docs/agents/domain.md` 时以其中布局为准。
 
 ## 文件约定
 
-- 单上下文项目：根目录 `CONTEXT.md`，决策在 `docs/adr/`。
-- 多上下文项目：根目录 `CONTEXT-MAP.md` 指向各上下文自己的 `CONTEXT.md`；系统级 ADR 仍在 `docs/adr/`。
+- 单上下文项目：根目录 `GLOSSARY.md`，决策在 `docs/adr/`。
+- 多上下文项目：根目录 `GLOSSARY-MAP.md` 指向各上下文自己的 `GLOSSARY.md`；系统级 ADR 仍在 `docs/adr/`。
 - 文件按需创建；没有新词或决策时不要预建空文件。
 
-## 更新 `CONTEXT.md`
+## 更新 `GLOSSARY.md`
 
-`CONTEXT.md` 是 glossary，不是 spec、TODO 或实现笔记。每个词条应包含：
+`GLOSSARY.md` 是 glossary，不是 spec、TODO 或实现笔记。每个词条应包含：
 
 - canonical term：项目统一使用的词。
 - meaning：它在本项目里的业务含义。

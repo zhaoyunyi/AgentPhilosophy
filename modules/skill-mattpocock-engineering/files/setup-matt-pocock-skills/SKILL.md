@@ -26,7 +26,7 @@ docs/agents/
 
 ## 1. 探索
 
-读取 `AGENTS.md`、`CLAUDE.md`、README、`docs/README.md`、`.agentphilosophy.yaml`、`.agents/custom/`、`CONTEXT.md` / `CONTEXT-MAP.md`、`docs/adr/`、`spec/`、`.scratch/` 和版本控制 remote。判断：
+读取 `AGENTS.md`、`CLAUDE.md`、README、`docs/README.md`、`.agentphilosophy.yaml`、`.agents/custom/`、`GLOSSARY.md` / `GLOSSARY-MAP.md`、`docs/adr/`、`spec/`、`.scratch/` 和版本控制 remote。判断：
 
 - GitHub、GitLab、本地 Markdown、Linear/Jira 或其他 tracker 的现场真值。
 - `triage` 是否已安装。
@@ -37,7 +37,7 @@ docs/agents/
 
 1. **Issue tracker**：有 GitHub remote 时推荐 GitHub；GitLab remote 推荐 GitLab；无远端或个人项目推荐本地 Markdown；其他 tracker 记录其现有操作合同。
 2. **Triage 标签**：安装 `triage` 时推荐保留 `needs-triage`、`needs-info`、`ready-for-agent`、`ready-for-human`、`wontfix`；只有现有 tracker 已有词汇时才映射别名。
-3. **领域文档**：默认单上下文 `CONTEXT.md + docs/adr/`；只有真实多上下文项目才使用 `CONTEXT-MAP.md` 与上下文内 ADR。
+3. **领域文档**：默认单上下文 `GLOSSARY.md + docs/adr/`；只有真实多上下文项目才使用 `GLOSSARY-MAP.md` 与上下文内 ADR。
 
 ## 3. 展示草稿
 

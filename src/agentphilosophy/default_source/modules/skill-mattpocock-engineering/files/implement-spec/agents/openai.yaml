@@ -1,0 +1,5 @@
+interface:
+  display_name: "实现完整规格"
+  short_description: "按 ticket 依赖图编排整份 spec 的实现与验收"
+policy:
+  allow_implicit_invocation: false

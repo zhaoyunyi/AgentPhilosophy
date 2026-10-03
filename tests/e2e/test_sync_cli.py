@@ -205,7 +205,9 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
         "diagnosing-bugs",
         "research",
         "codebase-design",
-        "resolving-merge-conflicts",
+        "implement-spec",
+        "pr",
+        "retro",
         "grill-me",
         "grill-with-docs",
         "grilling",
@@ -215,12 +217,9 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
         "wait-what",
         "wizard",
         "writing-for-agents",
-        "writing-great-skills",
         "domain-modeling",
         "to-spec",
         "to-tickets",
-        "to-prd",
-        "to-issues",
         "implement",
         "tdd",
         "code-review",
@@ -253,12 +252,7 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
     assert (target / "skills" / "ask-matt" / "PHASE-BOUNDARIES.md").is_file()
     assert (target / "skills" / "wizard" / "template.sh").is_file()
     assert (target / "skills" / "writing-for-agents" / "SKILL-MECHANICS.md").is_file()
-    assert (target / "skills" / "writing-great-skills" / "GLOSSARY.md").is_file()
-    for compatibility_name in ("to-prd", "to-issues"):
-        compatibility_metadata = (
-            target / "skills" / compatibility_name / "agents" / "openai.yaml"
-        ).read_text(encoding="utf-8")
-        assert "allow_implicit_invocation: false" in compatibility_metadata
+    assert (target / "skills" / "domain-modeling" / "GLOSSARY-FORMAT.md").is_file()
     for configurable_name in ("implement", "to-spec", "to-tickets"):
         repo_metadata = target / "skills" / configurable_name / "agents" / "openai.yaml"
         codex_metadata = target / ".agents" / "skills" / configurable_name / "agents" / "openai.yaml"
@@ -275,7 +269,7 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
 
     grill_text = (target / "skills" / "grill-with-docs" / "SKILL.md").read_text(encoding="utf-8")
     assert "/grill-with-docs" in grill_text
-    assert "CONTEXT.md" in grill_text
+    assert "GLOSSARY.md" in grill_text
     assert "ADR" in grill_text
 
     grill_me_text = (target / "skills" / "grill-me" / "SKILL.md").read_text(encoding="utf-8")
@@ -286,14 +280,6 @@ def test_packaged_preset_renders_mattpocock_engineering_flow(tmp_path: Path, pre
     assert "计划、决策或想法" in grilling_text
     assert "文件系统、工具或日志" in grilling_text
     assert "决策必须交给用户确认" in grilling_text
-
-    to_prd_text = (target / "skills" / "to-prd" / "SKILL.md").read_text(encoding="utf-8")
-    assert "/to-prd" in to_prd_text
-    assert "PRD" in to_prd_text
-
-    to_issues_text = (target / "skills" / "to-issues" / "SKILL.md").read_text(encoding="utf-8")
-    assert "/to-issues" in to_issues_text
-    assert "vertical slice" in to_issues_text
 
     to_spec_text = (target / "skills" / "to-spec" / "SKILL.md").read_text(encoding="utf-8")
     assert "/to-spec" in to_spec_text
@@ -563,7 +549,7 @@ def test_packaged_preset_does_not_enable_superpowers_by_default(tmp_path: Path, 
     assert "- model-constraints" in project_config
     assert "- superpowers-system" not in project_config
     assert "Superpowers 可选工作流" not in agents_text
-    assert "当前项目参考 Superpowers `6.4.1`" not in agents_text
+    assert "当前项目参考 Superpowers `6.4.2`" not in agents_text
 
 
 def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> None:
@@ -605,7 +591,7 @@ def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> N
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers 可选工作流" in agents_text
-    assert "当前项目参考 Superpowers `6.4.1`" in agents_text
+    assert "当前项目参考 Superpowers `6.4.2`" in agents_text
     assert "~/.codex/superpowers" in agents_text
     assert "~/.agents/skills/superpowers" in agents_text
 
@@ -798,7 +784,7 @@ def test_packaged_preset_installs_portless_skill_by_default(tmp_path: Path, pres
     assert "Portless 官方仓库" in repo_skill_text
     assert "接入深度决策" in repo_skill_text
     assert "不要把 Portless 改造成唯一启动方式" in repo_skill_text
-    assert "0.15.6" in repo_skill_text
+    assert "0.15.7" in repo_skill_text
     assert "portless doctor" in repo_skill_text
     assert "127.0.0.1" in repo_skill_text
     assert "::1" in repo_skill_text

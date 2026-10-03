@@ -132,7 +132,7 @@ YAML
 "$smoke_root/venv/bin/agentphilosophy-sync" validate "$superpowers_target" >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --apply >/dev/null
-grep -q "当前项目参考 Superpowers \`6.4.1\`" "$superpowers_target/AGENTS.md"
+grep -q "当前项目参考 Superpowers \`6.4.2\`" "$superpowers_target/AGENTS.md"
 grep -q "~/.agents/skills/superpowers" "$superpowers_target/AGENTS.md"
 
 ponytail_target="$smoke_root/project-with-ponytail"
@@ -161,7 +161,7 @@ grep -q "allow_implicit_invocation: true" "$ponytail_target/skills/ponytail/agen
 test -f "$target/skills/portless-local-dev/PORTLESS-LICENSE.txt"
 test -f "$target/skills/portless-local-dev/agents/openai.yaml"
 diff -qr "$target/skills/portless-local-dev" "$target/.agents/skills/portless-local-dev"
-grep -q "0.15.6" "$target/skills/portless-local-dev/SKILL.md"
+grep -q "0.15.7" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "portless doctor" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "dev.example.com" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "最长后缀" "$target/skills/portless-local-dev/SKILL.md"
@@ -185,8 +185,8 @@ grep -q "AgentPhilosophy ArchitectureSpec" "$target/skills/improve-codebase-arch
 grep -q "skill-mattpocock-engineering" "$target/.agentphilosophy.yaml"
 for skill_name in \
   ask-matt triage setup-matt-pocock-skills wayfinder prototype diagnosing-bugs research \
-  codebase-design resolving-merge-conflicts grill-me grill-with-docs grilling handoff teach \
-  writing-great-skills domain-modeling to-spec to-tickets to-prd to-issues implement tdd code-review; do
+  codebase-design grill-me grill-with-docs grilling handoff teach to-questionnaire wait-what \
+  wizard writing-for-agents domain-modeling to-spec to-tickets implement implement-spec pr retro tdd code-review; do
   test -f "$target/skills/${skill_name}/SKILL.md"
   test -f "$target/.agents/skills/${skill_name}/SKILL.md"
   diff -qr "$target/skills/${skill_name}" "$target/.agents/skills/${skill_name}"
@@ -198,11 +198,6 @@ grep -q "Copyright (c) 2026 Matt Pocock" "$target/skills/MATTPOCOCK-SKILLS-LICEN
 test -f "$target/skills/grill-me/SKILL.md"
 test -f "$target/.agents/skills/grill-me/SKILL.md"
 test -f "$target/.agents/skills/to-spec/SKILL.md"
-test -f "$target/.agents/skills/to-prd/SKILL.md"
-test -f "$target/skills/to-prd/agents/openai.yaml"
-test -f "$target/skills/to-issues/agents/openai.yaml"
-grep -q "allow_implicit_invocation: false" "$target/skills/to-prd/agents/openai.yaml"
-grep -q "allow_implicit_invocation: false" "$target/skills/to-issues/agents/openai.yaml"
 for implicit_skill_name in implement to-spec to-tickets; do
   grep -q "allow_implicit_invocation: true" \
     "$target/skills/${implicit_skill_name}/agents/openai.yaml"
@@ -213,13 +208,18 @@ test -f "$target/skills/diagnosing-bugs/scripts/hitl-loop.template.sh"
 test -f "$target/skills/codebase-design/DEEPENING.md"
 test -f "$target/skills/prototype/UI.md"
 test -f "$target/skills/teach/MISSION-FORMAT.md"
-test -f "$target/skills/writing-great-skills/GLOSSARY.md"
+test -f "$target/skills/domain-modeling/GLOSSARY-FORMAT.md"
+test -f "$target/skills/implement-spec/SKILL.md"
+test -f "$target/skills/pr/SKILL.md"
+test -f "$target/skills/retro/SKILL.md"
+for retired_skill in resolving-merge-conflicts writing-great-skills to-prd to-issues; do
+  test ! -e "$target/skills/${retired_skill}/SKILL.md"
+  test ! -e "$target/.agents/skills/${retired_skill}/SKILL.md"
+done
 grep -q "/grill-with-docs" "$target/skills/grill-with-docs/SKILL.md"
 grep -q "/grilling" "$target/skills/grill-me/SKILL.md"
 grep -q "/to-spec" "$target/skills/to-spec/SKILL.md"
 grep -q "/to-tickets" "$target/skills/to-tickets/SKILL.md"
-grep -q "/to-prd" "$target/skills/to-prd/SKILL.md"
-grep -q "/to-issues" "$target/skills/to-issues/SKILL.md"
 grep -q "/tdd" "$target/skills/implement/SKILL.md"
 grep -q "/code-review" "$target/skills/implement/SKILL.md"
 test -f "$target/release-notes/README.md"

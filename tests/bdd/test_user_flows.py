@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 from shutil import copyfile
 
+import pytest
 import yaml
 
 from agentphilosophy.cli import main
@@ -226,7 +227,9 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
         "improve-codebase-architecture",
         "prototype",
         "research",
-        "resolving-merge-conflicts",
+        "implement-spec",
+        "pr",
+        "retro",
         "setup-matt-pocock-skills",
         "tdd",
         "teach",
@@ -239,10 +242,7 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
         "wizard",
         "writing-for-agents",
     }
-    compatibility_skills = {
-        "writing-great-skills",
-    }
-    installed_skills = upstream_active_skills | compatibility_skills
+    installed_skills = upstream_active_skills
 
     assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
@@ -262,28 +262,21 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
     for skill_name in installed_skills:
         assert (target / "skills" / skill_name / "agents" / "openai.yaml").is_file()
         assert (target / ".agents" / "skills" / skill_name / "agents" / "openai.yaml").is_file()
-    for compatibility_name in ("to-prd", "to-issues"):
-        repo_metadata = target / "skills" / compatibility_name / "agents" / "openai.yaml"
-        codex_metadata = target / ".agents" / "skills" / compatibility_name / "agents" / "openai.yaml"
-        assert "allow_implicit_invocation: false" in repo_metadata.read_text(encoding="utf-8")
-        assert repo_metadata.read_bytes() == codex_metadata.read_bytes()
-
     default_explicit_core_skills = {"implement", "to-spec", "to-tickets"}
     explicitly_invocable_skills = {
         "ask-matt",
+        "implement-spec",
+        "retro",
         "grill-me",
         "grill-with-docs",
         "handoff",
         "improve-codebase-architecture",
         "setup-matt-pocock-skills",
         "teach",
-        "to-issues",
-        "to-prd",
         "to-questionnaire",
         "triage",
         "wait-what",
         "wayfinder",
-        "writing-great-skills",
     }
     for skill_name in default_explicit_core_skills:
         repo_metadata = target / "skills" / skill_name / "agents" / "openai.yaml"
@@ -323,15 +316,6 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
     ).read_text(encoding="utf-8")
     assert "allow_implicit_invocation: false" not in writing_metadata
 
-    legacy_writing_text = (
-        target / "skills" / "writing-great-skills" / "SKILL.md"
-    ).read_text(encoding="utf-8")
-    assert "writing-for-agents" in legacy_writing_text
-    legacy_writing_metadata = (
-        target / "skills" / "writing-great-skills" / "agents" / "openai.yaml"
-    ).read_text(encoding="utf-8")
-    assert "allow_implicit_invocation: false" in legacy_writing_metadata
-
     grilling_text = (target / "skills" / "grilling" / "SKILL.md").read_text(encoding="utf-8")
     assert "每次只问一个问题" in grilling_text
 
@@ -345,6 +329,65 @@ def test_bdd_default_preset_installs_complete_mattpocock_skill_family(tmp_path: 
     for configured_skill in ("triage", "wayfinder"):
         configured_text = (target / "skills" / configured_skill / "SKILL.md").read_text(encoding="utf-8")
         assert "停止，并请用户先运行 `/setup-matt-pocock-skills`" in configured_text
+
+
+def test_user_receives_current_matt_skills_and_single_glossary_authority(tmp_path: Path) -> None:
+    """user Given 默认配置 When 同步 Then 获得新版入口和唯一词汇文件约定。"""
+    source = Path(__file__).resolve().parents[2]
+    target = tmp_path / "current-matt-project"
+    assert main(["--source", str(source), "init", str(target), "--preset", "orchestrator"]) == 0
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    for root in (target / "skills", target / ".agents" / "skills"):
+        for name in ("implement-spec", "pr", "retro"):
+            assert (root / name / "SKILL.md").is_file()
+            assert (root / name / "agents" / "openai.yaml").is_file()
+        for name in ("resolving-merge-conflicts", "writing-great-skills", "to-prd", "to-issues"):
+            assert not (root / name).exists()
+        assert (root / "domain-modeling" / "GLOSSARY-FORMAT.md").is_file()
+        assert not (root / "domain-modeling" / "CONTEXT-FORMAT.md").exists()
+        for name in ("domain-modeling", "grill-with-docs", "tdd", "improve-codebase-architecture"):
+            text = (root / name / "SKILL.md").read_text(encoding="utf-8")
+            assert "GLOSSARY.md" in text
+            assert "CONTEXT.md" not in text
+        for name in ("implement-spec", "retro"):
+            metadata = (root / name / "agents" / "openai.yaml").read_text(encoding="utf-8")
+            assert "allow_implicit_invocation: false" in metadata
+
+
+@pytest.mark.parametrize("manual_edit", [False, True])
+def test_user_prunes_retired_matt_files_without_losing_manual_edits(
+    tmp_path: Path, manual_edit: bool,
+) -> None:
+    """user Given 旧托管文件 When 升级清理 Then 删除旧入口或保留手改并报告冲突。"""
+    source = Path(__file__).resolve().parents[2]
+    previous = tmp_path / "previous-source"
+    for directory in ("modules", "presets", "templates"):
+        shutil.copytree(source / directory, previous / directory)
+    copyfile(source / "catalog.yaml", previous / "catalog.yaml")
+    old_files = previous / "modules" / "skill-mattpocock-engineering" / "files"
+    retired = ("resolving-merge-conflicts", "writing-great-skills", "to-prd", "to-issues")
+    for name in retired:
+        write(old_files / name / "SKILL.md", f"---\nname: {name}\n---\n\n旧入口\n")
+    write(old_files / "domain-modeling" / "CONTEXT-FORMAT.md", "旧词汇格式\n")
+    target = tmp_path / "upgrading-project"
+    assert main(["--source", str(previous), "init", str(target), "--preset", "orchestrator"]) == 0
+    assert main(["--source", str(previous), "push", str(target), "--apply"]) == 0
+    edited = target / "skills" / "resolving-merge-conflicts" / "SKILL.md"
+    if manual_edit:
+        write(edited, "用户维护的冲突规则\n")
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+    result = main(["--source", str(source), "push", str(target), "--prune-managed"])
+    if manual_edit:
+        assert result == 1
+        assert edited.read_text(encoding="utf-8") == "用户维护的冲突规则\n"
+    else:
+        assert result == 0
+        for root in (target / "skills", target / ".agents" / "skills"):
+            for name in retired:
+                assert not (root / name / "SKILL.md").exists()
+            assert not (root / "domain-modeling" / "CONTEXT-FORMAT.md").exists()
+            assert (root / "domain-modeling" / "GLOSSARY-FORMAT.md").is_file()
 
 
 def test_bdd_matt_core_workflow_implicit_invocation_is_project_configurable(
@@ -436,7 +479,7 @@ def test_bdd_explicit_superpowers_selection_is_preserved(tmp_path: Path) -> None
     assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers 可选工作流" in agents_text
-    assert "当前项目参考 Superpowers `6.4.1`" in agents_text
+    assert "当前项目参考 Superpowers `6.4.2`" in agents_text
 
 
 def test_bdd_installed_optional_ponytail_and_superpowers_can_be_removed(tmp_path: Path) -> None:

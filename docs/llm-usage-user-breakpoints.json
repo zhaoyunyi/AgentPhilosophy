@@ -299,7 +299,7 @@
     {
       "id": "mattpocock-engineering",
       "title": "是否安装 Matt Pocock 完整工程 skill 家族",
-      "question": "我需要确认是否把 Matt Pocock 原生插件的 25 个活跃 skills 及支持文件写成项目级能力集。",
+      "question": "我需要确认是否把 Matt Pocock 原生插件的 27 个活跃 skills 及支持文件写成项目级能力集。",
       "why": "这个选择会决定是否同时保留或追加 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`。",
       "recommended": {
         "id": "add-module",
@@ -309,7 +309,7 @@
         {
           "id": "add-module",
           "label": "追加完整 Matt Pocock 家族",
-          "impact": "确认两个 Matt Pocock 模块，后续 `push --apply` 会同步 25 个活跃 skills、兼容入口、支持文件和 `agents/openai.yaml`。"
+          "impact": "确认两个 Matt Pocock 模块，后续 `push --apply` 会同步 27 个活跃 skills、支持文件和 `agents/openai.yaml`。"
         },
         {
           "id": "skip-module",

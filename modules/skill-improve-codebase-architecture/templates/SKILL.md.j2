@@ -38,7 +38,7 @@ description: 为 {{ project_name }} 发现架构摩擦、浅模块和难测试�
 
 1. 当前目录的 `AGENTS.md`、`CLAUDE.md`、README 和用户给出的任务边界。
 2. AgentPhilosophy ArchitectureSpec 和领域规范：`spec/ArchitectureSpec.md`、`spec/DDDSpec.md`、`spec/BDDSpec.md`、`spec/TestStrategy.md`。
-3. 项目自己的领域语言：根目录 `CONTEXT.md`、`CONTEXT-MAP.md` 或相关子目录里的 `CONTEXT.md`。
+3. 项目自己的领域语言：根目录 `GLOSSARY.md`、`GLOSSARY-MAP.md` 或相关子目录里的 `GLOSSARY.md`。
 4. 架构决策：`docs/adr/`、`docs/decisions/`、OpenSpec change、架构 runbook。
 5. 如果存在 `aphilosophy/architecture-conflict-resolution.md`，用它校准抽象增减、配置化取舍和系统退化判断。
 
@@ -107,7 +107,7 @@ description: 为 {{ project_name }} 发现架构摩擦、浅模块和难测试�
 如果设计过程中出现新的领域名词：
 
 - 先确认它是项目领域概念，不是一般编程术语。
-- 若是领域概念，更新对应 `CONTEXT.md`；没有时按需创建根目录 `CONTEXT.md`。
+- 若是领域概念，更新对应 `GLOSSARY.md`；没有时按需创建根目录 `GLOSSARY.md`。
 - 若用户拒绝某候选且理由长期有效、未来 reviewer 也需要知道，询问是否记录 ADR。只在决策难反转、没有上下文会显得奇怪、且存在真实权衡时写 ADR。
 
 ### 4. 进入实现时的边界
