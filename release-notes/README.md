@@ -19,7 +19,7 @@
 项目版本条目通过 layered custom 源维护。默认路径为 `.agents/custom/release-notes/README.custom.md`；如果项目自定义了 `paths.custom_dir`，以 `.agents/custom/release-notes/README.custom.md` 为准。修改 custom 源后运行 AgentPhilosophy 同步刷新本文件。
 
 <!-- release-notes:start -->
-- [v1.0.0](v1.0.0.md)：发布候选，Matt 非兼容词汇与技能清单更新
+- [v1.0.0](v1.0.0.md)：已发布，Matt 非兼容更新与固定提交制品回执
 - [v0.13.0](v0.13.0.md)：已发布，含外部 skill 依赖升级与制品回执
 - [v0.12.0](v0.12.0.md)：已发布，含制品回执与远端 CI 账户阻断说明
 - [v0.11.0](v0.11.0.md)：已发布，含源码与制品回执
