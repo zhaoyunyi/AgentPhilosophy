@@ -4,7 +4,7 @@
 
 该 skill 改编自 Matt Pocock 的 `improve-codebase-architecture`（MIT License），但已经按 AgentPhilosophy 的项目愿景收口：
 
-- 先读取项目 `AGENTS.md`、README、`spec/ArchitectureSpec.md`、`spec/DDDSpec.md`、`spec/BDDSpec.md`、`CONTEXT.md` / `CONTEXT-MAP.md` 和 `docs/adr/`。
+- 先读取项目 `AGENTS.md`、README、`spec/ArchitectureSpec.md`、`spec/DDDSpec.md`、`spec/BDDSpec.md`、`GLOSSARY.md` / `GLOSSARY-MAP.md` 和 `docs/adr/`。
 - 把候选重构解释成 Module、Interface、Implementation、Depth、Seam、Adapter、Leverage、Locality 等统一架构语言。
 - 第一阶段只输出临时目录里的 HTML 候选报告，不在用户选择前直接改代码。
 - 用户选择候选后才进入接口设计、BDD/TDD 和实现。

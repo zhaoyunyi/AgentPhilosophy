@@ -15,7 +15,7 @@ Portless 接入必须按“最低有效接入深度”选择：
 | Docker Compose、数据库、Mock server 或固定端口服务 | 优先用 `portless alias <name> <port>`，不强行改服务启动脚本 |
 | 需要手机、同网段设备或 Tailscale 分享 | 先确认 LAN/Tailscale/Funnel 权限和暴露面，再按需开启，不作为默认路径 |
 
-当前中央源默认 preset 会包含 `skill-portless-local-dev`。该模块已对齐 Portless `0.15.6`，会把 `SKILL.md`、`agents/openai.yaml` 和 Apache-2.0 许可证同时生成到 `skills/portless-local-dev/` 与 `.agents/skills/portless-local-dev/`，用于让 agent 在本地启动、浏览器验收、端口冲突、多服务、worktree、移动设备联调或 Tailscale 分享任务前先判断是否需要 Portless，以及选择最低有效接入深度。排障优先运行只读 `portless doctor`；非 LAN 模式只监听 `127.0.0.1` 与 `::1`，显式 LAN 模式才监听所有网卡。它不会默认安装 Portless、不会默认改项目脚本，也不会把 Portless 当成 QA、线上或 port-forward 入口。
+当前中央源默认 preset 会包含 `skill-portless-local-dev`。该模块已对齐 Portless `0.15.7`，会把 `SKILL.md`、`agents/openai.yaml` 和 Apache-2.0 许可证同时生成到 `skills/portless-local-dev/` 与 `.agents/skills/portless-local-dev/`，用于让 agent 在本地启动、浏览器验收、端口冲突、多服务、worktree、移动设备联调或 Tailscale 分享任务前先判断是否需要 Portless，以及选择最低有效接入深度。排障优先运行只读 `portless doctor`；非 LAN 模式只监听 `127.0.0.1` 与 `::1`，显式 LAN 模式才监听所有网卡。它不会默认安装 Portless、不会默认改项目脚本，也不会把 Portless 当成 QA、线上或 port-forward 入口。
 
 已有项目如果是旧版本 `.agentphilosophy.yaml`，模块列表是显式冻结的；升级 CLI 后不会自动追加新模块。需要让旧项目长期复用 Portless 判断规则时，把模块追加到现有 `modules`，不要替换已有模块。如果只是一次性本地调试或临时验收，不需要修改 `.agentphilosophy.yaml`。如果目标项目还没有正式 `.agentphilosophy.yaml`，先走新项目 `init` 或老项目 `migrate` 流程。
 

@@ -122,17 +122,17 @@ def test_updated_external_skill_modules_lock_reviewed_upstream_revisions() -> No
             "1.1.0",
             "343ab7cea29d47a3e805381e09f8243a43d43d88",
         ),
-        "skill-code-review": ("1.2.1", "c55ee46073ed923f86ce59a5eb3b6d895095d1b7"),
+        "skill-code-review": ("1.2.2", "d81f3a183412e71a5b1e84ca21bc1a35eea03a60"),
         "skill-improve-codebase-architecture": (
-            "1.2.1",
-            "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+            "2.0.0",
+            "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
         ),
         "skill-mattpocock-engineering": (
-            "1.6.1",
-            "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+            "2.0.0",
+            "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
         ),
         "skill-ponytail": ("1.1.1", "1d95ff7d39de12d87014ea40d4e22201bddc501b"),
-        "skill-portless-local-dev": ("1.5.0", "713f84dec04b5328c02ffc62d1937b27a80fbc5f"),
+        "skill-portless-local-dev": ("1.6.0", "e06a3572c0bcc04ef045582bbcdeb5ee18e72b3b"),
         "skill-reverse-skill": ("1.2.0", "9c28c6ca1062a1a076e28baf40f241dbb4cf5dc2"),
     }
 

@@ -11,7 +11,7 @@ description: 把 {{ project_name }} 当前已澄清的对话、方案或 /grill-
 
 ## 流程
 
-1. 读取当前对话、相关代码和文档，使用 `CONTEXT.md` 的领域词，尊重相关 ADR。
+1. 读取当前对话、相关代码和文档，使用 `GLOSSARY.md` 的领域词，尊重相关 ADR。
 2. 明确测试 seam：优先选最高、最稳定、最接近用户行为的 seam。需要新增 seam 时先说明理由，并和用户确认。
 3. 生成 spec。优先读取 `docs/agents/issue-tracker.md` 并按其中合同发布；否则沿用项目已有 spec/PRD 目录。仍无约定时先给出建议路径并询问确认，不擅自创建公开 issue。
 4. spec 完成后建议下一步运行 `/to-tickets`。

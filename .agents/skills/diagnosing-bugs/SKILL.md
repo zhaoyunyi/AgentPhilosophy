@@ -7,6 +7,8 @@ description: 诊断疑难 bug、偶发失败和性能回归；适用于用户要
 
 改编自 Matt Pocock 的 `diagnosing-bugs` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/diagnosing-bugs
 
+探索前读取已有 `GLOSSARY.md` 和相关 ADR，使用项目领域语言定位症状与模块。
+
 ## 0. 脱敏
 
 本流程会展示命令、输出和采集产物。展示前先把密钥、令牌、Cookie、Authorization、连接串和个人数据替换为 `<REDACTED>`。需要凭据的反馈环通过环境变量读取，不把凭据写进命令、日志、fixture 或聊天内容；HAR、trace 和 dump 只引用承载诊断信号的必要行。

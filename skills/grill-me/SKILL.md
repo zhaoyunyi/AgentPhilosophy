@@ -10,6 +10,6 @@ disable-model-invocation: true
 
 运行 `/grilling` 的一问一答流程，直到用户明确确认已经达成共享理解。
 
-本入口不修改 `CONTEXT.md` 或 ADR；需要在追问过程中同步沉淀领域语言和长期决策时，改用 `/grill-with-docs`。
+本入口不修改 `GLOSSARY.md` 或 ADR；需要在追问过程中同步沉淀领域语言和长期决策时，改用 `/grill-with-docs`。
 
 不要在共享理解达成前实施方案，也不要把推荐答案当成用户决定。

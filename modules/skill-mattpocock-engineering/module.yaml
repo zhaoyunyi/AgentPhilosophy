@@ -1,6 +1,6 @@
 name: skill-mattpocock-engineering
 description: Matt Pocock 活跃工程 skill 家族；架构评审由独立 skill-improve-codebase-architecture 提供
-version: 1.6.1
+version: 2.0.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
@@ -9,7 +9,7 @@ default_vars:
 upstream:
   repository: https://github.com/mattpocock/skills
   ref: main
-  revision: c55ee46073ed923f86ce59a5eb3b6d895095d1b7
+  revision: d81f3a183412e71a5b1e84ca21bc1a35eea03a60
   tracked_paths:
     - README.md
     - LICENSE
@@ -23,7 +23,9 @@ upstream:
     - skills/engineering/implement
     - skills/engineering/prototype
     - skills/engineering/research
-    - skills/engineering/resolving-merge-conflicts
+    - skills/engineering/implement-spec
+    - skills/engineering/pr
+    - skills/engineering/retro
     - skills/engineering/setup-matt-pocock-skills
     - skills/engineering/tdd
     - skills/engineering/to-spec
@@ -47,7 +49,6 @@ provides:
   - skill:diagnosing-bugs
   - skill:research
   - skill:codebase-design
-  - skill:resolving-merge-conflicts
   - skill:grill-me
   - skill:grill-with-docs
   - skill:grilling
@@ -57,13 +58,13 @@ provides:
   - skill:wait-what
   - skill:wizard
   - skill:writing-for-agents
-  - skill:writing-great-skills
   - skill:domain-modeling
   - skill:to-spec
   - skill:to-tickets
-  - skill:to-prd
-  - skill:to-issues
   - skill:implement
+  - skill:implement-spec
+  - skill:pr
+  - skill:retro
   - skill:tdd
   - skill:code-review
 outputs:
@@ -161,30 +162,6 @@ outputs:
     type: rendered_file
     template: templates/to-tickets.openai.yaml.j2
     target: "{{ skill_targets.codex_project }}/to-tickets/agents/openai.yaml"
-    strategy: managed_replace
-    on_existing_unmanaged: report_only
-  - id: to-prd-skill
-    type: rendered_file
-    template: templates/to-prd.md.j2
-    target: "{{ skill_targets.repo_skills }}/to-prd/SKILL.md"
-    strategy: managed_replace
-    on_existing_unmanaged: report_only
-  - id: to-prd-codex-skill
-    type: rendered_file
-    template: templates/to-prd.md.j2
-    target: "{{ skill_targets.codex_project }}/to-prd/SKILL.md"
-    strategy: managed_replace
-    on_existing_unmanaged: report_only
-  - id: to-issues-skill
-    type: rendered_file
-    template: templates/to-issues.md.j2
-    target: "{{ skill_targets.repo_skills }}/to-issues/SKILL.md"
-    strategy: managed_replace
-    on_existing_unmanaged: report_only
-  - id: to-issues-codex-skill
-    type: rendered_file
-    template: templates/to-issues.md.j2
-    target: "{{ skill_targets.codex_project }}/to-issues/SKILL.md"
     strategy: managed_replace
     on_existing_unmanaged: report_only
   - id: implement-skill

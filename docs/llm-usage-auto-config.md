@@ -77,7 +77,7 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 新项目使用默认 preset | 保留 `skill-code-review-graph`；AgentPhilosophy 安装包已经固定依赖并重新导出 `code-review-graph` CLI |
 | 旧项目需要长期使用结构图谱辅助审查、调试、影响分析或架构探索 | 追加 `skill-code-review-graph`，同步项目级 skill；Codex MCP 安装仍需单独预览并执行上游 CLI |
 | 只想一次性试用 CLI，或不允许修改用户级 Codex 配置 | 不改 `.agentphilosophy.yaml`；直接运行 `code-review-graph build/status`，安装前只执行 `install --dry-run` |
-| 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`，同步生成 Matt Pocock 25 个活跃 skills、支持文件和双目标目录 |
+| 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`，同步生成 Matt Pocock 27 个活跃 skills、支持文件和双目标目录 |
 | 旧项目需要完整复用路由、设置、澄清、规划、调研、原型、诊断、实现、review、交接与架构流程 | 确认同时包含 `skill-mattpocock-engineering` 与 `skill-improve-codebase-architecture`，再同步 repo skills 和 Codex 项目级 skills |
 | 旧项目只是一次性明确局部改动，且用户要求极简配置 | 不主动追加 `skill-mattpocock-engineering` |
 | 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-portless-local-dev`，同步生成 Portless 本地开发入口判断 skill |

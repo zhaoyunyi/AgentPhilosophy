@@ -17,6 +17,7 @@ disable-model-invocation: true
 - 已讨论清楚且需要固化：`/to-spec`。
 - spec 需要拆成可认领工作：`/to-tickets`。
 - 单个明确 spec/ticket：`/implement`；内部按 `/tdd`，完成后 `/code-review`。
+- 完整 spec 与 ticket 依赖图需要一次编排：`/implement-spec`，在集成分支或 jj change 链上实现与验收。
 
 ## 分流
 
@@ -27,7 +28,8 @@ disable-model-invocation: true
 - 需要一手资料证据：`/research`。
 - 需要设计深模块、接口或 seam：`/codebase-design`。
 - 需要扫描架构候选：`/improve-codebase-architecture`。
-- merge、rebase 或 jj 冲突正在进行：`/resolving-merge-conflicts`。
+- 编写 PR 正文：`/pr`。
+- 复盘编码会话的导航、检查和 Agent 工作环境：`/retro`。
 - 需要把上下文带到新工具、新目录、新仓库或其他协作者：`/handoff`；同一环境继续下一阶段时按阶段边界优先继续或 compact。
 - 需要长期教学工作区：`/teach`。
 - 需要向掌握外部知识的人收集答案：`/to-questionnaire`。

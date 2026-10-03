@@ -1,0 +1,5 @@
+interface:
+  display_name: "会话复盘"
+  short_description: "根据会话证据改进导航、检查与 Agent 工作环境"
+policy:
+  allow_implicit_invocation: false
