@@ -273,6 +273,16 @@ modules:
       - skills/code-review/SKILL.md
       - .agents/skills/code-review/SKILL.md
     risk: low
+  - name: skill-ui-ux-loop
+    category: skill
+    description: 证据驱动的 UI/UX 检查、修复、复查与品质迭代 skill
+    project_types: [fullstack, frontend]
+    outputs:
+      - skills/ui-ux-loop/SKILL.md
+      - skills/ui-ux-loop/agents/openai.yaml
+      - .agents/skills/ui-ux-loop/SKILL.md
+      - .agents/skills/ui-ux-loop/agents/openai.yaml
+    risk: low
   - name: skill-mattpocock-engineering
     category: skill
     description: Matt Pocock 活跃工程 skill 家族；结合独立架构评审模块覆盖上游原生插件的 27 个活跃 skills

@@ -1,0 +1,34 @@
+name: skill-ui-ux-loop
+description: 证据驱动的 UI/UX 检查、修复、复查与品质迭代 skill
+source_kind: internal
+version: 1.0.0
+project_types: [fullstack, frontend]
+requires: []
+conflicts: []
+provides:
+  - skill:ui-ux-loop
+outputs:
+  - id: ui-ux-loop-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.repo_skills }}/ui-ux-loop/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: ui-ux-loop-codex-skill
+    type: rendered_file
+    template: templates/SKILL.md.j2
+    target: "{{ skill_targets.codex_project }}/ui-ux-loop/SKILL.md"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: ui-ux-loop-files
+    type: copy_tree
+    source: files
+    target: "{{ skill_targets.repo_skills }}/ui-ux-loop"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
+  - id: ui-ux-loop-codex-files
+    type: copy_tree
+    source: files
+    target: "{{ skill_targets.codex_project }}/ui-ux-loop"
+    strategy: managed_replace
+    on_existing_unmanaged: report_only
