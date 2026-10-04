@@ -1,0 +1,6 @@
+interface:
+  display_name: "UI/UX Loop"
+  short_description: "按证据循环打磨界面与交互，持续提升可用性与视觉品质"
+  default_prompt: "使用 $ui-ux-loop 反复检查并提升这个界面，直到达到可验证的高品质标准。"
+policy:
+  allow_implicit_invocation: true
