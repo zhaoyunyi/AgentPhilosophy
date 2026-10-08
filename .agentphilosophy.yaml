@@ -35,6 +35,7 @@ modules:
 - skill-portless-local-dev
 - aphilosophy
 - skill-philosophy-extraction
+- skill-restate-goal
 vars:
   primary_tool: Codex CLI
   test_command: uv run pytest -q

@@ -185,6 +185,16 @@ modules:
       - skills/repo-management/SKILL.md
       - .agents/skills/repo-management/SKILL.md
     risk: low
+  - name: skill-restate-goal
+    category: skill
+    description: 用自己的话重述用户当前目标与待解决问题的共享理解 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/restate-goal/SKILL.md
+      - skills/restate-goal/agents/openai.yaml
+      - .agents/skills/restate-goal/SKILL.md
+      - .agents/skills/restate-goal/agents/openai.yaml
+    risk: low
   - name: skill-code-review-graph
     category: skill
     description: code-review-graph 2.3.9 图谱构建、MCP 查询和 CLI 维护项目级 skill
