@@ -28,7 +28,7 @@
 ## 工程规范
 
 - 新增、迁移或沉淀长期文档时，必须同步更新主入口、相关目录索引（例如 `docs/README.md`）或 `.agents/custom` 中的 layered custom 源，避免正文无入口。
-- 删除或整理文档时，直接移除失效内容，同步修正正文、索引和引用，不用“已删除 xxx”等说明占位。删除时间、原因和内容通过版本控制与提交说明保留，不另建删除历史文件，也不在其他文档重复记录。
+- 删除或退役文档、代码、测试等内容时，直接移除失效内容，同步修正入口、索引和引用，不用“已删除 xxx”、空壳或跳过测试占位。统一退役文档只记录退役对象/原路径与可追溯的完整删除 Git 提交 SHA；删除内容和原因通过版本控制查看，不复制旧内容或另建逐次归档。
 - 涉及领域模型时先明确实体、值对象、聚合和边界上下文。
 - 不为技术便利跨越领域边界共享内部状态。
 - 编写测试前读取 `spec/TestStrategy.md` 的“编写测试注意事项”，按业务合同验证可观察结果，避免耦合内部实现。
@@ -51,3 +51,4 @@
 - 中央内容维护先读 `docs/agents/maintenance.md`，CLI 操作按 `docs/cli-usage-for-llm.md` 的任务入口读取相关章节。
 - 修改中央 `modules/`、`presets/`、`templates/` 或项目 custom 源，通过 `scripts/sync-packaged-source.py --apply` 刷新包内镜像，再用同步 CLI 更新本仓生成结果；不手改托管 AGENTS、skills 或 state。
 - 本仓验证入口：`uv run --locked ruff check .`、`uv run --locked pytest -q`、`uv run --locked sync.py validate`。完整长期文档索引是 `docs/README.md`。
+- 仓库日常维护使用 `loop-check`；具体检查项、授权范围和触发方式见 `.agents/custom/loop-check.md`。
