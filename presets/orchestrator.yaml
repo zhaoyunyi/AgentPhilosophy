@@ -18,6 +18,7 @@ modules:
   - skill-target-jj
   - skill-coding-standards
   - skill-repo-management
+  - skill-loop-check
   - skill-restate-goal
   - skill-code-review-graph
   - skill-optimize-build-pipeline

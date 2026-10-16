@@ -79,6 +79,8 @@ agentphilosophy-sync push /path/to/project --apply
 
 文档索引记录 `docs/` 下长期文档入口，新增长期文档时必须同步更新。CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、`superpowers-system` 可选的原生 discovery 版本约束、`code-review-graph` 依赖、MCP 与项目级 skill 的分层用法、可选安装的 `skill-ponytail` 精简编码 skill、`skill-reverse-skill` 授权逆向路由 skill、Matt Pocock 27 个活跃 skills 的完整工程能力集与 `docs/agents/` 设置目录、默认 preset 内置的完整构建流水线调优、Grok CLI headless 编排审查和 Portless 本地开发入口判断 skill、可选独立 `skill-code-review` 审查 skill、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装；`llm-usage --mode user-breakpoints --format json` 用于 agent 直接读取断点标题、推荐项、选项列表和回复格式。发版文档记录版本口径、外部 skill 上游 revision 检查、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
 
+默认 preset 提供 [`loop-check`](docs/cli/loop-check.md)：按仓库建立每日/事件检查清单，在已有授权内修复、验证并提交 PR；统一退役文档只保存删除提交入口。本仓计划见 [.agents/custom/loop-check.md](.agents/custom/loop-check.md)。技能安装不会自动创建定时任务。
+
 ## 常用命令
 
 ```bash

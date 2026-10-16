@@ -52,6 +52,7 @@
 - [docs/cli/code-review.md](cli/code-review.md)：独立 code-review 审查 skill。
 - [docs/cli/commands.md](cli/commands.md)：真实可用命令。
 - [docs/cli/configuration.md](cli/configuration.md)：目标项目配置。
+- [docs/cli/loop-check.md](cli/loop-check.md)：仓库巡检计划、触发、自动修复 PR 和统一退役追溯。
 - [docs/cli/grok-cli.md](cli/grok-cli.md)：Grok CLI headless 编排 skill。
 - [docs/cli/matt-skills.md](cli/matt-skills.md)：Matt Pocock 完整工程 skill 家族。
 - [docs/cli/migration.md](cli/migration.md)：老项目迁移流程。
