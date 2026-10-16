@@ -19,6 +19,7 @@
 项目版本条目通过 layered custom 源维护。默认路径为 `.agents/custom/release-notes/README.custom.md`；如果项目自定义了 `paths.custom_dir`，以 `.agents/custom/release-notes/README.custom.md` 为准。修改 custom 源后运行 AgentPhilosophy 同步刷新本文件。
 
 <!-- release-notes:start -->
+- [v1.2.1](v1.2.1.md)：待发布，首次巡检修复配置向导与自定义计划路径
 - [v1.2.0](v1.2.0.md)：待发布，Loop-Check 仓库巡检与统一退役追溯
 - [v1.1.0](v1.1.0.md)：已发布，目标重述与可选 UI/UX Loop 技能
 - [v1.0.0](v1.0.0.md)：已发布，Matt 非兼容更新与固定提交制品回执
