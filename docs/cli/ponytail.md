@@ -6,7 +6,7 @@ Ponytail 上游仓库：https://github.com/DietrichGebert/ponytail
 
 本轮上游的 `skills/ponytail/SKILL.md` 与此前锁定内容一致；4.10.0 的主要变化在 Cursor、Grok Build 等插件适配。本模块仅更新来源版本，不引入全局 hook。
 
-该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装上游 Codex 插件或全局 hook。目标项目只要通过 AgentPhilosophy 同步拿到 `skills/ponytail` 和 `.agents/skills/ponytail`，Codex 原生 skill discovery 就能在项目内触发；如果用户明确要求使用上游插件能力，再按上游仓库说明单独安装。
+该模块是 AgentPhilosophy 的项目级 skill 封装，不会自动安装上游 Codex 插件或全局 hook。同步后检查 `skills/ponytail`、`.agents/skills/ponytail` 及支持文件，再在目标宿主核对技能发现和调用；文件生成不等于宿主已经识别。如果用户明确要求使用上游插件能力，再按上游仓库说明单独安装。
 
 Ponytail 的默认判断顺序：
 

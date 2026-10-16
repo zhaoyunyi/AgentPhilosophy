@@ -73,6 +73,7 @@ agentphilosophy-sync push /path/to/project --apply
 - [docs/agents/maintenance.md](docs/agents/maintenance.md)
 - [docs/README.md](docs/README.md)
 - [docs/cli-usage-for-llm.md](docs/cli-usage-for-llm.md)
+- [全部技能：安装与使用](docs/cli/skills.md)
 - [docs/release-process.md](docs/release-process.md)
 - [release-notes/README.md](release-notes/README.md)
 - [docs/guides/aphilosophy-methodology.md](docs/guides/aphilosophy-methodology.md)

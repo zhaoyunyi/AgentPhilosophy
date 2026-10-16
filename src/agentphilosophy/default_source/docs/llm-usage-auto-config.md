@@ -26,14 +26,17 @@ uv run sync.py llm-usage --mode auto-config
 agentphilosophy-sync llm-usage --mode auto-config
 ```
 
+完整技能用途、安装模块、调用示例与前提见 [全部技能指南](cli/skills.md)。安装版默认源可运行 `agentphilosophy-sync llm-usage`。若原调用使用 `uv run`、跨目录环境或 `--source`，必须沿用原前缀、工作目录和 `--source`，仅移除 `--mode`/`--format`，才能取得同一内容源；不要跳回旧安装包。本页只描述选择流程，不代表未单列的技能不可用。
+
 ## 三、自动判断流程
 
 1. 读取目标项目根目录的 `AGENTS.md`、`CLAUDE.md`、README、`.agentphilosophy.yaml`、`package.json`、workspace 配置、Docker Compose、测试脚本、`spec/`、`docs/`、`skills/`、`.agents/skills/`、`.claude/skills/`。
 2. 如果目标项目已经有正式 `.agentphilosophy.yaml`，先加载现有配置，只做增量调整，不重建配置。
 3. 如果没有正式 `.agentphilosophy.yaml`，但存在历史 Agent 文档、spec 或 skills，优先执行迁移流程。
 4. 如果是全新项目，按项目事实选择 preset 后执行 `init`。
-5. 修改配置后必须执行 `validate`、目标项目 `validate`、`push --dry-run`，确认没有 `[error]` 后再 `push --apply`。
-6. 最后执行 `status --project`，并汇报最终配置、写入文件和剩余 warning。
+5. 从完整指南核对技能名对应的模块、默认安装范围、依赖/冲突和调用策略；仅将所需模块增量加入已有 modules。
+6. 修改配置后必须执行 `validate`、目标项目 `validate`、`push --dry-run`，确认没有 `[error]` 后再 `push --apply`。
+7. 最后执行 `status --project`，核对双目标支持文件与 metadata，在宿主技能列表确认发现结果。仅在用户同时要求实际使用时执行匹配示例；否则执行效果标为未验证，不能为验证安装而自动开始开发、调度或外部写入。分别汇报文件同步、宿主发现、实际执行和剩余 warning。
 
 ## 四、preset 自动选择规则
 
@@ -70,6 +73,15 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 旧项目只需要快速复用 `/code-review`，不需要整条产品工程主线 | 如果未启用 `skill-mattpocock-engineering`，追加 `skill-code-review`，再同步生成 repo skills 和 Codex 项目级 skill |
 | 项目已经启用 `skill-mattpocock-engineering` | 不再追加 `skill-code-review`，避免两个模块写入同一个 `code-review` skill 路径 |
 
+### 巡检、目标重述、界面与 Grok
+
+| 项目事实 | 自动动作 |
+| --- | --- |
+| 新项目使用默认 preset，或旧项目要检查复用、一致性、迁移残留 | 保留或追加 `skill-loop-check`；用户另有巡检请求时才调用 `$loop-check` 建立计划，安装本身不执行巡检或创建定时任务 |
+| orchestrator 新项目，或其他类型要复用目标核对能力 | orchestrator 默认保留 `skill-restate-goal`；其他类型按需追加；用户请求核对目标时调用 `$restate-goal` |
+| 有真实 Web 页面并需要持续界面审查/优化 | frontend/fullstack 按需追加可选 `skill-ui-ux-loop`；用户请求界面审查时再准备页面/截图并调用 |
+| 新项目默认配置，或旧项目明确使用 Grok headless 编排 | 保留或追加 `skill-orchestrate-grok-cli`；实际编排仅在用户另有执行请求并确认 Grok CLI/登录后开始，安装不执行模型 |
+
 ### code-review-graph
 
 | 事实 | 动作 |
@@ -83,7 +95,7 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 | 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-portless-local-dev`，同步生成 Portless 本地开发入口判断 skill |
 | 只有一次性本地浏览器验收或临时端口冲突 | 不修改 `.agentphilosophy.yaml`，只记录一次性 Portless 使用 |
 | 团队需要长期复用 Portless 规则 | 追加 `skill-portless-local-dev`，再同步生成项目级 skill |
-| 没有本地 Web/API/移动调试服务 | 不加入 Portless 相关模块 |
+| 没有本地 Web/API/移动调试服务 | 不安装 Portless 运行时或改造服务；默认已同步的判断 skill 可保留 |
 | 新项目使用默认 preset，且没有明确要求极简配置 | 保留 `skill-optimize-build-pipeline`，同步生成构建流水线调优 skill |
 | 旧项目有 CI/CD、镜像构建、self-hosted runner、缓存、CPU 或 registry 时延优化需求 | 追加 `skill-optimize-build-pipeline`，再同步 repo/Codex 项目级 skill |
 | 旧项目没有构建流水线，或用户只要求一次性读取日志且不希望新增模块 | 不主动追加 `skill-optimize-build-pipeline` |
@@ -92,7 +104,7 @@ LLM 只能选择对当前项目有直接价值的模块，不要为了“更完�
 
 ## 六、必须返回用户断点的情况
 
-遇到以下情况时，不能继续自动安装，必须改用清晰问题让用户选择：
+先用文件、日志和已有授权处理可自行解决的问题；以下条件仍未解决且需要用户决策时，停止对应写入并返回清晰断点，不重复询问已覆盖本次动作的授权：
 
 - 需要覆盖或接管已有非托管文件。
 - `push --dry-run` 出现 `[error]`。

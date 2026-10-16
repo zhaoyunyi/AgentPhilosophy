@@ -30,6 +30,8 @@ agentphilosophy-sync llm-usage --mode user-breakpoints --format json
 
 不传 `--format` 时默认输出 Markdown；`--format json` 输出机器可解析结构，供 agent 直接读取断点标题、推荐项、选项列表和 `reply_format`。
 
+全部技能的用途、模块映射、安装步骤、默认调用策略和请求示例见 [全部技能指南](cli/skills.md)。安装版默认源可运行 `agentphilosophy-sync llm-usage`；原调用指定 `--source` 或使用源码/uv 前缀时，保留原执行环境、工作目录和该前缀，仅移除 `--mode`/`--format`。JSON 的 `skill_guide.preserve_invocation` 与 `source_policy` 要求保持此来源，`arguments` 给出替换后的子命令，`command` 只是默认源示例。下面的常见问题不是技能全集。
+
 ## 三、断点问题标准格式
 
 每个断点必须只问一个配置主题，避免把多个选择混在一起。问题必须包含“为什么要选”、“推荐项”、“每个选项的影响”和“用户回复方式”。
@@ -107,7 +109,7 @@ breakpoint:
 3. 项目基础信息：`project_name`、`project_type`、`description`。
 4. 目录路径：`paths.docs_guide_dir`、`paths.spec_dir`、`paths.philosophy_dir`。
 5. skill 输出位置：内置模块默认写入 `skills/` 与 `.agents/skills/`，由 `skill_targets.repo_skills` 与 `skill_targets.codex_project` 控制；省略后者不能关闭第二路输出。JSON 中 `repo-only` 和 `repo-codex-claude` 是需要自定义模块的条件选项，不能直接套用内置模块。`claude_project` 仅供自定义模块引用；仅需 Claude 与 Codex 时将 `repo_skills` 设为 `.claude/skills`。
-6. 可选模块：例如 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-code-review`、`skill-mattpocock-engineering`、`skill-portless-local-dev`、`skill-optimize-build-pipeline` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。
+6. 按完整指南选择模块，优先保留现有列表；明确默认技能、新增可选技能和依赖/冲突。常见选择包括 `skill-loop-check`（巡检）、`skill-restate-goal`（目标重述）、`skill-ui-ux-loop`（界面迭代）、`skill-orchestrate-grok-cli`（Grok 编排），以及 `skill-ponytail`、`skill-reverse-skill`、`skill-improve-codebase-architecture`、`skill-code-review`、`skill-mattpocock-engineering`、`skill-portless-local-dev`、`skill-optimize-build-pipeline` 或 `skill-philosophy-extraction` 是否沉淀为项目级 skill。需要多个模块时仍按当前真实缺口逐项确认，不把整个候选清单强制安装。
 7. 验证命令：`vars.test_command`。
 8. 老文件接管：是否按 `adopt-plan.yaml` 接管已有文件。
 9. dry-run 结果确认：是否允许执行 `push --apply`。
