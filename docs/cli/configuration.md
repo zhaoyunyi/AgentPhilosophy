@@ -64,6 +64,7 @@ LLM 接入目标项目时，如果目标项目是 Git 仓库但还没有 `.jj/`�
 - `paths.docs_guide_dir`：项目 guide 文档目录，默认 `docs/guides`。
 - `paths.spec_dir`：spec 文档目录，默认 `spec`。
 - `paths.philosophy_dir`：Agent 哲学决策框架目录，默认 `aphilosophy`。
+- `paths.custom_dir`：项目自有规则目录，默认 `.agents/custom`；Loop-Check 的自有巡检计划放在此目录。
 - `paths.migration_dir`：迁移报告目录，默认 `.agents/migration`。
 - `skill_targets.repo_skills`：仓库级 skills 目录，默认 `skills`。
 - `skill_targets.codex_project`：新项目默认 `.agents/skills`。已有显式 `.codex/skills` 配置继续支持；未显式配置但 state 已登记旧目录的项目也保留旧目录。迁移方式见本章下方，不能把文件生成当成宿主发现验收。
