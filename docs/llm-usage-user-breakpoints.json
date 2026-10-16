@@ -131,8 +131,8 @@
     {
       "id": "skill-targets",
       "title": "确认 skill 输出位置",
-      "question": "我需要确认 repo skills、Codex 项目 skills 和 Claude 项目 skills 的输出位置。",
-      "why": "这些路径会决定同步后的 skill discovery 是否能在目标工具中生效。",
+      "question": "我需要确认内置模块的仓库级和 Codex 两个 skill 输出目录，以及是否需要自定义输出模块。",
+      "why": "内置模块只使用 repo_skills 和 codex_project；claude_project 是供自定义模块引用的保留字段，不自动产生第三路输出。",
       "recommended": {
         "id": "repo-and-codex",
         "reason": "当前仓库默认同时支持仓库级 skills 和 Codex 原生项目级 skill discovery。"
@@ -140,18 +140,18 @@
       "options": [
         {
           "id": "repo-and-codex",
-          "label": "写入 `skills/` 和 `.codex/skills/`",
-          "impact": "同时生成仓库级 skills 和 Codex 项目级 skills。"
+          "label": "写入 `skills/` 和 `.agents/skills/`",
+          "impact": "新项目同时生成仓库级与 Codex 项目级 skills；已有显式或已托管的旧目录按项目配置保留。"
         },
         {
           "id": "repo-only",
-          "label": "只写入仓库级 `skills/`",
-          "impact": "保留通用仓库 skill 目录，不生成 Codex 项目级 discovery 文件。"
+          "label": "只写仓库级目录（需自定义模块）",
+          "impact": "需使用只声明仓库输出的自定义模块；省略 codex_project 仍会采用默认 Codex 目录，不能关闭内置模块的第二路输出。"
         },
         {
           "id": "repo-codex-claude",
-          "label": "同时写入 repo、Codex 和 Claude",
-          "impact": "额外生成 `.claude/skills/`。"
+          "label": "三个独立技能目录（需自定义模块）",
+          "impact": "三个独立输出需自定义模块显式引用 claude_project；仅需 Claude 与 Codex 时可把 repo_skills 设为 .claude/skills，继续使用内置双目录输出。"
         }
       ],
       "reply_format": "回复选项编号或 id"

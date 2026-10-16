@@ -1,8 +1,8 @@
 # Loop-Check 仓库巡检
 
-默认四类 preset 包含 `skill-loop-check`，模块初始版本为 `1.0.0`。它将 `loop-check`、检查候选、计划指引和调用 metadata 同步到 `skills/loop-check/` 与 `.agents/skills/loop-check/`，支持 agent 在迁移、替换和维护任务中主动选择。
+默认四类 preset 包含 `skill-loop-check`，当前模块版本为 `1.0.1`。它将 `loop-check`、检查候选、计划指引和调用 metadata 同步到 `skills/loop-check/` 与 `.agents/skills/loop-check/`，支持 agent 在迁移、替换和维护任务中主动选择。
 
-首次调用时根据当前仓库规则、目录、测试和历史问题生成项目自有计划，默认路径为 `.agents/custom/loop-check.md`；以后同步技能不会覆盖它。清单为每项确定范围、证据、命令/步骤、通过标准、每日或事件触发方式、修复与验证方法。复用、文档代码一致性、迁移残留是主要候选；测试有效性、规则 owner、生成物、版本发布、证据层级、WIP/缓存、幂等恢复和敏感信息按项目适用性选择。
+首次调用时根据当前仓库规则、目录、测试和历史问题生成项目自有计划，计划路径跟随 `.agentphilosophy.yaml` 的 `paths.custom_dir`（默认 `.agents/custom/loop-check.md`）；以后同步技能不会覆盖它，也不会在已有自定义目录之外另建默认计划。清单为每项确定范围、证据、命令/步骤、通过标准、每日或事件触发方式、修复与验证方法。复用、文档代码一致性、迁移残留是主要候选；测试有效性、规则 owner、生成物、版本发布、证据层级、WIP/缓存、幂等恢复和敏感信息按项目适用性选择。
 
 已有项目的模块列表保持显式冻结；需要启用时在 `.agentphilosophy.yaml` 的 `modules` 中追加 `skill-loop-check`，沿用标准流程：
 
