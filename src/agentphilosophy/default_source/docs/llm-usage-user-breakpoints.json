@@ -157,6 +157,29 @@
       "reply_format": "回复选项编号或 id"
     },
     {
+      "id": "additional-skills",
+      "title": "按完整指南选择技能",
+      "question": "除已有模块外，本项目还需要哪些技能？",
+      "why": "完整指南包含全部可分发技能；下方专门断点只覆盖常见选择，不是安装白名单。",
+      "recommended": {
+        "id": "keep-config",
+        "reason": "没有明确缺口时保留已有配置，不为凑齐技能扩大范围。"
+      },
+      "options": [
+        {
+          "id": "keep-config",
+          "label": "保留当前模块",
+          "impact": "只同步当前已选择模块。"
+        },
+        {
+          "id": "choose-from-guide",
+          "label": "从完整指南选择",
+          "impact": "按 skill_guide.source_policy 取得完整指南后，按技能映射追加所需模块；包括 skill-loop-check、skill-restate-goal、skill-ui-ux-loop、skill-orchestrate-grok-cli，先核对适用类型、依赖与冲突。"
+        }
+      ],
+      "reply_format": "回复选项 id；选择 choose-from-guide 时给出所需技能或任务目标"
+    },
+    {
       "id": "ponytail",
       "title": "是否安装 Ponytail 精简编码 skill",
       "question": "我需要确认是否把 Ponytail 的精简编码规则写成项目级 skill。",
@@ -492,5 +515,15 @@
       ],
       "reply_format": "回复选项编号或 id"
     }
-  ]
+  ],
+  "skill_guide": {
+    "command": "agentphilosophy-sync llm-usage",
+    "source_path": "docs/cli/skills.md",
+    "description": "全部技能用途、安装模块、默认 preset、显式/自动调用、安装步骤与请求示例；导航保持原来源，增量追加项目模块，分别验证文件与宿主发现。",
+    "preserve_invocation": true,
+    "arguments": [
+      "llm-usage"
+    ],
+    "source_policy": "沿用原执行环境、工作目录、CLI 或 uv 前缀及 --source，仅将原子命令参数替换为 arguments（移除 --mode/--format）；command 只适用于安装版默认内容源。不要从自定义源跳回旧安装包。"
+  }
 }

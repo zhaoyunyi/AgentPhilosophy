@@ -50,6 +50,7 @@
 - [docs/cli/build-pipeline.md](cli/build-pipeline.md)：构建流水线调优 skill 1.1.0：测试隔离、I/O/缓存、预装工具、完整案例及只读比较器。
 - [docs/cli/code-review-graph.md](cli/code-review-graph.md)：code-review-graph 结构图谱依赖。
 - [docs/cli/code-review.md](cli/code-review.md)：独立 code-review 审查 skill。
+- [docs/cli/skills.md](cli/skills.md)：全部技能与安装模块映射、默认 preset、逐项用途/调用示例、安装更新和排障。
 - [docs/cli/commands.md](cli/commands.md)：真实可用命令。
 - [docs/cli/configuration.md](cli/configuration.md)：目标项目配置。
 - [docs/cli/loop-check.md](cli/loop-check.md)：仓库巡检计划、触发、自动修复 PR 和统一退役追溯。

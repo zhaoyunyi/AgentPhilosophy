@@ -4,6 +4,7 @@
 
 | 任务 | 读取页面 |
 | --- | --- |
+| 全部技能、安装模块、调用示例与排障 | [skills](cli/skills.md) |
 | 运行前提 | [runtime](cli/runtime.md) |
 | 真实可用命令 | [commands](cli/commands.md) |
 | 版本与更新判断 | [versions](cli/versions.md) |
@@ -26,8 +27,11 @@
 | 安全边界 | [safety](cli/safety.md) |
 | LLM 执行规则 | [agent-execution](cli/agent-execution.md) |
 
+第一次接入或选择技能，先读 [全部技能指南](cli/skills.md)：覆盖技能到安装模块的映射、默认 preset、显式/自动调用、完整安装步骤与每项请求示例。从精简模式导航时保留原执行环境、工作目录、CLI/uv 前缀与 `--source`，只去掉 `--mode`/`--format`。安装版默认源的完整入口是 `agentphilosophy-sync llm-usage`。
+
 修改 CLI 文档时更新对应单页；本清单同时决定完整输出的顺序，避免复制正文。
 
+<!-- include: cli/skills.md -->
 <!-- include: cli/runtime.md -->
 <!-- include: cli/commands.md -->
 <!-- include: cli/versions.md -->
