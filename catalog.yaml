@@ -1,5 +1,5 @@
 schema_version: 1
-content_version: 1.1.0
+content_version: 1.2.0
 modules:
   - name: openspec-skills
     category: base
@@ -185,6 +185,14 @@ modules:
       - skills/repo-management/SKILL.md
       - .agents/skills/repo-management/SKILL.md
     risk: low
+  - name: skill-loop-check
+    category: skill
+    description: 仓库专属日检与事件巡检、自动修复、退役追溯和 PR 闭环 skill
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/loop-check/
+      - .agents/skills/loop-check/
+    risk: medium
   - name: skill-restate-goal
     category: skill
     description: 用自己的话重述用户当前目标与待解决问题的共享理解 skill

@@ -1,12 +1,12 @@
 schema_version: 1
 source: /Users/zhaoyunyi/developer/AgentPhilosophy
-source_revision: jj:qyplxynunuomvlzrxvsppnykltopuusl
-source_tree_hash: sha256:ce63ffc52082b10bb756e453ace3dedaf66ca181e3d58217947b3d639a5ea562
+source_revision: jj:zruvonnqlrptvkulovwzwklwxptqxzyk
+source_tree_hash: sha256:4b77e79bb7c27a0847e140d5d7f429cfb1dbd1d7a23bca977dfec19b0b25dd61
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.1.0
   model-constraints: 1.2.0
-  doc-templates: 1.2.0
+  doc-templates: 1.3.0
   multi-module-layout: 1.1.0
   release-conventions: 1.1.0
   spec-program: 1.0.0
@@ -19,7 +19,8 @@ modules:
   skill-jj-management: 1.2.0
   skill-target-jj: 1.1.0
   skill-coding-standards: 1.1.0
-  skill-repo-management: 1.2.0
+  skill-repo-management: 1.3.0
+  skill-loop-check: 1.0.0
   skill-code-review-graph: 1.1.0
   skill-optimize-build-pipeline: 1.1.0
   skill-orchestrate-grok-cli: 1.0.0
@@ -304,6 +305,34 @@ files:
   source_hash: sha256:ad98f05221b2e15da7f1a3f7bb1a63f4360d47d9ec7fbd6d32e88b21cb205a53
   rendered_hash: sha256:c0c3e6dfa6f0755a68eee060eb56b84cf90aec1e42f66431dd7d1a5ee59c36f4
   last_written_hash: sha256:c0c3e6dfa6f0755a68eee060eb56b84cf90aec1e42f66431dd7d1a5ee59c36f4
+- path: .agents/skills/loop-check/SKILL.md
+  module: skill-loop-check
+  output_id: loop-check-codex-skill
+  strategy: managed_replace
+  source_hash: sha256:194d1dece369a3346b6cba3abeb0c2752ce522f0cb294c16bbb935367d58ece5
+  rendered_hash: sha256:f076426b4401bc4c888368bf3d51cfbb4a3da887a8604e796374f024114f6523
+  last_written_hash: sha256:f076426b4401bc4c888368bf3d51cfbb4a3da887a8604e796374f024114f6523
+- path: .agents/skills/loop-check/agents/openai.yaml
+  module: skill-loop-check
+  output_id: loop-check-codex-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:e35a3cd1489d0c4b7c538faad8930f8c9b7860d1511e5c667d0f02898a7c90ca
+  rendered_hash: sha256:e35a3cd1489d0c4b7c538faad8930f8c9b7860d1511e5c667d0f02898a7c90ca
+  last_written_hash: sha256:e35a3cd1489d0c4b7c538faad8930f8c9b7860d1511e5c667d0f02898a7c90ca
+- path: .agents/skills/loop-check/references/checks.md
+  module: skill-loop-check
+  output_id: loop-check-codex-files:references/checks.md
+  strategy: managed_replace
+  source_hash: sha256:c9afbe42d78c0ac638268834e7fbdcc03e89bbee16e69ffc3e323c3d954f9742
+  rendered_hash: sha256:c9afbe42d78c0ac638268834e7fbdcc03e89bbee16e69ffc3e323c3d954f9742
+  last_written_hash: sha256:c9afbe42d78c0ac638268834e7fbdcc03e89bbee16e69ffc3e323c3d954f9742
+- path: .agents/skills/loop-check/references/plan.md
+  module: skill-loop-check
+  output_id: loop-check-codex-files:references/plan.md
+  strategy: managed_replace
+  source_hash: sha256:6cc67a1d1141afeceff6d07440055de4cc3c0e4501583d5bdcf219b1cca28e53
+  rendered_hash: sha256:6cc67a1d1141afeceff6d07440055de4cc3c0e4501583d5bdcf219b1cca28e53
+  last_written_hash: sha256:6cc67a1d1141afeceff6d07440055de4cc3c0e4501583d5bdcf219b1cca28e53
 - path: .agents/skills/openspec-skills/openspec-apply/SKILL.md
   module: openspec-skills
   output_id: openspec-skills-codex:openspec-apply/SKILL.md
@@ -504,9 +533,9 @@ files:
   module: skill-repo-management
   output_id: repo-management-codex-skill
   strategy: managed_replace
-  source_hash: sha256:b87f8670f6abb6ef65b042f8a1668be679c4e92b586d56bf067eabbec40f16c5
-  rendered_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
-  last_written_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
+  source_hash: sha256:7417673f0d6d152e61b503281f98b561d7c110b371e58bd6b7c346d473a89670
+  rendered_hash: sha256:cab85e2d6d200b27feb14261a82df5c2023d51a4d6d0a01907347daa11be4408
+  last_written_hash: sha256:cab85e2d6d200b27feb14261a82df5c2023d51a4d6d0a01907347daa11be4408
 - path: .agents/skills/research/SKILL.md
   module: skill-mattpocock-engineering
   output_id: mattpocock-codex-skill-files:research/SKILL.md
@@ -840,9 +869,9 @@ files:
   module: doc-templates
   output_id: agents-md
   strategy: layered
-  source_hash: sha256:17e0da36b714f5bd8e482ae1110c1be6ca93bfe6e2d11733af27cd3103557779
-  rendered_hash: sha256:fc093864a6f8cf8d88f0b3e24a507b925e271185f4f15643d61a40c9499ebaa5
-  last_written_hash: sha256:fc093864a6f8cf8d88f0b3e24a507b925e271185f4f15643d61a40c9499ebaa5
+  source_hash: sha256:4ae8697f76951a9ce205cefdeb624094640fba0d1adf8c80463447041e510b22
+  rendered_hash: sha256:5e5acdf06522a8467b86fdb5dab5f8a2329b1626899c5dd694bb6de6d0e73b00
+  last_written_hash: sha256:5e5acdf06522a8467b86fdb5dab5f8a2329b1626899c5dd694bb6de6d0e73b00
 - path: CLAUDE.md
   module: doc-templates
   output_id: claude-md
@@ -904,8 +933,8 @@ files:
   output_id: release-notes-index
   strategy: layered
   source_hash: sha256:eb1657de1ecd4064fab7d5591e85e3bb858208d9581e2082a7adc117eb929c3f
-  rendered_hash: sha256:45a6e0428b6892f16e0c902b32ca44b2ec468eadfcb84c9ffb6c4d504da31727
-  last_written_hash: sha256:45a6e0428b6892f16e0c902b32ca44b2ec468eadfcb84c9ffb6c4d504da31727
+  rendered_hash: sha256:aa2d521d982f981533b4cdcaf1ca08313968171bf323d8df35aae5a66ea95bc8
+  last_written_hash: sha256:aa2d521d982f981533b4cdcaf1ca08313968171bf323d8df35aae5a66ea95bc8
 - path: skills/MATTPOCOCK-SKILLS-LICENSE.txt
   module: skill-mattpocock-engineering
   output_id: mattpocock-skill-files:MATTPOCOCK-SKILLS-LICENSE.txt
@@ -1179,6 +1208,34 @@ files:
   source_hash: sha256:ad98f05221b2e15da7f1a3f7bb1a63f4360d47d9ec7fbd6d32e88b21cb205a53
   rendered_hash: sha256:c0c3e6dfa6f0755a68eee060eb56b84cf90aec1e42f66431dd7d1a5ee59c36f4
   last_written_hash: sha256:c0c3e6dfa6f0755a68eee060eb56b84cf90aec1e42f66431dd7d1a5ee59c36f4
+- path: skills/loop-check/SKILL.md
+  module: skill-loop-check
+  output_id: loop-check-skill
+  strategy: managed_replace
+  source_hash: sha256:194d1dece369a3346b6cba3abeb0c2752ce522f0cb294c16bbb935367d58ece5
+  rendered_hash: sha256:f076426b4401bc4c888368bf3d51cfbb4a3da887a8604e796374f024114f6523
+  last_written_hash: sha256:f076426b4401bc4c888368bf3d51cfbb4a3da887a8604e796374f024114f6523
+- path: skills/loop-check/agents/openai.yaml
+  module: skill-loop-check
+  output_id: loop-check-files:agents/openai.yaml
+  strategy: managed_replace
+  source_hash: sha256:e35a3cd1489d0c4b7c538faad8930f8c9b7860d1511e5c667d0f02898a7c90ca
+  rendered_hash: sha256:e35a3cd1489d0c4b7c538faad8930f8c9b7860d1511e5c667d0f02898a7c90ca
+  last_written_hash: sha256:e35a3cd1489d0c4b7c538faad8930f8c9b7860d1511e5c667d0f02898a7c90ca
+- path: skills/loop-check/references/checks.md
+  module: skill-loop-check
+  output_id: loop-check-files:references/checks.md
+  strategy: managed_replace
+  source_hash: sha256:c9afbe42d78c0ac638268834e7fbdcc03e89bbee16e69ffc3e323c3d954f9742
+  rendered_hash: sha256:c9afbe42d78c0ac638268834e7fbdcc03e89bbee16e69ffc3e323c3d954f9742
+  last_written_hash: sha256:c9afbe42d78c0ac638268834e7fbdcc03e89bbee16e69ffc3e323c3d954f9742
+- path: skills/loop-check/references/plan.md
+  module: skill-loop-check
+  output_id: loop-check-files:references/plan.md
+  strategy: managed_replace
+  source_hash: sha256:6cc67a1d1141afeceff6d07440055de4cc3c0e4501583d5bdcf219b1cca28e53
+  rendered_hash: sha256:6cc67a1d1141afeceff6d07440055de4cc3c0e4501583d5bdcf219b1cca28e53
+  last_written_hash: sha256:6cc67a1d1141afeceff6d07440055de4cc3c0e4501583d5bdcf219b1cca28e53
 - path: skills/openspec-skills/openspec-apply/SKILL.md
   module: openspec-skills
   output_id: openspec-skills:openspec-apply/SKILL.md
@@ -1379,9 +1436,9 @@ files:
   module: skill-repo-management
   output_id: repo-management-skill
   strategy: managed_replace
-  source_hash: sha256:b87f8670f6abb6ef65b042f8a1668be679c4e92b586d56bf067eabbec40f16c5
-  rendered_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
-  last_written_hash: sha256:6878cc761becd636e182dbc4dae4b64a1c5165ff8fe00dfcaabb536718cd6214
+  source_hash: sha256:7417673f0d6d152e61b503281f98b561d7c110b371e58bd6b7c346d473a89670
+  rendered_hash: sha256:cab85e2d6d200b27feb14261a82df5c2023d51a4d6d0a01907347daa11be4408
+  last_written_hash: sha256:cab85e2d6d200b27feb14261a82df5c2023d51a4d6d0a01907347daa11be4408
 - path: skills/research/SKILL.md
   module: skill-mattpocock-engineering
   output_id: mattpocock-skill-files:research/SKILL.md
@@ -1753,6 +1810,6 @@ files:
   source_hash: sha256:be986b98ee03d61ed0bdfc9a67941ccc4612c6a5e6d4bf6cfdc6dd61326a0ae7
   rendered_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
   last_written_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
-last_synced: '2026-10-08T05:00:07.739224+00:00'
-source_content_version: 1.1.0
-agentphilosophy_version: 1.1.0
+last_synced: '2026-10-16T07:36:59.285562+00:00'
+source_content_version: 1.2.0
+agentphilosophy_version: 1.2.0
