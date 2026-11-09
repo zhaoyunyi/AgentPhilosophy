@@ -31,7 +31,7 @@ from .project import (
 )
 from .rendering import RenderedOutput, render_outputs
 from .source import Module, compare_content_versions, load_modules, source_content_version, validate_source
-from .state import load_state, state_file_map, write_state
+from .state import load_state, source_identity, state_file_map, write_state
 from .yamlio import read_yaml, write_yaml
 
 
@@ -368,7 +368,7 @@ def state_after_push(
     config = load_project_config(project_root)
     state = load_state(project_root, source_root)
     state["agentphilosophy_version"] = agentphilosophy_version
-    state["source"] = str(source_root)
+    state["source"] = source_identity(source_root)
     state["source_content_version"] = source_content_version(source_root)
     state["source_revision"] = revision if revision is not None else source_revision(source_root)
     state["source_tree_hash"] = source_tree_hash(source_root)
@@ -738,7 +738,7 @@ def command_adopt(
             }
             state.setdefault("modules", {})[entry["module"]] = modules[entry["module"]].version
             report.info(f"adopted {rel}")
-        state["source"] = str(source_root)
+        state["source"] = source_identity(source_root)
         state["agentphilosophy_version"] = agentphilosophy_version
         state["source_content_version"] = source_content_version(source_root)
         state["source_revision"] = source_revision(source_root)

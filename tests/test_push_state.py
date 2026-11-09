@@ -119,6 +119,22 @@ def test_push_apply_writes_managed_file_and_blocks_manual_edits(tmp_path: Path, 
     assert "+- 使用 Codex CLI" in diff_text
 
 
+def test_push_state_uses_portable_source_identity(tmp_path: Path) -> None:
+    """同步 state 不应把维护者的本机绝对路径写入目标项目。"""
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    create_source(source)
+    create_target(target)
+
+    assert main(["--source", str(source), "push", str(target), "--apply"]) == 0
+
+    state = yaml.safe_load(
+        (target / ".agents" / "agentphilosophy-state.yaml").read_text(encoding="utf-8")
+    )
+    assert state["source"] == "central-source"
+    assert "/" not in state["source"]
+
+
 def test_push_conflict_diff_handles_existing_directory_target(tmp_path: Path, capsys) -> None:
     source = tmp_path / "source"
     target = tmp_path / "target"

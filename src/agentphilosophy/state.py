@@ -14,11 +14,18 @@ def state_path(project_root: Path) -> Path:
     return project_root / DEFAULT_PATHS["agent_work_dir"] / "agentphilosophy-state.yaml"
 
 
+def source_identity(source_root: Path) -> str:
+    """记录不带用户目录的来源身份，避免 state 把本机绝对路径写入项目。"""
+    if (source_root / "catalog.yaml").is_file() and (source_root / "modules").is_dir():
+        return "central-source"
+    return "packaged-default-source"
+
+
 def empty_state(source_root: Path) -> dict[str, Any]:
     return {
         "schema_version": 1,
         "agentphilosophy_version": agentphilosophy_version,
-        "source": str(source_root),
+        "source": source_identity(source_root),
         "source_content_version": source_content_version(source_root),
         "source_revision": source_revision(source_root),
         "source_tree_hash": source_tree_hash(source_root),

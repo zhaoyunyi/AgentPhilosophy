@@ -328,14 +328,14 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     assert "用户可见文案不得解释内部实现细节" in spec_text
     assert "不得用文案区分产品 key 与上游或供应商 API key" in spec_text
     assert "组织访问密钥用于服务端集成" in spec_text
-    assert "dependent-project gateway key" not in spec_text
+    assert "Example gateway key" not in spec_text
     assert "Customer gateway key" not in spec_text
     assert "ExampleFullstackProject" not in spec_text
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "终端用户界面、开发者集成文档与内部诊断" in agents_text
     assert "公开接口、依赖名称、认证方式及参数" in agents_text
-    assert "dependent-project gateway key" not in agents_text
+    assert "Example gateway key" not in agents_text
     assert "Customer gateway key" not in agents_text
     assert "ExampleFullstackProject" not in agents_text
 

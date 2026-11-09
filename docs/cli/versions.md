@@ -11,4 +11,6 @@ AgentPhilosophy 使用三层版本判断目标项目是否需要更新：
 
 `agentphilosophy-sync --version` 用于确认当前安装的 CLI release 版本。`push --apply` 和 `adopt` 会把当前 `agentphilosophy_version` 与 `source_content_version` 写入目标项目 `.agents/agentphilosophy-state.yaml`；`status --project` 如果发现 state 中 CLI 版本落后于当前安装包，会输出 `agentphilosophy_version stale: <old> -> <new>`，如果发现内容源版本落后于当前中央源，会输出 `source_content_version stale: <old> -> <new>`。看到 stale 提示时，先运行 `push /path/to/project --dry-run` 审查计划，再决定是否 `--apply`。
 
+state 的 `source` 只记录 `central-source` 或 `packaged-default-source` 等便携身份，不写入维护者本机绝对路径；`source_revision` 和 `source_tree_hash` 继续用于同步身份与漂移判断。
+
 如果 state 中的版本高于当前中央源或当前 CLI，`status` 会提示 `source_content_version newer than current source` 或 `agentphilosophy_version newer than current CLI`；此时先检查是否误用了旧的 `--source`、旧安装包或回退后的中央源，不要直接覆盖目标项目。`source_tree_hash` 是源文件指纹，`catalog.yaml` 变更可能同时触发 hash drift 和内容版本提示。

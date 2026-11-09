@@ -97,8 +97,8 @@ Spec 模块：
 - `spec-test-general`：项目测试分层，如 ExampleFrontendProject 的 `TestStrategy.md`。
 - `spec-ui`：UI / 设计系统规范，默认 layered。
 - `spec-architecture`：项目架构约束，如 ExampleFrontendProject 的 `ArchitectureSpec.md`。
-- `spec-ios-sdk`：MobileSDK 的 `iOSSDK*.md` 系列规范，作为 mobile-sdk preset 可选模块。
-- `spec-feature-domain`：MobileSDK 的 `spec/features/*` 领域功能规范，默认 init_only 或 layered。
+- `spec-ios-sdk`：ExampleMobileSDKProject 的 `iOSSDK*.md` 系列规范，作为 mobile-sdk preset 可选模块。
+- `spec-feature-domain`：ExampleMobileSDKProject 的 `spec/features/*` 领域功能规范，默认 init_only 或 layered。
 
 Skill 模块：
 
@@ -315,7 +315,7 @@ vars:
   language: python
   test_command: "pytest -q"
   primary_tool: "Codex CLI"
-  jj_workspace_dir: ".exampleorchestratorproject-workspaces/"
+  jj_workspace_dir: ".example-project-workspaces/"
   extra_model_rules:
     - "禁止使用 gpt-5.2/gpt-5.3-codex"
   sub_directories:
@@ -373,7 +373,7 @@ sync 后目标项目可能新增：
 
 ```yaml
 schema_version: 1
-source: /path/to/AgentPhilosophy
+source: central-source
 source_revision: jj:unknown-or-git-sha
 source_tree_hash: sha256:...
 last_synced: 2026-05-10T21:40:00+08:00
@@ -699,7 +699,7 @@ outputs:
 
 - 文档不再把模块级 `mode` 当成唯一执行分支。
 - 老项目已有文件默认不会被覆盖。
-- MobileSDK 的 `docs/guide`、ExampleOrchestratorProject 的 `skills/`、ExampleFrontendProject 的 `ArchitectureSpec/TestStrategy` 都有对应设计入口。
+- ExampleMobileSDKProject 的 `docs/guide`、ExampleOrchestratorProject 的 `skills/`、ExampleFrontendProject 的 `ArchitectureSpec/TestStrategy` 都有对应设计入口。
 - 模板组合统一使用已定义的 `section(name)` 函数注入片段。
 - sync 状态不污染用户手写 `.agentphilosophy.yaml`。
 - 第一版 migrate 明确是报告工具，不是自动改写工具。
