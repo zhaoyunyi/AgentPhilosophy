@@ -16,12 +16,22 @@ def render_inline_template(template: str, context: dict[str, object]) -> str:
         raise SyncError(f"unsafe inline template expression: {exc}") from exc
 
 
-def resolve_inside(root: Path, value: str, *, label: str) -> Path:
+def resolve_inside(root: Path, value: str, *, label: str, reject_symlinks: bool = False) -> Path:
     if not value:
         raise SyncError(f"{label} cannot be empty")
     root_resolved = root.resolve()
     raw = Path(value).expanduser()
     candidate = raw if raw.is_absolute() else root_resolved / raw
+    if reject_symlinks:
+        try:
+            relative = candidate.relative_to(root_resolved)
+        except ValueError as exc:
+            raise SyncError(f"{label} escapes project root: {value}") from exc
+        current = root_resolved
+        for part in relative.parts:
+            current = current / part
+            if part == ".." or current.is_symlink():
+                raise SyncError(f"{label} contains a symlink or parent traversal: {value}")
     resolved = candidate.resolve(strict=False)
     try:
         resolved.relative_to(root_resolved)

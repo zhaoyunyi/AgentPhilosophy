@@ -281,14 +281,17 @@ def command_init_interactive(
     return report
 
 
-def build_push_plan(source_root: Path, project_root: Path) -> tuple[Report, list[PlannedAction]]:
+def build_push_plan(
+    source_root: Path, project_root: Path, *, strict_paths: bool = False,
+) -> tuple[Report, list[PlannedAction]]:
     report = command_validate(source_root, project_root)
     if not report.ok:
         return report, []
     try:
         modules = load_modules(source_root)
         config = load_project_config(project_root)
-        rendered = render_outputs(source_root, project_root, config, selected_modules(config, modules))
+        rendered = render_outputs(source_root, project_root, config, selected_modules(config, modules),
+                                  strict_paths=strict_paths)
         state = load_state(project_root, source_root)
         state_map = state_file_map(state)
     except (SyncError, UndefinedError) as exc:
@@ -349,13 +352,25 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
     if conflicts:
         return report
 
+    state = state_after_push(source_root, project_root, plan)
+    for item in plan:
+        if item.action in {"add", "update"}:
+            write_bytes_atomic(project_root / item.output.rel_path, item.output.content)
+    write_state(project_root, state)
+    return report
+
+
+def state_after_push(
+    source_root: Path, project_root: Path, plan: list[PlannedAction], *, revision: str | None = None,
+) -> dict:
+    """为同一份同步计划生成 state；普通 push 与可回退升级共用文件登记规则。"""
     modules = load_modules(source_root)
     config = load_project_config(project_root)
     state = load_state(project_root, source_root)
     state["agentphilosophy_version"] = agentphilosophy_version
     state["source"] = str(source_root)
     state["source_content_version"] = source_content_version(source_root)
-    state["source_revision"] = source_revision(source_root)
+    state["source_revision"] = revision if revision is not None else source_revision(source_root)
     state["source_tree_hash"] = source_tree_hash(source_root)
     state["last_synced"] = datetime.now(UTC).isoformat()
     state["modules"] = {
@@ -368,9 +383,6 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
             continue
         if item.action == "skip" and item.reason != "already up to date":
             continue
-        if item.action in {"add", "update"}:
-            target = project_root / item.output.rel_path
-            write_bytes_atomic(target, item.output.content)
         state_files[item.output.rel_path] = {
             "path": item.output.rel_path,
             "module": item.output.module,
@@ -382,8 +394,7 @@ def command_push(source_root: Path, project_root: Path, *, apply: bool) -> Repor
         }
 
     state["files"] = [state_files[key] for key in sorted(state_files)]
-    write_state(project_root, state)
-    return report
+    return state
 
 
 def _write_candidate_artifacts(

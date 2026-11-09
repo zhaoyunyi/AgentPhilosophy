@@ -48,6 +48,8 @@ def render_outputs(
     project_root: Path,
     config: dict[str, Any],
     modules: list[Module],
+    *,
+    strict_paths: bool = False,
 ) -> list[RenderedOutput]:
     del source_root
     context = build_render_context(config, modules)
@@ -59,7 +61,8 @@ def render_outputs(
             if output.get("type") != "fragment":
                 continue
             target_rel = render_inline_template(str(output.get("target", "")), context)
-            resolve_inside(project_root, target_rel, label=f"{module.name}:{output.get('id')} target")
+            resolve_inside(project_root, target_rel, label=f"{module.name}:{output.get('id')} target",
+                           reject_symlinks=strict_paths)
             section = str(output.get("section") or "")
             if not section:
                 raise SyncError(f"fragment output missing section: {module.name}:{output.get('id')}")
@@ -80,7 +83,8 @@ def render_outputs(
             strategy = output_strategy(output, module)
             policy = unmanaged_policy(output)
             target_rel = render_inline_template(str(output.get("target", "")), context)
-            target_abs = resolve_inside(project_root, target_rel, label=f"{module.name}:{output_id} target")
+            target_abs = resolve_inside(project_root, target_rel, label=f"{module.name}:{output_id} target",
+                                        reject_symlinks=strict_paths)
             target_rel = relative_path(project_root, target_abs)
 
             if output_type == "rendered_file":
@@ -135,6 +139,7 @@ def render_outputs(
                         project_root,
                         f"{target_rel.rstrip('/')}/{child_rel}",
                         label=f"{module.name}:{output_id} copy_tree target",
+                        reject_symlinks=strict_paths,
                     )
                     content = source_file.read_bytes()
                     outputs.append(

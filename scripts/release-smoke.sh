@@ -62,6 +62,22 @@ PY
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--update-docs"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--llm-command"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--project-name"
+"$smoke_root/venv/bin/agentphilosophy-sync" upgrade --help | grep -q -- "--target"
+"$smoke_root/venv/bin/agentphilosophy-sync" rollback --help | grep -q -- "--id"
+if "$smoke_root/venv/bin/agentphilosophy-sync" check-update --version invalid --format json \
+  >"$smoke_root/invalid-release.json"; then
+  echo "Invalid release input unexpectedly succeeded" >&2
+  exit 1
+fi
+"$smoke_root/venv/bin/python" - "$smoke_root/invalid-release.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as handle:
+    result = json.load(handle)
+assert result["status"] == "failed"
+assert result["errors"]
+PY
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage >"$smoke_root/llm-usage.md"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode auto-config >"$smoke_root/llm-usage-auto-config.md"
 "$smoke_root/venv/bin/agentphilosophy-sync" llm-usage --mode user-breakpoints >"$smoke_root/llm-usage-user-breakpoints.md"
@@ -69,6 +85,7 @@ PY
 grep -q "自动配置安装说明" "$smoke_root/llm-usage-auto-config.md"
 grep -q "用户断点配置说明" "$smoke_root/llm-usage-user-breakpoints.md"
 grep -q "documentation_paths" "$smoke_root/llm-usage.md"
+grep -q "已接入项目升级与回退" "$smoke_root/llm-usage.md"
 "$smoke_root/venv/bin/python" - "$smoke_root/llm-usage-user-breakpoints.json" <<'PY'
 import json
 import sys

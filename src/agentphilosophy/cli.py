@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import json
+import shlex
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -109,12 +111,81 @@ def build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
 
     status = subparsers.add_parser("status", help="Show registry or project status.")
     status.add_argument("--project")
+
+    check_update = subparsers.add_parser("check-update", help="Discover and verify an official stable release.")
+    check_update.add_argument("--project")
+    check_update.add_argument("--version", help="Select a specific stable release instead of latest.")
+    check_update.add_argument("--format", choices=["text", "json"], default="text")
+    upgrade = subparsers.add_parser("upgrade", help="Preview or apply a verified release to one project.")
+    upgrade.add_argument("project")
+    upgrade.add_argument("--target", required=True, help="JSON captured from check-update --format json.")
+    upgrade.add_argument("--allow-breaking", action="store_true", help="Apply a user-approved migration.")
+    upgrade_mode = upgrade.add_mutually_exclusive_group()
+    upgrade_mode.add_argument("--dry-run", action="store_true")
+    upgrade_mode.add_argument("--apply", action="store_true")
+    upgrade.add_argument("--format", choices=["text", "json"], default="text")
+    rollback = subparsers.add_parser("rollback", help="Preview or restore one project upgrade snapshot.")
+    rollback.add_argument("project")
+    rollback.add_argument("--id", required=True, dest="upgrade_id")
+    rollback_mode = rollback.add_mutually_exclusive_group()
+    rollback_mode.add_argument("--dry-run", action="store_true")
+    rollback_mode.add_argument("--apply", action="store_true")
+    rollback.add_argument("--format", choices=["text", "json"], default="text")
     return parser
+
+
+def format_upgrade(result: dict) -> str:
+    lines = [result["status"]]
+    if "upgrade_id" in result:
+        lines.append(f"升级 ID：{result['upgrade_id']}")
+    for field in ("errors", "warnings", "breaking_changes"):
+        lines.extend(str(message) for message in result.get(field, []))
+    for item in result.get("changes", []):
+        lines.append(f"{item['action']}: {item['path']}")
+        lines.append(item["diff"])
+    if result.get("optional_modules"):
+        lines.append("可选新增模块（未自动采用）：" + ", ".join(result["optional_modules"]))
+    lines.extend(f"恢复：{path}" for path in result.get("restore_paths", []))
+    return "\n".join(lines)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser(prog=Path(sys.argv[0]).name)
     args = parser.parse_args(argv)
+
+    if args.command in {"upgrade", "rollback"}:
+        from .upgrade import upgrade
+        from .upgrade_journal import rollback
+
+        try:
+            project = Path(args.project).expanduser().resolve()
+            if args.command == "rollback":
+                result = rollback(project, args.upgrade_id, apply=args.apply)
+            else:
+                with resolve_source_root(args.source) as source_root:
+                    result = upgrade(source_root, project, Path(args.target).expanduser().resolve(),
+                                     apply=args.apply, allow_breaking=args.allow_breaking)
+        except (SyncError, OSError) as exc:
+            result = {"format_version": 1, "status": "failed", "errors": [str(exc)]}
+        print(json.dumps(result, ensure_ascii=False, indent=2) if args.format == "json" else format_upgrade(result))
+        return 1 if result["status"] in {"failed", "blocked"} else 0
+
+    if args.command == "check-update":
+        from .upgrade_release import check_update
+
+        try:
+            result = check_update(Path(args.project).expanduser().resolve() if args.project else None, args.version)
+        except (SyncError, OSError) as exc:
+            result = {"format_version": 1, "status": "failed", "errors": [str(exc)]}
+        if args.format == "json":
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        elif result["status"] == "failed":
+            print("\n".join(result["errors"]))
+        else:
+            print(f"{result['status']}: {result['installed_version']} -> {result['target']['version']}")
+            print(result["target"]["release_url"])
+            print(shlex.join(result["install_command"]))
+        return 1 if result["status"] == "failed" else 0
 
     with resolve_source_root(args.source) as source_root:
         if args.command == "llm-usage":
