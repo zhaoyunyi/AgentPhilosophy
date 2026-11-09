@@ -19,7 +19,7 @@
 前提：安装 uv、Git，Python 版本至少 3.12。安装已经发布的稳定版本：
 
 ```bash
-uv tool install git+https://github.com/zhaoyunyi/AgentPhilosophy.git@v1.2.2
+uv tool install git+https://github.com/zhaoyunyi/AgentPhilosophy.git@v1.3.0
 agentphilosophy-sync --version
 agentphilosophy-sync validate
 ```
@@ -54,7 +54,7 @@ agentphilosophy-sync migrate /path/to/project
 
 升级流程是：**发现正式版本 → 固定版本及源码提交 → 预览差异 → 保存回退点 → 应用并验证**。新增模块不会自动加入项目，已有 custom 和无关工作应保留。
 
-**发布边界：这套 `check-update / upgrade / rollback` 流程由待发布的 1.3.0 提供；上方已发布 v1.2.2 尚不支持。** 新版稳定 Release 完成后，旧用户需先按新版安装入口更新 CLI 一次。完整的手动命令、首次引导、冲突处理和恢复步骤见 [升级与回退指南](docs/cli/upgrade.md)。当前开发者可以在本地源码中验证这些能力，不应把未发布代码用于默认稳定升级。
+**版本要求：这套 `check-update / upgrade / rollback` 流程从正式版 1.3.0 开始提供。** v1.2.2 及更早用户先按上方稳定安装命令更新 CLI 一次；这一步不会自动同步项目内容。完整的手动命令、首次引导、冲突处理和恢复步骤见 [升级与回退指南](docs/cli/upgrade.md)。
 
 工具安装、项目内容同步、采用新模块是三个独立动作。CLI、内容源、模块也各自记录版本；`status` 只比较当前本地源，联网发现 Release 使用新版 `check-update`。详见 [版本与更新判断](docs/cli/versions.md)。
 
