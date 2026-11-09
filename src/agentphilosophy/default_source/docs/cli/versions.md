@@ -1,5 +1,7 @@
 ## 三、版本与更新判断
 
+外部项目的完整升级路径见 [升级与回退](upgrade.md)。`status` 只比较项目与当前本地 CLI/内容源，不查询 GitHub；1.3.0 新增的 `check-update` 用于发现并核对正式 Release。首次使用需注意指南里的稳定版/开发版边界。
+
 AgentPhilosophy 使用三层版本判断目标项目是否需要更新：
 
 - CLI 工具版本来自 `pyproject.toml` 和 `agentphilosophy.__version__`，只表示同步程序自身版本。

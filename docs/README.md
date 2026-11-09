@@ -15,6 +15,8 @@
 
 ## CLI 与同步说明
 
+- [docs/cli/upgrade.md](cli/upgrade.md)：外部项目的默认 Agent 请求、固定版本、手动 CLI、冲突和中断恢复。
+
 - [docs/cli-usage-for-llm.md](cli-usage-for-llm.md)：给 LLM 或自动化 agent 的完整 CLI 操作说明，覆盖接入、迁移、同步、可选模块和写入前校验。
 - [docs/llm-usage-auto-config.md](llm-usage-auto-config.md)：用户授权 agent 自动判断接入方案时使用的精简协议。
 - [docs/llm-usage-user-breakpoints.md](llm-usage-user-breakpoints.md)：需要用户选择 preset、模块或路径时使用的断点协议。
@@ -35,6 +37,8 @@
 - [docs/guides/code-review-graph.md](guides/code-review-graph.md)：`code-review-graph` 依赖、Skill、MCP 和 CLI 的职责分层、Codex 配置与常用工作流。
 
 ## 设计与计划
+
+- [docs/plans/2026-11-09-independent-project-upgrade.md](plans/2026-11-09-independent-project-upgrade.md)：稳定版发现、升级与回退合同，以及 Agent/手动 CLI 的共同验收场景。
 
 - [docs/plans/2026-05-10-agent-philosophy-design.md](plans/2026-05-10-agent-philosophy-design.md)：AgentPhilosophy 统一 Agent 规范管理系统的设计文档。
 - [docs/superpowers/specs/2026-07-13-batch-sync-llm-documentation-design.md](superpowers/specs/2026-07-13-batch-sync-llm-documentation-design.md)：依赖项目批量同步版本后，按显式文档范围调用大模型更新项目自有文档的设计与安全边界。

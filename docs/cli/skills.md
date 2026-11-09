@@ -17,7 +17,7 @@
 首次安装需要 Python 3.12+、uv 和仓库读取权限。下面使用已发布固定版本 `v1.2.1`；未来版本以正式 Release 和主 README 的稳定入口为准。这是复现用的固定版本示例，不代表后续未发布说明已在该 tag 中。
 
 ```bash
-uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git@v1.2.1
+uv tool install git+https://github.com/zhaoyunyi/AgentPhilosophy.git@v1.2.1
 agentphilosophy-sync --version
 agentphilosophy-sync validate
 ```
@@ -218,6 +218,8 @@ vars:
 | philosophy-extraction | 同时启用 `aphilosophy`；目标仓库边界与中央源维护权限分开 |
 
 ## 更新、卸载与排障
+
+已接入项目的一句话升级、固定稳定版本、手动步骤和回退统一见 [升级指南](upgrade.md)。新流程从 1.3.0 开始提供，旧 CLI 先按正式发布版本完成一次安装引导。
 
 - **安装包升级却没有新技能**：读取新版本的指南/模块，再把缺少的模块追加到项目配置并同步。`preset` 名称不替代已冻结的 modules。
 - **文件存在但无法调用**：核对宿主列出的技能、发现目录、metadata 和同名项；重开目标仓库会话后再验证，不自动恢复全局 symlink。

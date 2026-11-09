@@ -1,5 +1,7 @@
 ## 十六、Registry 文件
 
+独立项目的接入与 [升级](upgrade.md) 不需要 registry。以下配置只服务同一台机器上的多项目批量管理。
+
 `registry.yaml` 位于 AgentPhilosophy 中央源根目录，是本机真实批量入口。它可以记录本机绝对路径，且已加入 `.gitignore`，供以下命令读取：
 
 ```bash

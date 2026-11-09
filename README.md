@@ -1,157 +1,90 @@
 # AgentPhilosophy
 
-AgentPhilosophy 是中央 Agent 协作规范管理仓库，用于把共享的 Agent 文档、Spec 规范和项目级 skills 按配置同步到目标项目。
+把共享的 Agent 协作规则、Spec 和项目级 skills 按配置同步到各个项目，让项目保留自己的定制，同时持续采用经过发布的更新。
 
-新项目默认同步到仓库级 `skills/` 和 Codex 项目级 `.agents/skills/`。已有显式 `.codex/skills/` 配置及已托管的历史默认目录继续支持；目录迁移先校验资源、状态和调用策略，见 [目标配置](docs/cli/configuration.md)。
+适合维护多个项目的开发者，也适合独立接入的开源使用者。每个项目自行选择模块与升级时机，无需访问维护者的电脑或本机 registry。默认生成仓库级 `skills/` 与 Codex 项目级 `.agents/skills/`；其他宿主与历史目录见 [配置指南](docs/cli/configuration.md)。
+
+## 从哪里开始
+
+| 你的任务 | 入口 |
+| --- | --- |
+| 第一次接入 | 下方快速开始；已有规则先走迁移 |
+| 已接入，想升级 | [一句话升级与手动 CLI](docs/cli/upgrade.md) |
+| 选择 skills、了解用途 | [全部技能：安装与使用](docs/cli/skills.md) |
+| 保留项目定制、处理冲突 | [配置与 custom](docs/cli/configuration.md)、[安全边界](docs/cli/safety.md) |
+| 维护中央内容或贡献代码 | [维护入口](docs/agents/maintenance.md)、[完整文档索引](docs/README.md) |
 
 ## 快速开始
 
-### 源码仓库使用
+前提：安装 uv、Git，Python 版本至少 3.12。安装已经发布的稳定版本：
 
 ```bash
-git clone git@github.com:zhaoyunyi/AgentPhilosophy.git
-cd AgentPhilosophy
-uv run sync.py validate
-uv run sync.py --version
-uv run sync.py init /path/to/project --preset fullstack
-uv run sync.py push /path/to/project --dry-run
-uv run sync.py push /path/to/project --apply
-```
-
-### 安装 CLI 后使用
-
-安装后的 CLI 默认使用包内规范源；只有需要指定自定义中央源时才传 `--source`。
-
-```bash
-uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git@v1.2.2
-```
-
-需要跟随 `main` 最新内容时再使用：
-
-```bash
-uv tool install git+ssh://git@github.com/zhaoyunyi/AgentPhilosophy.git
-```
-
-后续未发布到稳定 tag 的内容源更新需要安装 `main` 最新内容；固定 tag 只代表对应 release 已包含的内容源。
-
-安装后：
-
-```bash
+uv tool install git+https://github.com/zhaoyunyi/AgentPhilosophy.git@v1.2.2
+agentphilosophy-sync --version
 agentphilosophy-sync validate
-agentphilosophy-sync llm-usage
-agentphilosophy-sync llm-usage --mode auto-config
-agentphilosophy-sync llm-usage --mode user-breakpoints
+```
+
+默认使用安装包自带的规范源。安装包含 `code-review-graph==2.3.9` 及同名 CLI；其首次配置、MCP 和资源成本见 [使用指南](docs/guides/code-review-graph.md)。
+
+**新项目**选择适合的 preset，检查预览后应用：
+
+```bash
 agentphilosophy-sync init /path/to/project --preset fullstack
+agentphilosophy-sync validate /path/to/project
 agentphilosophy-sync push /path/to/project --dry-run
 agentphilosophy-sync push /path/to/project --apply
-code-review-graph --version
+agentphilosophy-sync status --project /path/to/project
 ```
 
-AgentPhilosophy 固定依赖 `code-review-graph==2.3.9`，并重新导出同名 CLI。默认 preset 还会同步 `code-review-graph` 项目级 skill，用于让 agent 在审查、影响分析、调试、架构探索和安全重构时优先通过 MCP 获取结构化最小上下文。首次配置、构建、状态、watch 和可视化仍由 CLI 完成，详见 [code-review-graph 使用指南](docs/guides/code-review-graph.md)。
+`fullstack`、`frontend`、`mobile-sdk`、`orchestrator` 的差异见 [目标配置](docs/cli/configuration.md)。默认 preset 包含 jj 协作规则；采用这些规则的项目需要准备 jj。交互选择可使用 `init --interactive`；它只生成配置，不自动同步文件。
 
-安装 `main` 最新内容后，还可以让 agent 直接读取用户断点结构化数据：
-
-```bash
-agentphilosophy-sync llm-usage --mode user-breakpoints --format json
-```
-
-如果目标项目已经有 `AGENTS.md`、`spec/` 或 `skills/` 等历史内容，先走迁移流程：
+**已有 `AGENTS.md`、Spec 或 skills 的项目**先盘点，阅读报告后接管，避免覆盖自己的内容：
 
 ```bash
 agentphilosophy-sync migrate /path/to/project
-agentphilosophy-sync migrate /path/to/project --write-config
-agentphilosophy-sync validate /path/to/project
-agentphilosophy-sync adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml
-agentphilosophy-sync push /path/to/project --dry-run
-agentphilosophy-sync push /path/to/project --apply
 ```
 
-## 给 LLM 的入口
+接着按 [老项目迁移指南](docs/cli/migration.md) 检查候选配置、确认接管范围，再 validate、adopt、预览和应用。已有 `.agentphilosophy.yaml` 的项目直接使用原配置，不重跑初始化。
 
-让 LLM 或自动化 agent 操作本仓库时，先读：
+## 已接入，如何升级
 
-- [docs/agents/maintenance.md](docs/agents/maintenance.md)
-- [docs/README.md](docs/README.md)
-- [docs/cli-usage-for-llm.md](docs/cli-usage-for-llm.md)
-- [全部技能：安装与使用](docs/cli/skills.md)
-- [docs/release-process.md](docs/release-process.md)
-- [release-notes/README.md](release-notes/README.md)
-- [docs/guides/aphilosophy-methodology.md](docs/guides/aphilosophy-methodology.md)
+默认对 Agent 说：
 
-文档索引记录 `docs/` 下长期文档入口，新增长期文档时必须同步更新。CLI 使用文档记录当前已经实现的行为，包括新项目接入、老项目迁移、批量 registry、`superpowers-system` 可选的原生 discovery 版本约束、`code-review-graph` 依赖、MCP 与项目级 skill 的分层用法、可选安装的 `skill-ponytail` 精简编码 skill、`skill-reverse-skill` 授权逆向路由 skill、Matt Pocock 27 个活跃 skills 的完整工程能力集与 `docs/agents/` 设置目录、默认 preset 内置的完整构建流水线调优、Grok CLI headless 编排审查和 Portless 本地开发入口判断 skill、可选独立 `skill-code-review` 审查 skill、`aphilosophy/` 决策框架的触发式读取规则、可选 `skill-philosophy-extraction` 哲学脱水 skill，以及写入前必须执行的校验步骤。`llm-usage --mode auto-config` 用于 LLM 根据项目事实自动选择配置并安装；`llm-usage --mode user-breakpoints` 用于 LLM 返回清晰断点，让用户选择配置后再安装；`llm-usage --mode user-breakpoints --format json` 用于 agent 直接读取断点标题、推荐项、选项列表和回复格式。发版文档记录版本口径、外部 skill 上游 revision 检查、准备脚本、发布脚本和依赖项目更新判断；`aphilosophy` 方法论文档用于维护或扩展哲学决策框架时确认脱水标准和模板索引。
+> 升级本项目的 AgentPhilosophy 到最新正式稳定版。保留已有模块选择和项目定制，兼容且无冲突时完成升级与验证；新增模块给出建议，不兼容迁移或手改冲突时说明影响。保留回退 ID。
 
-默认 preset 提供 [`loop-check`](docs/cli/loop-check.md)：按仓库建立每日/事件检查清单，在已有授权内修复、验证并提交 PR；统一退役文档只保存删除提交入口。本仓计划见 [.agents/custom/loop-check.md](.agents/custom/loop-check.md)。技能安装不会自动创建定时任务。
+升级流程是：**发现正式版本 → 固定版本及源码提交 → 预览差异 → 保存回退点 → 应用并验证**。新增模块不会自动加入项目，已有 custom 和无关工作应保留。
 
-## 常用命令
+**发布边界：这套 `check-update / upgrade / rollback` 流程由待发布的 1.3.0 提供；上方已发布 v1.2.2 尚不支持。** 新版稳定 Release 完成后，旧用户需先按新版安装入口更新 CLI 一次。完整的手动命令、首次引导、冲突处理和恢复步骤见 [升级与回退指南](docs/cli/upgrade.md)。当前开发者可以在本地源码中验证这些能力，不应把未发布代码用于默认稳定升级。
+
+工具安装、项目内容同步、采用新模块是三个独立动作。CLI、内容源、模块也各自记录版本；`status` 只比较当前本地源，联网发现 Release 使用新版 `check-update`。详见 [版本与更新判断](docs/cli/versions.md)。
+
+发布内容与兼容说明统一从 [GitHub Releases](https://github.com/zhaoyunyi/AgentPhilosophy/releases) 和 [release-notes/README.md](release-notes/README.md) 查询。
+
+## 给 Agent 的文档入口
 
 ```bash
-uv run sync.py validate
-uv run sync.py init /path/to/project --preset fullstack
-uv run sync.py init /path/to/project --interactive
-uv run sync.py llm-usage
-uv run sync.py llm-usage --mode auto-config
-uv run sync.py llm-usage --mode user-breakpoints
-uv run sync.py llm-usage --mode user-breakpoints --format json
-uv run sync.py migrate /path/to/project
-uv run sync.py migrate /path/to/project --write-config
-uv run sync.py adopt /path/to/project --from-report .agents/migration/adopt-plan.yaml
-uv run sync.py push /path/to/project --dry-run
-uv run sync.py push /path/to/project --apply
-uv run sync.py push /path/to/project --prune-managed
-uv run sync.py status --project /path/to/project
+agentphilosophy-sync llm-usage
+agentphilosophy-sync llm-usage --mode auto-config
+agentphilosophy-sync llm-usage --mode user-breakpoints --format json
 ```
 
-## 版本口径
+完整入口按任务索引组装当前实现的说明；`auto-config` 用于已有自动配置授权的接入，`user-breakpoints` 用于需要用户选择模块和目录的接入。升级已有项目使用升级 skill 和升级指南，保留当前选择。
 
-AgentPhilosophy 使用三层版本描述中央源与目标项目的同步状态：
+项目特有规则放在 `.agents/custom`，托管文件与 state 通过 CLI 生成。默认 `loop-check` 提供仓库巡检能力，但安装 skill 不会自动建立定时任务。更多指南见 [docs/README.md](docs/README.md)。
 
-- `pyproject.toml` / `agentphilosophy.__version__` 表示 CLI 工具版本。
-- `catalog.yaml` 的 `content_version` 表示中央规范内容源整体版本，用于依赖项目判断是否需要更新一轮。
-- 各 `module.yaml` 的 `version` 表示单个模块版本，用于 `status` 判断目标项目中具体模块是否 stale。
-
-`push --apply` 和 `adopt` 会把当前 `agentphilosophy_version` 与 `source_content_version` 写入目标项目 `.agents/agentphilosophy-state.yaml`。后续 `status --project` 会在 state 中的 CLI 版本落后于当前安装包时提示 `agentphilosophy_version stale`，在内容源版本落后于当前中央源时提示 `source_content_version stale`。如果 state 版本高于当前中央源或当前 CLI，先检查是否误用了旧的 `--source`、旧安装包或回退后的中央源。`source_tree_hash` 是源文件指纹，`catalog.yaml` 变更可能同时触发 hash drift 和内容版本提示。
-
-`init --interactive` 用于交互式生成目标项目根目录 `.agentphilosophy.yaml`，适合还没有确定 preset、项目类型、描述或测试命令的新项目；它不会渲染托管输出，也不会自动执行 `push`。
-
-批量入口读取仓库根目录 `registry.yaml`；批量同步要求目标项目已经存在 `.agentphilosophy.yaml`：
+## 维护与贡献
 
 ```bash
-uv run sync.py status
-uv run sync.py push --all --dry-run
+git clone https://github.com/zhaoyunyi/AgentPhilosophy.git
+cd AgentPhilosophy
+uv run --locked sync.py validate
+uv run --locked pytest -q
 ```
 
-依赖项目同步成功后，可以对本轮确实发生版本、模块或托管输出变化的项目调用大模型更新项目自有文档。先在 `registry.yaml` 的项目条目中声明 `documentation_paths`，再显式执行：
+源码可能领先于稳定 Release。需要自定义源或开发内容时显式选择源码流程，并保留版本与来源记录。
 
-```bash
-uv run sync.py push --all --apply \
-  --project-name ExampleFullstack \
-  --update-docs \
-  --llm-command 'codex exec --ephemeral --ignore-user-config --sandbox workspace-write -'
-```
-
-`--project-name` 可重复提供，用于只更新 registry 中点名的项目；省略时仍处理全部登记项目。模型命令必须使用 `codex exec --ephemeral --ignore-user-config --sandbox workspace-write -` 的受限执行合同，不允许额外可写目录、切换工作根目录、加载自定义 profile/config 或输出到任意文件。任务提示通过标准输入传入；已经完成当前版本文档刷新、同步冲突或未声明文档范围的项目不会调用模型。CLI 会在模型完成后复查所有 AgentPhilosophy 托管文件、保护文件、版本控制元数据以及允许文档范围外的项目文件，只在成功后记录包含文档路径的刷新指纹，因此失败原因修复或文档范围扩大后可以重试；它不会自动提交、推送或发布文档改动。
-
-## Registry 文件
-
-- `registry.yaml` 是本机真实批量入口，可以包含本机绝对路径；`status` 不带 `--project`、`push --all` 都读取它。
-- `registry.example.yaml` 是可复用模板，用于复制成新的本机 `registry.yaml` 后再改路径，不应作为真实批量同步入口。
-- `registry.yaml` 已加入 `.gitignore`，避免把个人路径和批量目标误提交。
-- `documentation_paths` 是项目级相对路径白名单，只用于显式启用的批量大模型文档更新阶段。
-
-## 安全边界
-
-- `push --prune-managed` 只接受明确的单个目标项目路径，不能和 `--dry-run`、`--apply` 或 `--all` 混用。
-- prune 只会处理 state 中登记过、当前文件 hash 仍等于 `last_written_hash`、且已经从当前 `.agentphilosophy.yaml` 渲染输出中移除的托管文件。
-- 如果文件被手动改过，prune 必须拒绝删除；缺失文件只会清理 state 记录。
-- prune 会尝试删除被删文件的直接空目录，但不会继续向上清理项目父目录。
-- `migrate --write-config` 只能在目标项目根目录 `.agentphilosophy.yaml` 不存在时，把 `.agents/migration/proposed.agentphilosophy.yaml` 写入正式配置；已存在正式配置时必须拒绝覆盖。
-- `push --update-docs` 只能与 `--all --apply --llm-command` 组合；可用可重复的 `--project-name` 缩小批量范围。未使用受限 Codex sandbox 合同，或模型改动托管文件、保护文件、版本控制元数据、`documentation_paths` 外文件时，命令会失败并报告漂移。
-
-默认 preset 会启用 jj colocated git 管理规则。目标项目是普通 Git 仓库但还没有 `.jj/` 时，先确认或安装 jj CLI，再执行 `jj git init --colocate`，最后用 `jj status` / `jj log` / `jj bookmark list` 验证。
-
-执行任何目标项目写入前，先运行：
-
-```bash
-uv run sync.py validate
-uv run sync.py push /path/to/project --dry-run
-```
+- 修改 CLI、模块、模板或同步 skill：[中央源维护入口](docs/agents/maintenance.md)。
+- 发版、制品回执及下游兼容承诺：[发布流程](docs/release-process.md)。
+- 本机多个项目的登记与批量同步：[Registry 指南](docs/cli/registry.md)。`registry.yaml` 只保存在本机，复用模板是 `registry.example.yaml`。
+- 批量同步后的项目文档更新：[CLI 命令](docs/cli/commands.md)；需显式声明 `documentation_paths` 和受限模型命令。
+- Agent 导航与项目约定：[docs/agents/README.md](docs/agents/README.md)、[AGENTS.md](AGENTS.md)。

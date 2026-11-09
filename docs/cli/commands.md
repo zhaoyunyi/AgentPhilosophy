@@ -1,5 +1,7 @@
 ## 二、真实可用命令
 
+1.3.0 新增独立项目的 `check-update`、`upgrade` 和 `rollback`；版本引导、目标 JSON、差异、退出码与恢复方式见 [升级与回退](upgrade.md)。v1.2.2 不包含这三个命令。
+
 查看帮助：
 
 ```bash

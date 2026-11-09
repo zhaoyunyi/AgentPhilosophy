@@ -8,6 +8,7 @@
 | 运行前提 | [runtime](cli/runtime.md) |
 | 真实可用命令 | [commands](cli/commands.md) |
 | 版本与更新判断 | [versions](cli/versions.md) |
+| 已接入项目升级、发现正式版本和回退 | [upgrade](cli/upgrade.md) |
 | 目标项目配置 | [configuration](cli/configuration.md) |
 | Superpowers 显式可选合同 | [superpowers](cli/superpowers.md) |
 | Portless 本地开发入口 | [portless](cli/portless.md) |
@@ -35,6 +36,7 @@
 <!-- include: cli/runtime.md -->
 <!-- include: cli/commands.md -->
 <!-- include: cli/versions.md -->
+<!-- include: cli/upgrade.md -->
 <!-- include: cli/configuration.md -->
 <!-- include: cli/superpowers.md -->
 <!-- include: cli/portless.md -->

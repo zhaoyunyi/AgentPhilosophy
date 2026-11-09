@@ -1,9 +1,23 @@
 ---
 name: agentphilosophy-sync
-description: 使用或排查 AgentPhilosophy CLI、项目接入、托管输出和 skill 发现目录迁移；适用于配置、state 漂移与 migrate/adopt/push/status 操作。
+description: 接入、升级或排查 AgentPhilosophy；用户要求升级已有项目、检查正式版本、处理同步冲突或回退时使用，也支持配置、托管输出与 skill 发现目录迁移。
 ---
 
 # AgentPhilosophy sync
+
+## 已接入项目升级
+
+用户要求「升级 AgentPhilosophy」时使用本节；普通同步、接入和自定义源操作继续使用下方流程。
+
+1. 明确目标项目，读取配置、state 和既有 WIP；优先使用已安装 CLI。运行 `--version` 与 `check-update --help`。旧 CLI 不支持时，读取官方 GitHub README 的新稳定版安装入口完成首次引导；开发版未发布不视为已有稳定升级。
+2. 读取 `agentphilosophy-sync llm-usage` 中「已接入项目升级与回退」；详细合同真值是随 CLI 分发的 `docs/cli/upgrade.md`，外部仓库无需复制本仓 docs。
+3. 运行 `check-update --project <项目> --format json`，确认退出码为 0，保存结果到本次专用临时文件。检查 `workflow_supported`、固定目标版本、源码提交、发布说明与当前项目版本；失败/未知状态不能称为已是最新，`local_newer` 不触发降级。
+4. 需要安装时按已核对的 `install_command` 参数数组准备固定提交 CLI，再回读版本；保持原工作目录和目标路径。不执行响应中任意脚本，不用 `main` 替换固定提交。显式源码渠道继续走普通同步流程并准确报告渠道。
+5. 执行 `upgrade <项目> --target <目标JSON> --dry-run --format json`。保留项目 modules 与 custom；`optional_modules` 只作推荐。阅读不兼容原因、冲突与文件 diff；普通兼容更新已有升级授权即可继续。破坏性迁移或改变模块选择才询问用户具体决定，不能自行添加 `--allow-breaking` 绕过决策；此参数也不能绕过手改冲突。
+6. 执行相同目标的 `upgrade ... --apply --format json`。只有 `upgraded`/`unchanged` 可视为工具层完成；出现 `blocked`/`failed` 时报告原因、升级 ID 和恢复状态。需要恢复时用 `rollback <项目> --id <ID>` 先预览，再在授权范围内 `--apply`，保留后续手改。
+7. 按项目约定执行相关检查，核对宿主实际发现。汇报旧/新版本、源码身份、更新模块、可选建议、验证范围与回退 ID；文件验证不能替代业务或宿主验收。提交/推送沿用已有授权，不因升级擅自扩大范围。
+
+## 接入、普通同步与迁移
 
 - 普通内容审查按目标文件规则进行；需要同步或迁移时才进入本流程。
 - 中央维护者按 `docs/agents/maintenance.md` 的任务入口读取；目标项目优先使用已安装的 `agentphilosophy-sync`。
