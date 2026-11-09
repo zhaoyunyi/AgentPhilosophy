@@ -1,7 +1,7 @@
 schema_version: 1
 source: /path/to/AgentPhilosophy
-source_revision: jj:nvrlrnkquwyvrkxouzoorvtwpqrzokpx
-source_tree_hash: sha256:80c88a13337d4040b9cd4d1694d7ab47fb414c4a722a092ade48a790c2b95744
+source_revision: jj:wwyprxmwmvtolqsvtypotsowoxsuunwo
+source_tree_hash: sha256:25d4ba69597380ead965306d0aa943be7167e6cf07ec036b9fec0e5e1e147b9d
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.1.0
@@ -15,7 +15,7 @@ modules:
   spec-test-general: 1.2.0
   spec-product-copy: 1.2.0
   spec-architecture: 1.0.0
-  skill-agentphilosophy-sync: 1.1.0
+  skill-agentphilosophy-sync: 1.2.0
   skill-jj-management: 1.2.0
   skill-target-jj: 1.1.0
   skill-coding-standards: 1.1.0
@@ -43,9 +43,9 @@ files:
   module: skill-agentphilosophy-sync
   output_id: agentphilosophy-sync-codex-skill
   strategy: managed_replace
-  source_hash: sha256:7f3153950571ca7f5d58ca514c5be9dc626fae3800704bc6ce1c047bea6db9a9
-  rendered_hash: sha256:a8ce21e6c9d111c92478dac59fb4463bfc1a76f88a2fd948ed211fa6f789798e
-  last_written_hash: sha256:a8ce21e6c9d111c92478dac59fb4463bfc1a76f88a2fd948ed211fa6f789798e
+  source_hash: sha256:832a92aa2870ff0d4d97a571e94ac83a832fc7943310c62c090456815e94f8dd
+  rendered_hash: sha256:db129858bcad409ffa3dd42dd93107a46ffdd1268395b53f039beb16efa32495
+  last_written_hash: sha256:db129858bcad409ffa3dd42dd93107a46ffdd1268395b53f039beb16efa32495
 - path: .agents/skills/ask-matt/PHASE-BOUNDARIES.md
   module: skill-mattpocock-engineering
   output_id: mattpocock-codex-skill-files:ask-matt/PHASE-BOUNDARIES.md
@@ -933,8 +933,8 @@ files:
   output_id: release-notes-index
   strategy: layered
   source_hash: sha256:eb1657de1ecd4064fab7d5591e85e3bb858208d9581e2082a7adc117eb929c3f
-  rendered_hash: sha256:6060d53b6d3dd339286eeb65067a1c8e69841a9e240650a7f93f318c8ed7007d
-  last_written_hash: sha256:6060d53b6d3dd339286eeb65067a1c8e69841a9e240650a7f93f318c8ed7007d
+  rendered_hash: sha256:d355afff9d410e33ba58814122e989910acf38c69b4693cc83d4498d4d182159
+  last_written_hash: sha256:d355afff9d410e33ba58814122e989910acf38c69b4693cc83d4498d4d182159
 - path: skills/MATTPOCOCK-SKILLS-LICENSE.txt
   module: skill-mattpocock-engineering
   output_id: mattpocock-skill-files:MATTPOCOCK-SKILLS-LICENSE.txt
@@ -946,9 +946,9 @@ files:
   module: skill-agentphilosophy-sync
   output_id: agentphilosophy-sync-skill
   strategy: managed_replace
-  source_hash: sha256:7f3153950571ca7f5d58ca514c5be9dc626fae3800704bc6ce1c047bea6db9a9
-  rendered_hash: sha256:a8ce21e6c9d111c92478dac59fb4463bfc1a76f88a2fd948ed211fa6f789798e
-  last_written_hash: sha256:a8ce21e6c9d111c92478dac59fb4463bfc1a76f88a2fd948ed211fa6f789798e
+  source_hash: sha256:832a92aa2870ff0d4d97a571e94ac83a832fc7943310c62c090456815e94f8dd
+  rendered_hash: sha256:db129858bcad409ffa3dd42dd93107a46ffdd1268395b53f039beb16efa32495
+  last_written_hash: sha256:db129858bcad409ffa3dd42dd93107a46ffdd1268395b53f039beb16efa32495
 - path: skills/ask-matt/PHASE-BOUNDARIES.md
   module: skill-mattpocock-engineering
   output_id: mattpocock-skill-files:ask-matt/PHASE-BOUNDARIES.md
@@ -1810,6 +1810,6 @@ files:
   source_hash: sha256:be986b98ee03d61ed0bdfc9a67941ccc4612c6a5e6d4bf6cfdc6dd61326a0ae7
   rendered_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
   last_written_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
-last_synced: '2026-10-16T09:51:42.891131+00:00'
-source_content_version: 1.2.2
-agentphilosophy_version: 1.2.2
+last_synced: '2026-11-09T12:25:59.139889+00:00'
+source_content_version: 1.3.0
+agentphilosophy_version: 1.3.0
