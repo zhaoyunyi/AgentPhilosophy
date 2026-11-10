@@ -24,6 +24,8 @@
 
 ## 发布与运维
 
+- [docs/privacy-and-secrets.md](privacy-and-secrets.md)：提交邮箱、本地凭据忽略规则、密钥扫描与历史清理边界。
+
 - [docs/history-cleanup.md](history-cleanup.md)：历史清理后的版本身份、重新接入与平台残留范围。
 
 - [docs/release-process.md](release-process.md)：AgentPhilosophy CLI 和中央内容源的发版、版本口径、发布校验和依赖项目更新判断。

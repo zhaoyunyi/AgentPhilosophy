@@ -87,6 +87,7 @@ uv run --locked pytest -q
 
 - 修改 CLI、模块、模板或同步 skill：[中央源维护入口](docs/agents/maintenance.md)。
 - 发版、制品回执及下游兼容承诺：[发布流程](docs/release-process.md)。
+- 提交邮箱、本地凭据和 CI 密钥扫描：[个人信息与密钥防护](docs/privacy-and-secrets.md)。
 - 本机多个项目的登记与批量同步：[Registry 指南](docs/cli/registry.md)。`registry.yaml` 只保存在本机，复用模板是 `registry.example.yaml`。
 - 批量同步后的项目文档更新：[CLI 命令](docs/cli/commands.md)；需显式声明 `documentation_paths` 和受限模型命令。
 - Agent 导航与项目约定：[docs/agents/README.md](docs/agents/README.md)、[AGENTS.md](AGENTS.md)。
