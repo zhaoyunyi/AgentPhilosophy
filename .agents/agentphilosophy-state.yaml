@@ -1,7 +1,7 @@
 schema_version: 1
 source: central-source
-source_revision: jj:wowmqxtronoqxkorowyxqqklrpvpontq
-source_tree_hash: sha256:583436d2d9105d3db79a97db21a72d980f5fb81fbb19873c915cd8efe07423ac
+source_revision: jj:ruymsxtqwlxxutrxsklkuqnmnlxwzxnq
+source_tree_hash: sha256:73350d6480ec3ca586cc06c1e50946bde90932cc0adaa63ec5b03d7a9dad75c0
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.1.0
@@ -463,9 +463,9 @@ files:
   module: skill-portless-local-dev
   output_id: portless-local-dev-codex-files:PORTLESS-LICENSE.txt
   strategy: managed_replace
-  source_hash: sha256:ab2fb0b164553a910fbdb8aedfa3c4ab17ac1b751cf3d0fadd6d898746f3cbdc
-  rendered_hash: sha256:ab2fb0b164553a910fbdb8aedfa3c4ab17ac1b751cf3d0fadd6d898746f3cbdc
-  last_written_hash: sha256:ab2fb0b164553a910fbdb8aedfa3c4ab17ac1b751cf3d0fadd6d898746f3cbdc
+  source_hash: sha256:014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff
+  rendered_hash: sha256:014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff
+  last_written_hash: sha256:014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff
 - path: .agents/skills/portless-local-dev/SKILL.md
   module: skill-portless-local-dev
   output_id: portless-local-dev-codex-skill
@@ -1366,9 +1366,9 @@ files:
   module: skill-portless-local-dev
   output_id: portless-local-dev-files:PORTLESS-LICENSE.txt
   strategy: managed_replace
-  source_hash: sha256:ab2fb0b164553a910fbdb8aedfa3c4ab17ac1b751cf3d0fadd6d898746f3cbdc
-  rendered_hash: sha256:ab2fb0b164553a910fbdb8aedfa3c4ab17ac1b751cf3d0fadd6d898746f3cbdc
-  last_written_hash: sha256:ab2fb0b164553a910fbdb8aedfa3c4ab17ac1b751cf3d0fadd6d898746f3cbdc
+  source_hash: sha256:014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff
+  rendered_hash: sha256:014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff
+  last_written_hash: sha256:014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff
 - path: skills/portless-local-dev/SKILL.md
   module: skill-portless-local-dev
   output_id: portless-local-dev-skill
@@ -1810,6 +1810,6 @@ files:
   source_hash: sha256:be986b98ee03d61ed0bdfc9a67941ccc4612c6a5e6d4bf6cfdc6dd61326a0ae7
   rendered_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
   last_written_hash: sha256:fadf7db2207cfe1b71b67a31ce2203a94a336ea4edf363613337ca30ea958eb9
-last_synced: '2026-11-10T00:09:40.018679+00:00'
+last_synced: '2026-11-10T02:20:29.887072+00:00'
 source_content_version: 1.3.0
 agentphilosophy_version: 1.3.0
