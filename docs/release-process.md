@@ -4,6 +4,8 @@
 
 ## 版本口径
 
+准备正式发布时，先按 [AGENTS.md 的版本递增规则](../AGENTS.md#通用约定) 判断本次变更影响，再为 CLI、中央内容源和发生变化的模块确定候选版本。三段版本的含义、混合变更优先级、低位归零、发布汇总时机和示例统一维护在 [release-conventions 中央模板](../modules/release-conventions/templates/release-rules.md.j2)，通过同步 CLI 分发到接入项目的 `AGENTS.md`。
+
 AgentPhilosophy 发版分别跟踪以下独立身份：
 
 - `agentphilosophy_version`：CLI release 版本，来自 `pyproject.toml` 与 `src/agentphilosophy/__init__.py`。
