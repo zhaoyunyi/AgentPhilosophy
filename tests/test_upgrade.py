@@ -65,12 +65,14 @@ def release_api(monkeypatch, version="1.3.1"):
 
 def test_user_discovers_stable_release_without_registry(monkeypatch, tmp_path: Path, capsys):
     """Given 无中央仓库；When 检查稳定版；Then 获得固定提交与内容身份。"""
-    release_api(monkeypatch)
+    major, minor, patch = map(int, __version__.split("."))
+    newer_version = f"{major}.{minor}.{patch + 1}"
+    release_api(monkeypatch, version=newer_version)
     monkeypatch.chdir(tmp_path)
     assert main(["check-update", "--format", "json"]) == 0
     result = json.loads(capsys.readouterr().out)
     assert result["status"] == "update_available"
-    assert result["target"]["version"] == "1.3.1"
+    assert result["target"]["version"] == newer_version
     assert result["target"]["source_revision"] == "a" * 40
     assert result["target"]["source_tree_hash"].startswith("sha256:")
     assert result["install_command"][-1] == (
