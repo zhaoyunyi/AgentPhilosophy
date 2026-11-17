@@ -19,7 +19,7 @@
 项目版本条目通过 layered custom 源维护。默认路径为 `.agents/custom/release-notes/README.custom.md`；如果项目自定义了 `paths.custom_dir`，以 `.agents/custom/release-notes/README.custom.md` 为准。修改 custom 源后运行 AgentPhilosophy 同步刷新本文件。
 
 <!-- release-notes:start -->
-- [v1.5.0](v1.5.0.md)：发布候选，测试套件治理与精简 skill
+- [v1.5.0](v1.5.0.md)：已发布，测试套件治理与精简 skill
 - [v1.4.0](v1.4.0.md)：已发布，软件版本治理与安全维护
 - [v1.3.0](v1.3.0.md)：已发布，外部项目独立升级与回退
 - [v1.2.2](v1.2.2.md)：已发布，完整 LLM 技能安装与使用指南
