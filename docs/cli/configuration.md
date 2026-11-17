@@ -38,6 +38,7 @@ modules:
   - skill-coding-standards
   - skill-repo-management
   - skill-optimize-build-pipeline
+  - skill-test-suite-pruning
   - skill-improve-codebase-architecture
   - skill-mattpocock-engineering
   - skill-portless-local-dev
@@ -58,6 +59,8 @@ vars:
 这些 preset 默认包含 `jj-conventions`、`skill-jj-management` 和 `release-conventions`。`release-conventions` 会把 SemVer 版本口径、发布回执边界写入 `AGENTS.md`，并生成 layered `release-notes/README.md`；项目版本条目写入 `.agents/custom/release-notes/README.custom.md` 后再执行 `push --apply`。旧项目的 `modules` 是显式冻结的，升级 CLI 不会自动追加该模块；需要采用发布治理规则时，先把 `release-conventions` 加入现有模块列表，再走 `validate`、dry-run 和 apply。
 
 LLM 接入目标项目时，如果目标项目是 Git 仓库但还没有 `.jj/`，应先确认 `command -v jj && jj --version`，缺失时安装 jj CLI，然后运行 `jj git init --colocate`，再用 `jj status`、`jj log`、`jj bookmark list` 验证。
+
+四类 preset 也默认包含 `spec-test-general` 和 `skill-test-suite-pruning`，分别分发测试治理规范与精简流程。旧项目已有测试规范会随同步更新，首次采用 skill 需追加模块；完整步骤见 [测试套件治理与精简](test-suite-pruning.md)。
 
 常用路径：
 

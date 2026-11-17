@@ -101,7 +101,7 @@ modules:
     risk: low
   - name: spec-test-general
     category: spec
-    description: 通用测试分层和质量门禁规范
+    description: 通用测试分层、套件治理和质量门禁规范
     project_types: [orchestrator, fullstack, frontend, mobile-sdk]
     outputs:
       - spec/TestStrategy.md
@@ -222,6 +222,14 @@ modules:
     outputs:
       - skills/optimize-build-pipeline/
       - .agents/skills/optimize-build-pipeline/
+    risk: medium
+  - name: skill-test-suite-pruning
+    category: skill
+    description: 按当前行为合同与风险精简测试、处理功能退役和回归保护
+    project_types: [orchestrator, fullstack, frontend, mobile-sdk]
+    outputs:
+      - skills/test-suite-pruning/
+      - .agents/skills/test-suite-pruning/
     risk: medium
   - name: skill-orchestrate-grok-cli
     category: skill

@@ -26,6 +26,7 @@ modules:
   - skill-loop-check
   - skill-code-review-graph
   - skill-optimize-build-pipeline
+  - skill-test-suite-pruning
   - skill-orchestrate-grok-cli
   - skill-reverse-skill
   - skill-improve-codebase-architecture

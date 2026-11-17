@@ -1,2 +1,6 @@
 - 编写测试前读取 `{{ paths.spec_dir }}/TestStrategy.md` 的“编写测试注意事项”，按业务合同验证可观察结果，避免耦合内部实现。
+- 新增、精简测试或退役功能时，按 `{{ paths.spec_dir }}/TestStrategy.md` 的“测试套件治理”判断当前合同、独有风险与去留；区分一次性清理验收和持续有效的负向合同，不为变绿削弱测试。
+{% if 'skill-test-suite-pruning' in modules -%}
+- 测试膨胀、重复或脆弱断言评审、功能删除后的测试取舍，使用 `$test-suite-pruning`；入口为 `{{ skill_targets.repo_skills }}/test-suite-pruning/SKILL.md`。
+{% endif -%}
 - 完成前必须运行最新验证命令，不能用旧日志或推测替代。

@@ -33,7 +33,7 @@
 
 ## 指南
 
-- [spec/TestStrategy.md](../spec/TestStrategy.md)：编写测试注意事项、行为断言、BDD 场景先行与测试分层。
+- [spec/TestStrategy.md](../spec/TestStrategy.md)：行为断言、BDD 场景先行、测试分层与测试套件治理。
 - [spec/BDDSpec.md](../spec/BDDSpec.md)：以 `user` 开头的 Given / When / Then 验收场景规范。
 - [docs/guides/aphilosophy-methodology.md](guides/aphilosophy-methodology.md)：维护或扩展 `aphilosophy/` 决策框架时使用的方法论和成果索引。
 - [docs/guides/mattpocock-engineering-flow.md](guides/mattpocock-engineering-flow.md)：Matt Pocock 27 个活跃 skills 的完整能力集、`docs/agents/` 设置目录、AgentPhilosophy 托管边界和主线/分支用法。
@@ -56,6 +56,7 @@
 - [docs/cli/agent-execution.md](cli/agent-execution.md)：LLM 执行规则。
 - [docs/cli/architecture-review.md](cli/architecture-review.md)：架构加深评审 skill。
 - [docs/cli/build-pipeline.md](cli/build-pipeline.md)：构建流水线调优 skill 1.1.0：测试隔离、I/O/缓存、预装工具、完整案例及只读比较器。
+- [docs/cli/test-suite-pruning.md](cli/test-suite-pruning.md)：测试治理规范、精简 skill、新旧项目接入和持续更新边界。
 - [docs/cli/code-review-graph.md](cli/code-review-graph.md)：code-review-graph 结构图谱依赖。
 - [docs/cli/code-review.md](cli/code-review.md)：独立 code-review 审查 skill。
 - [docs/cli/skills.md](cli/skills.md)：全部技能与安装模块映射、默认 preset、逐项用途/调用示例、安装更新和排障。

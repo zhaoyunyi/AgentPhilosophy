@@ -21,6 +21,7 @@
 | Agent 哲学决策框架 | [philosophy](cli/philosophy.md) |
 | 仓库日常巡检与自动修复 | [loop-check](cli/loop-check.md) |
 | 构建流水线调优 skill | [build-pipeline](cli/build-pipeline.md) |
+| 测试套件治理与精简 skill | [test-suite-pruning](cli/test-suite-pruning.md) |
 | Grok CLI headless 编排 skill | [grok-cli](cli/grok-cli.md) |
 | Registry 文件 | [registry](cli/registry.md) |
 | 新项目接入流程 | [new-project](cli/new-project.md) |
@@ -49,6 +50,7 @@
 <!-- include: cli/philosophy.md -->
 <!-- include: cli/loop-check.md -->
 <!-- include: cli/build-pipeline.md -->
+<!-- include: cli/test-suite-pruning.md -->
 <!-- include: cli/grok-cli.md -->
 <!-- include: cli/registry.md -->
 <!-- include: cli/new-project.md -->

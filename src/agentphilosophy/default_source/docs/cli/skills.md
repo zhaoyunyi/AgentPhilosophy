@@ -101,6 +101,7 @@ find /path/to/project/skills -name SKILL.md -print
 | `skill-restate-goal` | 仅 orchestrator | 其他类型需要时也可显式追加 |
 | `skill-code-review-graph` | 全部四类 | CLI 随包安装；MCP 注册另行操作 |
 | `skill-optimize-build-pipeline` | 全部四类 | 实际 CI/runner/registry 的访问与运行时另行具备 |
+| `skill-test-suite-pruning` | 全部四类 | 按行为合同精简测试；安装不执行清理，旧项目首次需追加模块 |
 | `skill-orchestrate-grok-cli` | 全部四类 | 本机 Grok CLI、登录和授权另行具备 |
 | `skill-reverse-skill` | 全部四类 | 仅在明确授权研究范围内使用；不安装逆向工具全集 |
 | `skill-improve-codebase-architecture` | 全部四类 | 默认显式调用；生成评审报告后再选择实施方案 |
@@ -132,6 +133,7 @@ find /path/to/project/skills -name SKILL.md -print
 | `$restate-goal` | `skill-restate-goal` | 自动 | 重述目标和待解决问题，标明不确定处 | 使用 $restate-goal 重述我当前的目标和要解决的问题。 |
 | `$code-review-graph` | `skill-code-review-graph` | 自动 | 构建/查询结构图谱，定位调用方、影响范围与测试 | 使用 $code-review-graph 找出这个接口的调用方和相关测试。 |
 | `$optimize-build-pipeline` | `skill-optimize-build-pipeline` | 自动 | 依据实测墙钟、CPU/I/O、缓存定位并优化流水线 | 使用 $optimize-build-pipeline 分析这次 CI 耗时并验证优化结果。 |
+| `$test-suite-pruning` | `skill-test-suite-pruning` | 自动 | 按当前合同、独有边界与风险判断测试去留，区分一次性验收和长期回归 | 使用 $test-suite-pruning 审查这次功能删除的测试并给出去留与验证结果。 |
 | `$orchestrate-grok-cli` | `skill-orchestrate-grok-cli` | 自动 | 编排隔离 Grok headless 任务，读取结束证据并独立审查 | 使用 $orchestrate-grok-cli 在已授权文件范围内完成这个任务。 |
 | `$portless-local-dev` | `skill-portless-local-dev` | 自动 | 判断本地服务是否需要稳定命名 URL，产出最小接入方案 | 使用 $portless-local-dev 检查当前端口冲突并选择接入方式。 |
 | `$reverse-skill` | `skill-reverse-skill` | 自动 | 按授权范围路由 APK/二进制/JS 等逆向与安全研究 | 使用 $reverse-skill 分析这个已授权本地样本，范围仅限附件。 |

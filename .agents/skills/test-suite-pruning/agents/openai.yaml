@@ -1,0 +1,13 @@
+interface:
+  display_name: "测试套件精简"
+  short_description: "按当前行为合同与风险精简重复和过时测试，保留关键回归保护"
+  default_prompt: "使用 $test-suite-pruning 审查这次功能变更，决定哪些测试应保留、合并、改写、删除或仅作一次性验收。"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+policy:
+  products:
+    - "chatgpt"
+    - "codex"
+    - "api"
+    - "atlas"
+  allow_implicit_invocation: true

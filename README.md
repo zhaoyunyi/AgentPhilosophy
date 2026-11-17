@@ -74,6 +74,8 @@ agentphilosophy-sync llm-usage --mode user-breakpoints --format json
 
 项目特有规则放在 `.agents/custom`，托管文件与 state 通过 CLI 生成。默认 `loop-check` 提供仓库巡检能力，但安装 skill 不会自动建立定时任务。更多指南见 [docs/README.md](docs/README.md)。
 
+[测试套件治理与精简](docs/cli/test-suite-pruning.md)提供可同步的测试规范、完整 skill 与参考案例；旧项目首次采用新 skill 需追加模块，后续随正常同步更新。正式安装包是否包含该内容以发布说明为准。
+
 ## 维护与贡献
 
 ```bash

@@ -8,6 +8,9 @@
 | “同步规范到这个已有项目” | agentphilosophy-sync，读取接入状态与迁移合同 | 不覆盖非托管内容，不先恢复全局 Superpowers |
 | “修复已明确的复制路径越界” | coding-standards/TDD，从公共 CLI 验证失败和成功路径 | 不为缺少 GLOSSARY.md 创建空文档，不重复询问已确认范围 |
 | “我们的 CI 构建变慢了” | optimize-build-pipeline，先取实际耗时与资源证据 | 不先预测提升幅度，不削弱发布门禁 |
+| “删除旧导出后，帮我清理专属测试” | test-suite-pruning，盘点当前合同与消费者后，在授权范围内清理并验证 | 不删仍有效的安全拒绝、客户端兼容或迁移保护 |
+| “评审这些测试是否重复” | test-suite-pruning，只读比较输入、断言、边界与失败模式并给出决策 | 不只凭覆盖相同行就删除，不把评审扩展为实施 |
+| “让 CI 更快，测试合同不变” | optimize-build-pipeline，分析执行与资源成本 | 不因安装了 test-suite-pruning 就自动删减测试 |
 | “Python 同步工具的文档有错字” | 精确文档修正 | 不安装 Portless、Node 或安全工具，不触发 reverse-skill |
 | “分析已授权测试样本的 JS 签名” | reverse-skill，按当前授权与 routing.json 选择路径 | 不把 precedent、目标名或 Force 退出码当成授权 |
 | “使用 Superpowers 做这个设计” | 核对实际安装后按明确选择使用 | 普通设计请求不全局强制启用；已有授权不重复索取 |
