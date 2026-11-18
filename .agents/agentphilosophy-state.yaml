@@ -1,7 +1,7 @@
 schema_version: 1
 source: central-source
-source_revision: jj:kpkvxqwlrkmmmsnvxrmuyuqktlkstmzs
-source_tree_hash: sha256:53dc26c70a741b10a8b3898bcaa7bdda955c817074e29d6f9cd322ee2c42fa7b
+source_revision: jj:uynxxklylprvnmrsunkkmyqvyrxmyyox
+source_tree_hash: sha256:3c1bc1c4b81f7fa4b0aa24fc9a041a54c2868cbd85b562058dd94c4c7176ee15
 modules:
   openspec-skills: 1.1.0
   jj-conventions: 1.1.0
@@ -1867,6 +1867,6 @@ files:
   source_hash: sha256:652195dc9dba9733d0632920ee69e34fb2c2083a9bae6b56f5fbbc5bbe864d46
   rendered_hash: sha256:d807cec4c011f312c7da03fd2599f1a1173ddfcf54359e958329f87b48ee2089
   last_written_hash: sha256:d807cec4c011f312c7da03fd2599f1a1173ddfcf54359e958329f87b48ee2089
-last_synced: '2026-11-18T12:58:59.504184+00:00'
-source_content_version: 1.5.0
-agentphilosophy_version: 1.5.0
+last_synced: '2026-11-18T13:00:51.286737+00:00'
+source_content_version: 2.0.0
+agentphilosophy_version: 2.0.0

@@ -110,7 +110,7 @@ def write(path: Path, text: str):
 
 def prepared_project(tmp_path: Path, capsys):
     source, project = tmp_path / "source", tmp_path / "project"
-    write(source / "catalog.yaml", "content_version: 1.2.1\nmodules:\n  - name: docs\n")
+    write(source / "catalog.yaml", f"content_version: {__version__}\nmodules:\n  - name: docs\n")
     write(source / "presets/fullstack.yaml", "name: fullstack\nmodules: [docs]\n")
     module = {
         "name": "docs", "version": "1.0.0", "project_types": ["fullstack"],
@@ -125,10 +125,14 @@ def prepared_project(tmp_path: Path, capsys):
     assert main(["--source", str(source), "push", str(project), "--apply"]) == 0
     state_path = project / ".agents/agentphilosophy-state.yaml"
     state = yaml.safe_load(state_path.read_text())
-    state["agentphilosophy_version"] = "1.2.1"
+    state["agentphilosophy_version"] = __version__
     state_path.write_text(yaml.safe_dump(state))
     before = {p.relative_to(project).as_posix(): p.read_bytes() for p in project.rglob("*") if p.is_file()}
-    write(source / "catalog.yaml", f"content_version: {__version__}\nmodules:\n  - name: docs\n  - name: extra\n")
+    # Use a fixed compatible target so these tests continue to exercise the
+    # upgrade journal and rollback contract when the real package crosses a
+    # major version.
+    fixture_version = __version__
+    write(source / "catalog.yaml", f"content_version: {fixture_version}\nmodules:\n  - name: docs\n  - name: extra\n")
     write(source / "modules/docs/templates/agents.j2", "新版规则\n")
     module["version"] = "1.0.1"
     module["outputs"].append({
@@ -140,10 +144,10 @@ def prepared_project(tmp_path: Path, capsys):
     target = {
         "format_version": 1, "status": "update_available",
         "target": {
-            "version": __version__, "tag": f"v{__version__}", "content_version": __version__,
+            "version": fixture_version, "tag": f"v{fixture_version}", "content_version": fixture_version,
             "source_revision": "a" * 40, "source_tree_hash": source_tree_hash(source),
             "wheel_sha256": "sha256:" + "b" * 64,
-            "release_url": f"https://github.com/zhaoyunyi/AgentPhilosophy/releases/tag/v{__version__}",
+            "release_url": f"https://github.com/zhaoyunyi/AgentPhilosophy/releases/tag/v{fixture_version}",
         },
     }
     target_file = tmp_path / "target.json"
