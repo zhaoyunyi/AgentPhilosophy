@@ -5,7 +5,7 @@
 ## 基本操作
 
 - 读取：`glab issue view <number> --comments`
-- 列表：`glab issue list -F json`
+- 列表：`glab issue list -O json`
 - 创建：`glab issue create --title "..." --description "..."`
 - 评论：`glab issue note <number> --message "..."`
 - 标签：`glab issue update <number> --label "..."`

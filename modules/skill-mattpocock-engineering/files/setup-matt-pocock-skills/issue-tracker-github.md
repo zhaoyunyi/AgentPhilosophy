@@ -4,12 +4,16 @@
 
 ## 基本操作
 
-- 读取：`gh issue view <number> --comments`
-- 列表：`gh issue list --state open --json number,title,body,labels,comments`
+- 读取：`gh issue view <number> --json number,title,body,labels,comments`
+- 列表：`gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'`
 - 创建：`gh issue create --title "..." --body "..."`
+- 子 issue：优先使用 `gh issue create --parent <parent>` 或 `gh issue edit <parent> --add-sub-issue <child>`；旧版用 API 传 database id。
+- 阻塞：优先使用 `gh issue create --blocked-by <n>,<n>` 或 `gh issue edit <child> --add-blocked-by <blocker>`；旧版用 dependencies API 的 blocker database id。
 - 评论：`gh issue comment <number> --body "..."`
 - 标签：`gh issue edit <number> --add-label "..."`
 - 关闭：`gh issue close <number> --comment "..."`
+
+写入前用 `gh repo view --json nameWithOwner` 确认目标是用户自己的仓库，不要把 issue 写入 `mattpocock/skills` 上游仓库。
 
 Pull requests 默认不进入 triage；若本项目明确把外部 PR 当需求入口，在这里记录筛选规则。
 

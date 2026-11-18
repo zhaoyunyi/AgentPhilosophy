@@ -1,13 +1,13 @@
 name: skill-code-review-graph
-description: code-review-graph 2.3.9 图谱构建、MCP 查询和 CLI 维护项目级 skill
-version: 1.1.0
+description: code-review-graph 2.4.0 图谱构建、MCP 查询和 CLI 维护项目级 skill
+version: 2.0.0
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: []
 conflicts: []
 upstream:
   repository: https://github.com/tirth8205/code-review-graph
-  ref: refs/tags/v2.3.9^{}
-  revision: 343ab7cea29d47a3e805381e09f8243a43d43d88
+  ref: refs/tags/v2.4.0^{}
+  revision: b3f1285965a1337b3821e4423da03b65d70ee423
   tracked_paths:
     - README.md
     - LICENSE

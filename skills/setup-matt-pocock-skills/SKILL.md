@@ -32,12 +32,15 @@ docs/agents/
 - `triage` 是否已安装。
 - 单一上下文还是确有多个 bounded context。
 - `AGENTS.md` / `CLAUDE.md` 是否是 AgentPhilosophy 托管输出。
+- `GLOSSARY.md` / `GLOSSARY-MAP.md` 是否有旧的 `CONTEXT.md` / `CONTEXT-MAP.md`；若有，先提出迁移到 GLOSSARY 命名并同步修正 `docs/agents/domain.md`。
 
 ## 2. 逐项确认
 
 1. **Issue tracker**：有 GitHub remote 时推荐 GitHub；GitLab remote 推荐 GitLab；无远端或个人项目推荐本地 Markdown；其他 tracker 记录其现有操作合同。
 2. **Triage 标签**：安装 `triage` 时推荐保留 `needs-triage`、`needs-info`、`ready-for-agent`、`ready-for-human`、`wontfix`；只有现有 tracker 已有词汇时才映射别名。
 3. **领域文档**：默认单上下文 `GLOSSARY.md + docs/adr/`；只有真实多上下文项目才使用 `GLOSSARY-MAP.md` 与上下文内 ADR。
+
+选择 GitHub 或 GitLab 后必须确认 remote 指向可访问的项目；若没有对应 host 的 remote，先向用户索取仓库地址并完成 remote 配置，直到 `gh repo view` / `glab repo view` 能从当前目录读到项目再继续。若启用了 triage 且选择了真实 tracker，创建配置中缺失的标签，并在结果里记录命令和回执。
 
 ## 3. 展示草稿
 

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 改编自 Matt Pocock 的 `handoff` skill（MIT License）：https://github.com/mattpocock/skills/tree/HEAD/skills/productivity/handoff
 
-把交接文档写入操作系统临时目录，不写入当前工作区，除非用户明确要求长期保存。
+把交接文档写入操作系统临时目录（Unix 使用 `$TMPDIR`，未设置时使用 `/tmp`；Windows 使用 `%TEMP%`），不写入当前工作区，除非用户明确要求长期保存。
 
 交接文档包含：
 

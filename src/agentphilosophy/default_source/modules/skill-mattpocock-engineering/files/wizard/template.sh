@@ -18,7 +18,8 @@ SKIPPED=()
 
 _clear() {
   [[ -t 1 ]] || return 0
-  if command -v tput >/dev/null 2>&1; then tput clear; else printf '\033[2J\033[3J\033[H'; fi
+  if command -v tput >/dev/null 2>&1 && tput clear 2>/dev/null; then return 0; fi
+  printf '\033[2J\033[3J\033[H'
 }
 
 banner() {
@@ -46,7 +47,7 @@ open_url() {
     elif command -v explorer.exe >/dev/null 2>&1; then explorer.exe "$url"
     elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$url"
     elif command -v open >/dev/null 2>&1; then open "$url"
-    else warn "无法自动打开浏览器，请手动访问：$url"; fi
+    else false; fi
   } >/dev/null 2>&1 || warn "无法自动打开浏览器，请手动访问：$url"
 }
 
@@ -56,28 +57,30 @@ pause() {
 }
 
 ask() {
-  local key="$1" prompt="$2" current input
+  local key="$1" prompt="$2" current input rc=0
   current=$(_existing "$key" || true)
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter 保留当前值]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
   else
     printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
   fi
-  read -r input || true
+  read -e -r input || rc=1
+  if (( rc )) && [[ -z "$input" ]]; then return 1; fi
   [[ -z "$input" && -n "$current" ]] && input="$current"
   printf -v "$key" '%s' "$input"
 }
 
 ask_secret() {
-  local key="$1" prompt="$2" current input
+  local key="$1" prompt="$2" current input rc=0
   current=$(_existing "$key" || true)
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter 保留当前值]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
   else
     printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
   fi
-  read -rs input || true
+  read -rs input || rc=1
   printf '\n'
+  if (( rc )) && [[ -z "$input" ]]; then return 1; fi
   [[ -z "$input" && -n "$current" ]] && input="$current"
   printf -v "$key" '%s' "$input"
 }
@@ -91,18 +94,28 @@ confirm() {
 
 _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
-  local line
+  local line value sq="'\\''"
   line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
-  printf '%s' "${line#*=}"
+  value="${line#*=}"
+  if [[ "$value" == \'*\' ]]; then
+    value="${value:1:${#value}-2}"
+    value="${value//"$sq"/\'}"
+  elif [[ "$value" == \"*\" ]]; then
+    value="${value:1:${#value}-2}"
+    [[ "$value" == *[\\\$\"]* ]] && return 1
+  fi
+  printf '%s' "$value"
 }
 
 write_env() {
-  local name="$1" value="$2" tmp
-  touch "$ENV_FILE"
+  local name="$1" value="$2" tmp sq="'\\''"
+  [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
   tmp=$(mktemp)
   grep -vE "^${name}=" "$ENV_FILE" > "$tmp" || true
-  printf '%s=%s\n' "$name" "$value" >> "$tmp"
-  mv "$tmp" "$ENV_FILE"
+  printf "%s='%s'\n" "$name" "${value//\'/$sq}" >> "$tmp"
+  cat "$tmp" > "$ENV_FILE"
+  rm -f "$tmp"
+  printf -v "$name" '%s' "$value"
   WRITTEN_ENV+=("$name")
   printf '  %s✓ 写入%s %s → %s\n' "$GREEN" "$RESET" "$name" "$ENV_FILE"
 }
@@ -140,8 +153,13 @@ finish() {
 }
 
 # STAGES：复制模板后，只修改本标记以下区域，并使 TOTAL_STAGES 与 stage 数量一致。
-TOTAL_STAGES=1
-banner "示例配置向导"
-stage "示例阶段"
-say "用真实步骤替换本示例。"
-finish
+# 所有 stage 都放入 run_wizard；bash 会先解析完整文件，再开始第一次询问。
+run_wizard() {
+  TOTAL_STAGES=1
+  banner "示例配置向导"
+  stage "示例阶段"
+  say "用真实步骤替换本示例。"
+  finish
+}
+
+run_wizard "$@"

@@ -549,7 +549,7 @@ def test_packaged_preset_does_not_enable_superpowers_by_default(tmp_path: Path, 
     assert "- model-constraints" in project_config
     assert "- superpowers-system" not in project_config
     assert "Superpowers 可选工作流" not in agents_text
-    assert "当前项目参考 Superpowers `6.4.2`" not in agents_text
+    assert "当前项目参考 Superpowers `7.0.2`" not in agents_text
 
 
 def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> None:
@@ -591,7 +591,7 @@ def test_packaged_project_can_explicitly_enable_superpowers(tmp_path: Path) -> N
 
     agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
     assert "Superpowers 可选工作流" in agents_text
-    assert "当前项目参考 Superpowers `6.4.2`" in agents_text
+    assert "当前项目参考 Superpowers `7.0.2`" in agents_text
     assert "~/.codex/superpowers" in agents_text
     assert "~/.agents/skills/superpowers" in agents_text
 
@@ -784,7 +784,7 @@ def test_packaged_preset_installs_portless_skill_by_default(tmp_path: Path, pres
     assert "Portless 官方仓库" in repo_skill_text
     assert "接入深度决策" in repo_skill_text
     assert "不要把 Portless 改造成唯一启动方式" in repo_skill_text
-    assert "0.15.7" in repo_skill_text
+    assert "0.18.1" in repo_skill_text
     assert "portless doctor" in repo_skill_text
     assert "127.0.0.1" in repo_skill_text
     assert "::1" in repo_skill_text

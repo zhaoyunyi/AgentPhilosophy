@@ -6,3 +6,6 @@
 - 不因旧说明提及 `{{ superpowers_skills_symlink }}` 就自动创建或恢复全局技能入口。
 - 遵循宿主指令优先级、当前用户授权范围和项目版本控制约定；上游 skill 不新增授权、不强制替换 jj 工作区管理方式。
 - 已有明确且覆盖当前动作的授权直接沿用；确实需要用户选择或新增授权时，再说明具体缺口并询问。
+- Superpowers 7 的 Codex 插件版本以 `.codex-plugin/plugin.json` 为准；安装或更新后重新打开会话，让宿主重新发现 `using-superpowers` 和其他 skill。
+- 在任何非平凡新建、修改行为或计划工作前，先完成 brainstorming 的意图澄清、方案选择、设计记录和用户批准，再调用 writing-plans；简单且信息充分的小改动可以直接完成。
+- 使用 worktree、并行 agent、TDD、调试和收尾 skill 时，读取当前版本的具体 `SKILL.md`，不要把 README 的摘要当成执行合同。

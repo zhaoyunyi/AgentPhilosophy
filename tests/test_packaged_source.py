@@ -119,21 +119,22 @@ def test_updated_external_skill_modules_lock_reviewed_upstream_revisions() -> No
     root = Path(__file__).resolve().parents[1]
     expected = {
         "skill-code-review-graph": (
-            "1.1.0",
-            "343ab7cea29d47a3e805381e09f8243a43d43d88",
-        ),
-        "skill-code-review": ("1.2.2", "d81f3a183412e71a5b1e84ca21bc1a35eea03a60"),
-        "skill-improve-codebase-architecture": (
             "2.0.0",
-            "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+            "b3f1285965a1337b3821e4423da03b65d70ee423",
+        ),
+        "skill-code-review": ("1.3.0", "5863806dd4e15c63174bee4e7515a4256792ecfa"),
+        "skill-improve-codebase-architecture": (
+            "2.1.0",
+            "5863806dd4e15c63174bee4e7515a4256792ecfa",
         ),
         "skill-mattpocock-engineering": (
-            "2.0.0",
-            "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+            "2.1.0",
+            "5863806dd4e15c63174bee4e7515a4256792ecfa",
         ),
-        "skill-ponytail": ("1.1.1", "1d95ff7d39de12d87014ea40d4e22201bddc501b"),
-        "skill-portless-local-dev": ("1.6.0", "e06a3572c0bcc04ef045582bbcdeb5ee18e72b3b"),
+        "skill-ponytail": ("2.0.0", "7801d061243d7b753bad0e0b3c057cd250b11755"),
+        "skill-portless-local-dev": ("1.7.0", "6c8b988f98abfc60095d08041ffef789ef89cc83"),
         "skill-reverse-skill": ("1.2.0", "9c28c6ca1062a1a076e28baf40f241dbb4cf5dc2"),
+        "superpowers-system": ("7.0.2", "22f0b463e7a5e579904dd6211a520321035526f7"),
     }
 
     for module_name, (version, revision) in expected.items():

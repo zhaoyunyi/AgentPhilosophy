@@ -19,7 +19,7 @@ description: 把 AgentPhilosophy 的 spec、计划或当前对话拆成可独立
 4. 为每个 ticket 标出 blocking edges：哪些 ticket 必须先完成，没有则写 `None - can start immediately`。
 5. 先展示拆分草案，等待用户确认粒度、依赖和覆盖范围。
 6. 用户确认后再发布 tickets：
-   - 已配置 issue tracker 时，按依赖顺序发布，阻塞项先发。
+   - 已配置 issue tracker 时，按依赖顺序发布，阻塞项先发；如果源自现有 issue，为每个 ticket 建立 tracker 支持的子 issue 关系。
    - 使用本地模式或没有 tracker 时，把每个 ticket 分别写入 `.scratch/<feature-slug>/issues/<NN>-<slug>.md`；每个 ticket 一个文件，不生成合并的 `tickets.md`。
 7. 发布后明确当前工作前沿（work frontier）：列出所有 `Blocked by: None - can start immediately` 的 ticket，便于 agent 立即认领。
 
@@ -28,7 +28,7 @@ description: 把 AgentPhilosophy 的 spec、计划或当前对话拆成可独立
 每个候选 ticket 展示：
 
 - **Title**：短标题。
-- **Blocked by**：依赖哪些 ticket，没有则写 `None`。
+- **Blocked by**：依赖哪些 ticket，没有则写 `None`；如果 tracker 已建立原生阻塞边，则省略此节。
 - **What it delivers**：这个 ticket 交付的端到端行为。
 - **Verification**：完成后如何证明。
 

@@ -58,7 +58,7 @@ PY
 )"
 
 "$smoke_root/venv/bin/agentphilosophy-sync" --version | grep -q "${expected_agentphilosophy_version}"
-"$smoke_root/venv/bin/code-review-graph" --version | grep -q "2.3.9"
+"$smoke_root/venv/bin/code-review-graph" --version | grep -q "2.4.0"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--update-docs"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--llm-command"
 "$smoke_root/venv/bin/agentphilosophy-sync" push --help | grep -q -- "--project-name"
@@ -149,7 +149,7 @@ YAML
 "$smoke_root/venv/bin/agentphilosophy-sync" validate "$superpowers_target" >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --dry-run >/dev/null
 "$smoke_root/venv/bin/agentphilosophy-sync" push "$superpowers_target" --apply >/dev/null
-grep -q "当前项目参考 Superpowers \`6.4.2\`" "$superpowers_target/AGENTS.md"
+grep -q "当前项目参考 Superpowers \`7.0.2\`" "$superpowers_target/AGENTS.md"
 grep -q "~/.agents/skills/superpowers" "$superpowers_target/AGENTS.md"
 
 ponytail_target="$smoke_root/project-with-ponytail"
@@ -178,7 +178,7 @@ grep -q "allow_implicit_invocation: true" "$ponytail_target/skills/ponytail/agen
 test -f "$target/skills/portless-local-dev/PORTLESS-LICENSE.txt"
 test -f "$target/skills/portless-local-dev/agents/openai.yaml"
 diff -qr "$target/skills/portless-local-dev" "$target/.agents/skills/portless-local-dev"
-grep -q "0.15.7" "$target/skills/portless-local-dev/SKILL.md"
+grep -q "0.18.1" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "portless doctor" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "dev.example.com" "$target/skills/portless-local-dev/SKILL.md"
 grep -q "最长后缀" "$target/skills/portless-local-dev/SKILL.md"

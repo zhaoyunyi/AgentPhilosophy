@@ -26,7 +26,7 @@ agentphilosophy-sync --version
 agentphilosophy-sync validate
 ```
 
-默认使用安装包自带的规范源。安装包含 `code-review-graph==2.3.9` 及同名 CLI；其首次配置、MCP 和资源成本见 [使用指南](docs/guides/code-review-graph.md)。
+默认使用安装包自带的规范源。安装包含 `code-review-graph==2.4.0` 及同名 CLI；其首次配置、MCP 和资源成本见 [使用指南](docs/guides/code-review-graph.md)。
 
 **新项目**选择适合的 preset，检查预览后应用：
 

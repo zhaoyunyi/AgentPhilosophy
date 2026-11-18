@@ -1,18 +1,18 @@
 name: superpowers-system
 description: Superpowers Codex 原生 skill discovery 安装、版本和排障规范
-version: 6.4.2
+version: 7.0.2
 project_types: [orchestrator, fullstack, frontend, mobile-sdk]
 requires: [doc-templates]
 conflicts: []
 default_vars:
-  superpowers_version: "6.4.2"
+  superpowers_version: "7.0.2"
   superpowers_repository_path: "~/.codex/superpowers"
   superpowers_skills_symlink: "~/.agents/skills/superpowers"
   superpowers_skills_target: "~/.codex/superpowers/skills"
 upstream:
   repository: https://github.com/obra/superpowers
-  ref: refs/tags/v6.4.2
-  revision: 8ca22dba9a94f28898bbce59f2537ff4d87c747d
+  ref: refs/tags/v7.0.2
+  revision: 22f0b463e7a5e579904dd6211a520321035526f7
   tracked_paths:
     - README.md
     - LICENSE

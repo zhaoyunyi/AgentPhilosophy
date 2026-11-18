@@ -19,8 +19,8 @@ description: 对 AgentPhilosophy 的当前快照、分支、PR 或工作区改�
 1. 先识别审查模式。全仓或指定文件现状审查以当前快照为准；变更审查优先使用用户给出的比较点，其次采用当前 PR base、任务起点或已明确的工作区基线。只有比较范围无法确定时才问用户。
 2. 快照审查直接检查现状并声明覆盖范围；变更审查确认 diff，空 diff 时如实报告，不要求用户制造改动。jj 仓库优先用 `jj diff -r <base>..@` 或项目推荐 revset；普通 git 仓库用 `git diff <fixed-point>...HEAD`。
 3. 找 spec 来源：commit/change 描述、issue、OpenSpec、用户传入路径或 docs/spec 文件。没有 spec 时明确标记 Spec 轴无法完整判断。
-4. 找 standards 来源：`AGENTS.md`、`CLAUDE.md`、`spec/`、`CONTRIBUTING.md`、测试策略和项目内 skill。
-5. 如果工具支持并行子 agent，Standards 与 Spec 分开审；否则自己分两段审，避免混合排序。
+4. 找 standards 来源：搜索仓库中所有说明编码方式的文件；`AGENTS.md`、`CLAUDE.md`、`spec/`、`CONTRIBUTING.md`、测试策略和项目内 skill 都纳入范围。issue tracker 以 `docs/agents/issue-tracker.md` 提供的路径为准。
+5. 如果工具支持并行子 agent，Standards 与 Spec 分开审；两个调用一起以前台方式发出，每个使用全新上下文，并汇总它们返回的报告。否则自己分两段审，避免混合排序。
 6. Findings 优先，按严重度列文件和行号；没有问题也说明剩余风险和未覆盖验证。
 
 ## 报告格式

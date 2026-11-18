@@ -7,7 +7,7 @@ description: 为 AgentPhilosophy 判断、按需安装和改造 Portless 本地�
 
 Portless 官方仓库：https://github.com/vercel-labs/portless
 
-本封装已审阅并锁定 Portless 上游 revision `e06a3572c0bcc04ef045582bbcdeb5ee18e72b3b`，对应正式标签 `v0.15.7`、package version `0.15.7`：项目内安装需要 Node.js 24+。该 revision 在非 LAN 模式下只监听 `127.0.0.1` 和 `::1`，显式启用 LAN 时才监听所有网卡；同时包含 `portless doctor`、HTTP/2 Host 转发、WebSocket、IPv6 upstream、worktree 前缀、多 TLD、多段自定义 TLD、sudo 状态目录，以及 Windows/WSL 双侧 CA 信任修复。
+本封装已审阅并锁定 Portless 上游 revision `6c8b988f98abfc60095d08041ffef789ef89cc83`，对应正式标签 `v0.18.1`、package version `0.18.1`：项目内安装需要 Node.js 24+。该 revision 在非 LAN 模式下只监听 `127.0.0.1` 和 `::1`，显式启用 LAN 时才监听所有网卡；同时包含 `portless doctor`、HTTP/2 Host 转发、WebSocket、IPv6 upstream、worktree 前缀、多 TLD、多段自定义 TLD、sudo 状态目录，以及 Windows/WSL 双侧 CA 信任修复。
 
 ## 何时使用
 
@@ -51,17 +51,17 @@ Portless 官方仓库：https://github.com/vercel-labs/portless
 - workspace 根目录可读 `turbo.json` 或 `turbo.jsonc` 时，复用 Turbo 编排并保留任务顺序；根 Portless 配置 `"turbo": false` 可改为直接启动。
 - `hosts sync` 对当前路由与 hosts 托管条目做对账；读取失败时拒绝写入，每次写后验证，无路由时移除失效托管条目。注册后域名仍无法解析时会提示。
 - wildcard 模式精确路由优先，多个父路由匹配时选择最长父域；端口可用性同时检查 IPv4/IPv6 的 loopback 与全网卡地址。
-- `0.15.7` 修复本地 CA 重复扩展、后端重启导致代理崩溃及版本管理器 Node 路径选择。
+- `0.18.1` 修复并发 Turbo 运行共享 manifest、命令 flags 被静默忽略、别名移除跨 TLD 误删等问题；并保持本地 CA、后端重启和版本管理器 Node 路径修复。
 
-- 0.15.7 可为以框架或已知 runner 开头的 package 服务脚本注入端口参数，如 `dev: vite`、`dev: bunx vite`；只针对 dev/serve/preview/start 等服务命令，不给 build/test/check 注入。
+- 0.18.1 可为以框架或已知 runner 开头的 package 服务脚本注入端口参数，包括 Vite、VitePlus、VitePress、Astro、React Router、Angular、Expo、React Native 和 Wrangler；只针对 dev/serve/preview/start 等服务命令，不给 build/test/check 注入。Turborepo 根任务由 Turbo 启动时，读取 `PORT`/`HOST` 或把根配置的 `turbo` 设为 `false`，不要重复注入 flags。
 - 复合命令、尾部注释、自有 `--`、环境变量前缀、委托其他 script、script 前 runner flags 和未知 CLI 语法不保证自动注入；这些场景显式传递端口。Expo 的 localhost/lan/tunnel 模式仍需保留。
 - 第一次 Ctrl+C 等待服务进程树退出，后续中断继续转发；验收时检查后代进程退出和端口释放。
 - Windows startup service 无执行时限，已有 Task Scheduler 定义通过原子替换更新；执行此类系统配置前说明实际影响并沿用当前授权。
 
 ## 安装策略
 
-- 全局安装适合个人机器和多项目协作：`npm install -g portless@0.15.7`。
-- 项目内安装适合团队锁版本：使用项目包管理器添加 dev dependency，例如 `npm install -D -E portless@0.15.7`、`pnpm add -D -E portless@0.15.7`、`yarn add -D -E portless@0.15.7` 或 `bun add -d --exact portless@0.15.7`。
+- 全局安装适合个人机器和多项目协作：`npm install -g portless@0.18.1`。
+- 项目内安装适合团队锁版本：使用项目包管理器添加 dev dependency，例如 `npm install -D -E portless@0.18.1`、`pnpm add -D -E portless@0.18.1`、`yarn add -D -E portless@0.18.1` 或 `bun add -d --exact portless@0.18.1`。
 - Portless 需要 Node.js 24+，且仍是 pre-1.0；项目内安装时应锁版本并记录升级影响。
 - 不使用一次性的 `npx portless`、`pnpm dlx portless` 或类似远程临时执行方式；如果是项目依赖里的本地二进制，可通过 package script 调用。
 
@@ -130,10 +130,13 @@ portless doctor
 portless trust
 portless list
 portless get myapp
+portless get myapp --json
+portless list --json
 portless prune
 portless hosts sync
 portless proxy start
 portless proxy start --no-tls
+portless proxy start --unprivileged
 portless proxy start --lan
 portless proxy start --tld localhost --tld test
 portless proxy start --tld dev.example.com
@@ -141,9 +144,17 @@ PORTLESS_TLD=localhost,test portless proxy start
 PORTLESS_LAN=0 portless proxy start
 portless myapp --tailscale pnpm dev
 portless myapp --funnel pnpm dev
+portless myapp --cloudflare pnpm dev
+portless compose up
+portless compose down
+portless mcp
 portless service install
 PORTLESS=0 pnpm dev
 ```
+
+`portless run --prefix <label>` 可显式设置 worktree 前缀，`portless get/list --json` 适合脚本或 agent 读取。`compose up/down` 为 Docker Compose 服务建立和清理路由；MCP 默认只提供路由查询与 alias 管理，启动开发服务仍由 shell 命令完成。
+
+新版本会严格拒绝不属于当前命令的全局 flags；`--help` 只显示帮助，不再运行包装命令。`portless clean` 会预览清理项并要求确认，自动化场景使用 `--yes`。`prune`、`clean`、`trust`、`hosts sync` 和服务安装会先检查 state 目录所有权与写权限，检查失败时不发送信号、不修改 hosts。
 
 ## 自定义 TLD 与 OAuth
 

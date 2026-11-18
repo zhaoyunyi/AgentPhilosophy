@@ -4,7 +4,7 @@ AgentPhilosophy 默认 preset 通过 `skill-mattpocock-engineering` 和独立的
 
 上游来源：https://github.com/mattpocock/skills
 
-当前跟踪上游 `main` 的提交 `d81f3a183412e71a5b1e84ca21bc1a35eea03a60`，以该提交的插件 manifest 为清单真值。最新正式 Release 仍为 `v1.2.3`；本封装采用随后已合入 main 的活跃内容，不把 commit 变更当成正式上游发布。
+当前跟踪上游 `main` 的提交 `5863806dd4e15c63174bee4e7515a4256792ecfa`，以该提交的插件 manifest 为清单真值。最新正式 Release 为 `v1.3.2`；本封装采用随后已合入 main 的活跃内容，并保留 AgentPhilosophy 的项目目录、授权和 jj 适配。
 
 上游采用 MIT License。许可文本随主模块写入 `skills/MATTPOCOCK-SKILLS-LICENSE.txt` 与 `.agents/skills/MATTPOCOCK-SKILLS-LICENSE.txt`；可独立选择的 `code-review` 和 `improve-codebase-architecture` 模块也会在各自目录保留同一文本。
 

@@ -10,6 +10,8 @@ disable-model-invocation: true
 
 目标：只做路由，不代替被选择的 skill 执行工作。
 
+在说明某个 skill 的作用或建议跳过某一步前，先读取对应的 `SKILL.md`；这里的摘要只用于定位入口。
+
 ## 主线
 
 - 有代码库、想法仍模糊：`/grill-with-docs`。
@@ -23,7 +25,7 @@ disable-model-invocation: true
 
 - 难以靠讨论回答的交互、状态或界面问题：`/handoff -> /prototype -> /handoff`。
 - 外部进入的 bug、需求或 PR 堆积：`/triage`；不要 triage `/to-tickets` 自己生成的票。
-- 疑难 bug、偶发失败或性能回归：`/diagnosing-bugs`。
+- 疑难 bug、偶发失败或性能回归：`/diagnosing-bugs`；修复后在同一会话运行 `/retro`，回顾哪些流程能预防问题。
 - 超过单个会话、路径仍被未知问题遮蔽：`/wayfinder`，清晰后回到 `/to-spec`。
 - 需要一手资料证据：`/research`。
 - 需要设计深模块、接口或 seam：`/codebase-design`。

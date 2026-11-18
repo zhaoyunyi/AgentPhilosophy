@@ -13,6 +13,7 @@ argument-hint: "你想学习什么？"
 
 ## 工作区
 
+- 课程路径（`lessons/`、`reference/`、`assets/` 等）以运行 `/teach` 时的目录为根；只有 `*-FORMAT.md` 链接解析到本 skill 目录。
 - 当前目录本身就是专用学习仓库时，沿用上游根目录布局。
 - 当前目录是产品/代码仓时，默认放到 `.scratch/learning/<topic>/`，避免污染生产目录。
 - 用户明确要求团队长期共享时，使用 `docs/learning/<topic>/`，并更新 `docs/README.md`。
