@@ -21,7 +21,7 @@
 前提：安装 uv、Git，Python 版本至少 3.12。安装已经发布的稳定版本：
 
 ```bash
-uv tool install git+https://github.com/zhaoyunyi/AgentPhilosophy.git@v2.0.0
+uv tool install git+https://github.com/zhaoyunyi/AgentPhilosophy.git@v2.1.0
 agentphilosophy-sync --version
 agentphilosophy-sync validate
 ```
