@@ -1,4 +1,6 @@
 - 先区分终端用户界面、开发者集成文档与内部诊断。普通用户界面只表达对象、状态、影响和下一步，内部对象先映射为产品状态。
+- 功能页面文案只从功能 spec、项目 custom 文案合同或批准的文案资源取值；不得直接渲染 AGENTS/spec/skill、API 原始响应、代码注释或内部诊断文字。
+- 页面实现前为 loading、empty、success、error、permission、validation、disabled 状态确定用户文案和下一步；普通用户界面不得出现 agent、skill、module、spec、adapter、raw ref、allowlist 或 provider binding 等内部/元级词语。
 - SDK README、CLI 帮助和公开 API 文档可以准确说明完成集成需要的公开接口、依赖名称、认证方式及参数；不得暴露凭据值、内部拓扑或敏感调试数据。
 - 具体产品的术语限制由该项目的受众合同或 custom 规范维护，通用规则见 `{{ paths.spec_dir }}/ProductCopySpec.md`。
-- 中英文按相同受众边界检查；用户流程或文案边界修复补充 unit、e2e 或 BDD 守卫，断言实际渲染结果。
+- 中英文按相同受众边界检查；用户流程或文案边界修复补充 unit、e2e 或 BDD 守卫，断言实际渲染结果，并保留 `user does not see` 内部文案的负向合同。

@@ -3,3 +3,11 @@
 - 优先沿用项目现有设计系统、组件库和交互惯例。
 - 工具型界面应信息密度适中、便于扫描和重复操作。
 - 重要前端改动需要在桌面和移动视口验证文字不溢出、不遮挡。
+
+## 页面状态与文案
+
+- 功能页面开始实现前，列出 loading、empty、success、error、permission、validation、disabled 状态，并为每个状态确定用户对象、状态、影响、下一步和中英文文案。
+- 页面只使用功能 spec、项目 custom 文案合同或批准的文案资源；不得把 `AGENTS.md`、spec、skill、CLI 帮助、API 原始响应或内部诊断文字直接作为页面文案或 fallback。
+- 普通用户页面不显示 `agent`、`skill`、`module`、`spec`、`adapter`、`raw ref`、`allowlist`、`provider binding`、`runtime provider` 或内部枚举值。开发者/管理员界面若需要这些概念，必须在该页面合同中明确受众和解释方式。
+- API 错误必须先映射为可操作的产品文案；原始错误体、堆栈、内部状态和诊断信息只进入受保护的诊断路径。
+- 功能页面的测试至少断言一条用户可见状态和一条禁止泄漏内部/元级文案的负向行为。

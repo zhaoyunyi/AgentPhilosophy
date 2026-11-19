@@ -327,6 +327,9 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     spec_text = product_copy_spec.read_text(encoding="utf-8")
     assert "用户可见文案不得解释内部实现细节" in spec_text
     assert "不得用文案区分产品 key 与上游或供应商 API key" in spec_text
+    assert "功能页面文案合同" in spec_text
+    assert "不得直接复制 `AGENTS.md`、spec、skill" in spec_text
+    assert "user does not see" in spec_text
     assert "组织访问密钥用于服务端集成" in spec_text
     assert "Example gateway key" not in spec_text
     assert "Customer gateway key" not in spec_text
@@ -348,6 +351,27 @@ def test_packaged_preset_renders_product_copy_standard(tmp_path: Path, preset: s
     assert "不代表项目没有 UI、前端、产品体验或用户流程" in claude_text
     assert "遇到体验问题时，先定位相关代码、页面、截图、规格或用户流程" in claude_text
     assert "以其中的项目协作规范为准" in claude_text
+
+
+def test_packaged_fullstack_renders_ui_copy_contract(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    workdir = tmp_path / "workdir"
+    workdir.mkdir()
+
+    for args in (["init", str(target), "--preset", "fullstack"], ["push", str(target), "--apply"]):
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve().parents[2] / "sync.py"), *args],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr + result.stdout
+
+    ui_spec = (target / "spec" / "UISpec.md").read_text(encoding="utf-8")
+    assert "loading、empty、success、error、permission、validation、disabled" in ui_spec
+    assert "不得把 `AGENTS.md`、spec、skill" in ui_spec
+    assert "禁止泄漏内部/元级文案" in ui_spec
 
 
 def test_packaged_fullstack_without_superpowers_has_no_blank_section(tmp_path: Path) -> None:
