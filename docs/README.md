@@ -33,6 +33,7 @@
 
 ## 指南
 
+- [前端界面设计规范](../modules/spec-ui/templates/UISpec.md.j2)：中央模板，涵盖布局、视觉、交互、页面状态和浏览器渲染验收；启用 `spec-ui` 后，功能文档引用项目规范目录中的 `UISpec.md`。
 - [spec/TestStrategy.md](../spec/TestStrategy.md)：行为断言、BDD 场景先行、测试分层与测试套件治理。
 - [spec/BDDSpec.md](../spec/BDDSpec.md)：以 `user` 开头的 Given / When / Then 验收场景规范。
 - [docs/guides/aphilosophy-methodology.md](guides/aphilosophy-methodology.md)：维护或扩展 `aphilosophy/` 决策框架时使用的方法论和成果索引。
